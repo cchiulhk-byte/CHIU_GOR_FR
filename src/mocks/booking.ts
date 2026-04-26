@@ -1,0 +1,55 @@
+export const timeSlots = [
+  "09:00",
+  "10:00",
+  "11:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "19:00",
+  "20:00",
+  "21:00",
+];
+
+export const lessonTypes = [
+  {
+    id: "beginner",
+    title: "French for Beginners",
+    titleZh: "法語入門班",
+    titleFr: "Français pour débutants",
+    price: 350,
+    duration: "60 min",
+  },
+  {
+    id: "conversation",
+    title: "Daily Conversation",
+    titleZh: "日常會話強化班",
+    titleFr: "Conversation quotidienne",
+    price: 400,
+    duration: "60 min",
+  },
+  {
+    id: "delf",
+    title: "DELF B1/B2 Preparation",
+    titleZh: "DELF B1/B2 備考班",
+    titleFr: "Préparation DELF B1/B2",
+    price: 450,
+    duration: "60 min",
+  },
+  {
+    id: "grammar",
+    title: "Grammar Mastery",
+    titleZh: "法語文法精修班",
+    titleFr: "Grammaire approfondie",
+    price: 380,
+    duration: "60 min",
+  },
+  {
+    id: "culture",
+    title: "French Culture",
+    titleZh: "法語文化探索班",
+    titleFr: "Culture française",
+    price: 380,
+    duration: "60 min",
+  },
+];

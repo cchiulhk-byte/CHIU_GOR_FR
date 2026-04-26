@@ -1,0 +1,376 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Smooth scrolling ── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px; /* offset for fixed navbar */
+}
+
+/* Smooth momentum scrolling on iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+
+/* ── Global font rules ── */
+:root {
+  font-family: 'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* ── Leica light mode body ── */
+body {
+  background-color: #F7F4EF;
+  color: #1A1410;
+  line-height: 1.6;
+}
+
+
+
+/* ── Dark mode surface overrides ── */
+.dark body {
+  background-color: #0E0818;
+  color: #E8E0F5;
+}
+
+
+
+/* Leica-ish dark navbar — scrolled state */
+.dark .navbar-scrolled {
+  background: linear-gradient(135deg, #1A0A2E 0%, #2D1B4E 60%, #1A0A2E 100%);
+  border-bottom: 1px solid rgba(160, 100, 220, 0.18);
+  box-shadow: 0 1px 0 rgba(204, 0, 0, 0.25);
+}
+
+/* EN / FR explicit class */
+.font-en {
+  font-family: Candara, 'Nunito', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Scroll reveal animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delays */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+.delay-600 { transition-delay: 0.6s; }
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(3deg); }
+  66% { transform: translateY(-6px) rotate(-2deg); }
+}
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Maple leaf fall — linear so negative-delay distributes leaves evenly */
+/* Fade zones shrunk: leaves stay visible for 90% of their journey */
+@keyframes leaf-fall {
+  0%   { transform: translateY(-10vh) rotate(0deg)   translateX(0px);   opacity: 0; }
+  3%   { opacity: 1; }
+  25%  { transform: translateY(20vh)  rotate(110deg)  translateX(16px); }
+  50%  { transform: translateY(50vh)  rotate(250deg)  translateX(-12px); }
+  75%  { transform: translateY(78vh)  rotate(410deg)  translateX(18px); }
+  97%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(580deg)  translateX(-6px);  opacity: 0; }
+}
+@keyframes leaf-fall-slow {
+  0%   { transform: translateY(-10vh) rotate(30deg)   translateX(0px);   opacity: 0; }
+  3%   { opacity: 1; }
+  30%  { transform: translateY(24vh)  rotate(150deg)  translateX(-20px); }
+  55%  { transform: translateY(54vh)  rotate(290deg)  translateX(14px); }
+  80%  { transform: translateY(82vh)  rotate(460deg)  translateX(-16px); }
+  97%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(560deg)  translateX(8px);   opacity: 0; }
+}
+@keyframes leaf-fall-drift {
+  0%   { transform: translateY(-10vh) rotate(-20deg)  translateX(0px);   opacity: 0; }
+  3%   { opacity: 1; }
+  20%  { transform: translateY(16vh)  rotate(75deg)   translateX(26px); }
+  45%  { transform: translateY(44vh)  rotate(190deg)  translateX(-18px); }
+  70%  { transform: translateY(72vh)  rotate(345deg)  translateX(22px); }
+  97%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(480deg)  translateX(-10px); opacity: 0; }
+}
+.animate-leaf {
+  animation: leaf-fall 6s ease-in infinite;
+}
+
+/* Shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+  background-size: 200% auto;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Wiggle */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+.animate-wiggle {
+  animation: wiggle 1.5s ease-in-out infinite;
+}
+
+/* Sun spin-in */
+@keyframes spin-in {
+  0% { transform: rotate(-180deg) scale(0.5); opacity: 0; }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+.animate-spin-in {
+  animation: spin-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Moon drop-in */
+@keyframes moon-in {
+  0% { transform: translateY(-8px) rotate(30deg) scale(0.6); opacity: 0; }
+  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+}
+.animate-moon-in {
+  animation: moon-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Lang pill pop */
+@keyframes pill-pop {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pill-pop {
+  animation: pill-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Ripple on click */
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.animate-ripple {
+  animation: ripple 0.5s ease-out forwards;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #FF6B6B, #FFE66D, #4ECDC4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+}
+
+/* Fade in for booking steps */
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* ── Canadian maple leaf clip-path shape ── */
+.maple-leaf {
+  clip-path: polygon(
+    50% 0%, 60% 15%, 80% 10%, 72% 28%,
+    100% 35%, 82% 48%, 90% 65%, 70% 60%,
+    65% 80%, 50% 68%, 35% 80%, 30% 60%,
+    10% 65%, 18% 48%, 0% 35%, 28% 28%,
+    20% 10%, 40% 15%
+  );
+}
+
+/* Canadian flag stripe divider */
+.canada-stripe {
+  background: linear-gradient(90deg, #FF0000 0%, #FF0000 25%, #ffffff 25%, #ffffff 75%, #FF0000 75%, #FF0000 100%);
+}
+
+/* Aurora borealis shimmer */
+@keyframes aurora {
+  0%   { background-position: 0% 50%; opacity: 0.4; }
+  50%  { background-position: 100% 50%; opacity: 0.7; }
+  100% { background-position: 0% 50%; opacity: 0.4; }
+}
+.animate-aurora {
+  background: linear-gradient(135deg, #4ECDC4, #FF6B6B, #FFE66D, #4ECDC4, #FF0000);
+  background-size: 400% 400%;
+  animation: aurora 8s ease infinite;
+}
+
+/* Snow drift */
+@keyframes snow-drift {
+  0%   { transform: translateY(-10px) translateX(0px) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(100vh) translateX(30px) rotate(360deg); opacity: 0; }
+}
+.animate-snow {
+  animation: snow-drift linear infinite;
+}
+
+/* Canadian red glow */
+.canada-glow {
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.15), 0 0 80px rgba(255, 0, 0, 0.08);
+}
+
+/* Leaf sway */
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-8deg) scale(1); }
+  50%       { transform: rotate(8deg) scale(1.05); }
+}
+.animate-leaf-sway {
+  animation: leaf-sway 4s ease-in-out infinite;
+}
+
+/* ── Wind gust leaf animations ── */
+/* Gust: fast fall with strong rightward sweep */
+@keyframes leaf-gust {
+  0%   { transform: translateY(-40px) rotate(0deg) translateX(0px); opacity: 0; }
+  5%   { opacity: 1; }
+  20%  { transform: translateY(18vh) rotate(180deg) translateX(60px); }
+  40%  { transform: translateY(38vh) rotate(380deg) translateX(110px); }
+  60%  { transform: translateY(58vh) rotate(540deg) translateX(80px); }
+  80%  { transform: translateY(80vh) rotate(680deg) translateX(130px); }
+  93%  { opacity: 0.8; }
+  100% { transform: translateY(105vh) rotate(800deg) translateX(100px); opacity: 0; }
+}
+/* Gust slow: medium speed with leftward sweep */
+@keyframes leaf-gust-left {
+  0%   { transform: translateY(-40px) rotate(20deg) translateX(0px); opacity: 0; }
+  5%   { opacity: 1; }
+  25%  { transform: translateY(22vh) rotate(160deg) translateX(-70px); }
+  50%  { transform: translateY(48vh) rotate(340deg) translateX(-120px); }
+  75%  { transform: translateY(74vh) rotate(500deg) translateX(-90px); }
+  93%  { opacity: 0.8; }
+  100% { transform: translateY(105vh) rotate(640deg) translateX(-110px); opacity: 0; }
+}
+/* Gust spin: wild spinning burst */
+@keyframes leaf-gust-spin {
+  0%   { transform: translateY(-40px) rotate(-30deg) translateX(0px) scale(1); opacity: 0; }
+  5%   { opacity: 1; }
+  15%  { transform: translateY(12vh) rotate(200deg) translateX(40px) scale(1.2); }
+  35%  { transform: translateY(32vh) rotate(460deg) translateX(-30px) scale(0.9); }
+  55%  { transform: translateY(54vh) rotate(680deg) translateX(50px) scale(1.1); }
+  75%  { transform: translateY(76vh) rotate(900deg) translateX(-20px) scale(1); }
+  93%  { opacity: 0.7; }
+  100% { transform: translateY(105vh) rotate(1080deg) translateX(30px) scale(0.8); opacity: 0; }
+}
+/* Gust sway: background watermark leaves sweep hard */
+@keyframes leaf-sway-gust {
+  0%, 100% { transform: rotate(-8deg) scale(1) translateX(0px); }
+  30%       { transform: rotate(22deg) scale(1.08) translateX(18px); }
+  60%       { transform: rotate(-18deg) scale(1.04) translateX(-12px); }
+  80%       { transform: rotate(14deg) scale(1.06) translateX(10px); }
+}
+.animate-leaf-sway-gust {
+  animation: leaf-sway-gust 1.2s ease-in-out;
+}
+
+/* ── Loading Screen Animations ── */
+@keyframes loading-logo-float {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  40%       { transform: translateY(-14px) rotate(1.5deg); }
+  70%       { transform: translateY(-7px) rotate(-0.5deg); }
+}
+
+@keyframes loading-leaf-sway {
+  0%, 100% { transform: rotate(-10deg) scale(1); }
+  50%       { transform: rotate(10deg) scale(1.06); }
+}
+
+@keyframes loading-screen-leave {
+  0%   { opacity: 1; transform: scale(1); }
+  60%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+
+.loading-screen {
+  animation: none;
+}
+
+.loading-screen-leave {
+  animation: loading-screen-leave 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes loading-digit-pop {
+  0%   { transform: translateY(6px) scale(0.8); opacity: 0; }
+  60%  { transform: translateY(-2px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.loading-digit {
+  animation: loading-digit-pop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Horizontal scroll marquee */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
