@@ -4,7 +4,8 @@ import type { RouteObject } from "react-router-dom";
 const Home = lazy(() => import("../pages/home/page"));
 const BookingPage = lazy(() => import("../pages/booking/page"));
 const PaymentPage = lazy(() => import("../pages/payment/page"));
-const AdminPage = lazy(() => import("../pages/admin/page"));
+const BlogPage = lazy(() => import("../pages/blog/page"));
+const PostPage = lazy(() => import("../pages/blog/PostPage"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 const routes: RouteObject[] = [
@@ -15,6 +16,14 @@ const routes: RouteObject[] = [
   {
     path: "/booking",
     element: <BookingPage />,
+  },
+  {
+    path: "/blog",
+    element: <BlogPage />,
+  },
+  {
+    path: "/blog/:id",
+    element: <PostPage />,
   },
   {
     path: "/payment",

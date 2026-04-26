@@ -78,6 +78,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     { id: 'about', label: t('nav_about') },
     { id: 'experience', label: t('nav_experience') },
     { id: 'courses', label: t('nav_courses') },
+    { id: 'blog', label: t('nav_blog'), path: '/blog' },
     { id: 'contact', label: t('nav_contact') },
   ];
 
@@ -136,19 +137,35 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         <div className="hidden md:flex items-center gap-5 flex-1 justify-center">
           {isHomePage ? (
             navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
-                className={`text-sm font-bold tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group ${
-                  scrolled
-                    ? 'text-[#1A1410] dark:text-[#D4B8F0]'
-                    : 'text-gray-800 dark:text-[#E8E0F5]'
-                }`}
-                style={{ fontFamily: fontNav }}
-              >
-                {link.label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
-              </button>
+              link.path ? (
+                <Link
+                  key={link.id}
+                  to={link.path}
+                  className={`text-sm font-bold tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group ${
+                    scrolled
+                      ? 'text-[#1A1410] dark:text-[#D4B8F0]'
+                      : 'text-gray-800 dark:text-[#E8E0F5]'
+                  }`}
+                  style={{ fontFamily: fontNav }}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              ) : (
+                <button
+                  key={link.id}
+                  onClick={() => scrollTo(link.id)}
+                  className={`text-sm font-bold tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group ${
+                    scrolled
+                      ? 'text-[#1A1410] dark:text-[#D4B8F0]'
+                      : 'text-gray-800 dark:text-[#E8E0F5]'
+                  }`}
+                  style={{ fontFamily: fontNav }}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
+                </button>
+              )
             ))
           ) : (
             <Link
@@ -268,22 +285,42 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         <div className="px-4 py-3 flex flex-col gap-1">
           {isHomePage ? (
             navLinks.map((link, i) => (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
-                className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-                style={{
-                  fontFamily: fontNav,
-                  transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
-                  transform: menuOpen ? 'translateX(0)' : 'translateX(-8px)',
-                  opacity: menuOpen ? 1 : 0,
-                  transition: `all 0.25s ease ${i * 0.05}s`,
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-                {link.label}
-                <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
-              </button>
+              link.path ? (
+                <Link
+                  key={link.id}
+                  to={link.path}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+                  style={{
+                    fontFamily: fontNav,
+                    transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                    transform: menuOpen ? 'translateX(0)' : 'translateX(-8px)',
+                    opacity: menuOpen ? 1 : 0,
+                    transition: `all 0.25s ease ${i * 0.05}s`,
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
+                  {link.label}
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
+                </Link>
+              ) : (
+                <button
+                  key={link.id}
+                  onClick={() => scrollTo(link.id)}
+                  className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+                  style={{
+                    fontFamily: fontNav,
+                    transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                    transform: menuOpen ? 'translateX(0)' : 'translateX(-8px)',
+                    opacity: menuOpen ? 1 : 0,
+                    transition: `all 0.25s ease ${i * 0.05}s`,
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
+                  {link.label}
+                  <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
+                </button>
+              )
             ))
           ) : (
             <Link

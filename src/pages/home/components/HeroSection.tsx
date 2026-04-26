@@ -194,7 +194,7 @@ export default function HeroSection() {
             <span className="relative z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
               <i className="ri-calendar-check-line text-sm" />
             </span>
-            <span className="relative z-10">Book Now</span>
+            <span className="relative z-10">{t('hero_cta_booking')}</span>
             <span className="relative z-10 w-5 h-5 flex items-center justify-center">
               <i className="ri-arrow-right-line text-sm group-hover:translate-x-1 transition-transform duration-200" />
             </span>
@@ -206,12 +206,16 @@ export default function HeroSection() {
               const el = document.getElementById('courses');
               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
-            className="px-8 py-4 rounded-full bg-gradient-to-r from-teal to-[#38B2AC] text-white font-bold text-sm hover:opacity-95 transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap shadow-lg shadow-teal/30 flex items-center gap-2"
+            className="px-10 py-4 rounded-full bg-gradient-to-r from-teal to-[#38B2AC] text-white font-bold text-base hover:opacity-95 transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap shadow-lg shadow-teal/30 flex items-center gap-3"
             style={{ fontFamily }}
           >
-            <i className="ri-book-open-line text-sm" />
-            {t('hero_cta_courses')}
-            <i className="ri-arrow-down-line text-sm" />
+            <span className="relative z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
+              <i className="ri-book-open-line text-sm" />
+            </span>
+            <span className="relative z-10">{t('hero_cta_courses')}</span>
+            <span className="relative z-10 w-5 h-5 flex items-center justify-center">
+              <i className="ri-arrow-down-line text-sm group-hover:translate-y-1 transition-transform duration-200" />
+            </span>
           </button>
         </div>
 

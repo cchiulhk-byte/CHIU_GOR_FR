@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import AdminLogin from "./components/AdminLogin";
 import BookingCard from "./components/BookingCard";
+import BlogManager from "./components/BlogManager";
 
 interface Booking {
   id: string;
@@ -19,7 +20,7 @@ interface Booking {
   created_at: string;
 }
 
-type FilterTab = "pending_verification" | "confirmed" | "cancelled" | "all";
+type FilterTab = "pending_verification" | "confirmed" | "cancelled" | "all" | "blog";
 
 export default function AdminPage() {
   const [adminSecret, setAdminSecret] = useState<string>(() => sessionStorage.getItem("adminSecret") || "");
@@ -140,6 +141,7 @@ export default function AdminPage() {
     { key: "pending_verification", label: "En attente", color: "text-yellow-600" },
     { key: "confirmed", label: "Confirmé", color: "text-teal-600" },
     { key: "cancelled", label: "Annulé", color: "text-red-500" },
+    { key: "blog", label: "Blog", color: "text-coral" },
     { key: "all", label: "Tout", color: "text-gray-600" },
   ];
 
@@ -291,8 +293,10 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Bookings list */}
-        {loading ? (
+        {/* Bookings list or Blog Manager */}
+        {filter === "blog" ? (
+          <BlogManager />
+        ) : loading ? (
           <div className="text-center py-16">
             <i className="ri-loader-4-line animate-spin text-3xl text-gray-300 mb-3"></i>
             <p className="text-gray-400 text-sm">Chargement des réservations...</p>

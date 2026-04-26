@@ -3,11 +3,13 @@ const translation = {
   nav_about: "About Me",
   nav_experience: "My Experience",
   nav_courses: "My Courses",
+  nav_blog: "Blog",
   nav_contact: "Contact",
 
   // Hero
   hero_tagline: "Making French learning fun, natural and full of energy",
   hero_cta_courses: "Explore Courses",
+  hero_cta_booking: "Book Now",
   hero_cta_contact: "Get in Touch",
 
   // About

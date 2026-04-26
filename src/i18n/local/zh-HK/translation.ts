@@ -3,11 +3,13 @@ const translation = {
   nav_about: "關於我",
   nav_experience: "我的旅程",
   nav_courses: "課程",
+  nav_blog: "部落格",
   nav_contact: "聯絡",
 
   // Hero
   hero_tagline: "令法語學習變得生動有趣、輕鬆自然",
   hero_cta_courses: "瀏覽課程",
+  hero_cta_booking: "立即預約",
   hero_cta_contact: "即時聯絡",
 
   // About

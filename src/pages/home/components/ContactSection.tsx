@@ -155,7 +155,7 @@ export default function ContactSection() {
               </p>
               <div className="mt-3 flex items-center gap-1 text-coral text-xs font-medium group-hover:gap-2 transition-all duration-200">
                 <span style={{ fontFamily }}>
-                  {i18n.language === 'zh-HK' ? '立即預約' : i18n.language === 'fr' ? 'Réserver' : 'Book Now'}
+                  {t('hero_cta_booking')}
                 </span>
                 <i className="ri-arrow-right-line"></i>
               </div>
@@ -223,7 +223,7 @@ export default function ContactSection() {
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full py-3 rounded-full bg-gradient-to-r from-coral to-[#FF8E53] text-white font-semibold text-sm hover:opacity-90 transition-all duration-300 hover:scale-[1.02] cursor-pointer whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-coral/20"
+                  className="w-full py-3 rounded-full bg-gradient-to-r from-coral to-[#FF8E53] text-white font-semibold text-base hover:opacity-90 transition-all duration-300 hover:scale-[1.02] cursor-pointer whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-coral/20"
                   style={{ fontFamily }}
                 >
                   {status === 'loading' ? (
