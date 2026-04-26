@@ -16,7 +16,7 @@ interface BlogPost {
 }
 
 export default function PostPage() {
-  const { id: slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const { i18n } = useTranslation();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +26,11 @@ export default function PostPage() {
 
   useEffect(() => {
     async function fetchPost() {
+      if (!slug) {
+        setLoading(false);
+        return;
+      }
+
       // Fetch post by slug
       const { data, error } = await supabase
         .from('blog_posts')
