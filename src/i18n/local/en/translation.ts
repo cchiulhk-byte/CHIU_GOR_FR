@@ -8,6 +8,26 @@ const translation = {
   nav_login: "Log in",
   nav_logout: "Log out",
 
+  login_back: "Back",
+  login_title: "Log in",
+  login_subtitle: "Log in to like and comment on blog posts.",
+  login_logged_in_as: "Logged in as",
+  login_continue: "Continue",
+  login_logout: "Log out",
+  login_tab_login: "Log in",
+  login_tab_signup: "Sign up",
+  login_username_optional: "Username (optional)",
+  login_email: "Email",
+  login_password: "Password",
+  login_please_wait: "Please wait…",
+  login_create_account: "Create account",
+  login_submit_login: "Log in",
+  login_or: "or",
+  login_continue_google: "Continue with Google",
+  login_continue_facebook: "Continue with Facebook",
+  login_signup_success: "Account created. Please check your email to confirm your account if required.",
+  login_auth_failed: "Authentication failed",
+
   // Hero
   hero_tagline: "Making French learning fun, natural and full of energy",
   hero_cta_courses: "Explore Courses",
@@ -16,7 +36,7 @@ const translation = {
 
   // About
   about_label: "About",
-  about_title: "Hi, I\'m 超哥!",
+  about_title: "Hi, I\'m Chiu Gor!",
   about_subtitle: "Passionate French Teacher",
   about_p1: "My passion for languages started from an early age — and it was French that truly captured my heart. From 2010 to 2014, I studied French (\u00c9tudes fran\u00e7aises) in Canada, then went on to complete a Master's degree (Ma\u00eetrise en \u00e9tudes fran\u00e7aises), immersing myself deeply in French language, culture and literature.",
   about_p2: "After graduating, I worked as a French translator and editor-in-chief at a publishing house, putting my French to real-world use. I have since dedicated myself to teaching French as a freelance tutor, helping 120+ students — from A1 all the way to B2 — discover their love for the language at their own pace.",

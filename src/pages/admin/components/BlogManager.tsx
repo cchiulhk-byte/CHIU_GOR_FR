@@ -8,6 +8,7 @@ interface BlogPost {
   content: string;
   image_url: string;
   published_at: string;
+  is_featured?: boolean;
 }
 
 interface BlogManagerProps {
@@ -123,6 +124,42 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
     const json = await res.json().catch(() => null);
     if (json?.success) fetchPosts();
     else alert(json?.error || `Failed to delete post (HTTP ${res.status})`);
+  }
+
+  async function handleSetFeatured(postId: string, isFeatured: boolean) {
+    try {
+      const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseAnonKey) {
+        alert('Missing VITE_PUBLIC_SUPABASE_ANON_KEY');
+        return;
+      }
+
+      setPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, is_featured: isFeatured } : p)));
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/blog-manage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          action: 'set_featured',
+          admin_secret: adminSecret,
+          post_id: postId,
+          is_featured: isFeatured,
+        }),
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.error || `Failed to update featured (HTTP ${res.status})`);
+      }
+
+      fetchPosts();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to update featured');
+      fetchPosts();
+    }
   }
 
   async function handleImageUpload(file: File) {
@@ -334,6 +371,17 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleSetFeatured(post.id, !post.is_featured)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg border transition-all cursor-pointer ${
+                      post.is_featured
+                        ? 'border-yellow-200 text-yellow-500 bg-yellow-50'
+                        : 'border-gray-100 text-gray-400 hover:text-yellow-500 hover:border-yellow-200'
+                    }`}
+                    title={post.is_featured ? 'Featured on homepage' : 'Mark as featured'}
+                  >
+                    <i className={post.is_featured ? 'ri-star-fill' : 'ri-star-line'}></i>
+                  </button>
                   <button
                     onClick={() => setEditingPost(post)}
                     className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-100 text-gray-400 hover:text-teal hover:border-teal/30 transition-all cursor-pointer"

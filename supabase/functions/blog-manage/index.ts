@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-type BlogManageAction = "upsert" | "delete" | "upload_image";
+type BlogManageAction = "upsert" | "delete" | "upload_image" | "set_featured";
 
 interface BlogManagePayload {
   action: BlogManageAction;
@@ -20,8 +20,10 @@ interface BlogManagePayload {
     content: string;
     image_url?: string;
     published_at?: string;
+    is_featured?: boolean;
   };
   post_id?: string;
+  is_featured?: boolean;
   image?: {
     file_name: string;
     content_type: string;
@@ -65,6 +67,7 @@ serve(async (req) => {
         content: payload.post.content,
         image_url: payload.post.image_url ?? "",
         published_at: payload.post.published_at ?? new Date().toISOString(),
+        ...(typeof payload.post.is_featured === "boolean" ? { is_featured: payload.post.is_featured } : {}),
       };
 
       const { data, error } = await supabase
@@ -81,6 +84,32 @@ serve(async (req) => {
       }
 
       return new Response(JSON.stringify({ success: true, post_id: data?.id ?? payload.post.id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (payload.action === "set_featured") {
+      if (!payload.post_id || typeof payload.is_featured !== "boolean") {
+        return new Response(JSON.stringify({ success: false, error: "Missing post_id or is_featured" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error } = await supabase
+        .from("blog_posts")
+        .update({ is_featured: payload.is_featured })
+        .eq("id", payload.post_id);
+
+      if (error) {
+        return new Response(JSON.stringify({ success: false, error: error.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

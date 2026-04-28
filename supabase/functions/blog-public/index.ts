@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-type BlogPublicAction = "list" | "get";
+type BlogPublicAction = "list" | "get" | "featured";
 
 interface BlogPublicPayload {
   action: BlogPublicAction;
@@ -29,8 +29,29 @@ serve(async (req) => {
     if (payload.action === "list") {
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("id,title,slug,excerpt,image_url,published_at,view_count")
+        .select("id,title,slug,excerpt,image_url,published_at,view_count,is_featured")
         .order("published_at", { ascending: false });
+
+      if (error) {
+        return new Response(JSON.stringify({ success: false, error: error.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, posts: data ?? [] }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (payload.action === "featured") {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("id,title,slug,excerpt,image_url,published_at,view_count,is_featured")
+        .eq("is_featured", true)
+        .order("published_at", { ascending: false })
+        .limit(7);
 
       if (error) {
         return new Response(JSON.stringify({ success: false, error: error.message }), {

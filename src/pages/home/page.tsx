@@ -2,6 +2,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import FallingLeaves from '@/components/feature/FallingLeaves';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import FeaturedBlogCarousel from './components/FeaturedBlogCarousel';
 import AboutSection from './components/AboutSection';
 import ExperienceSection from './components/ExperienceSection';
 import CoursesSection from './components/CoursesSection';
@@ -22,6 +23,7 @@ export default function Home() {
         <HeroSection />
         <WhyChooseMeSection />
         <AboutSection />
+        <FeaturedBlogCarousel />
         <ExperienceSection />
         <CoursesSection />
         <TestimonialsSection />
