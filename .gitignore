@@ -1,9 +1,17 @@
 node_modules
 .DS_Store
 .env
+.env.*
 dist
 out
 build
 *.local
+.vite
+.vite/
+.vite/**
+.supabase
+supabase/.temp
+supabase/.temp/
+supabase/.temp/**
 .vscode
 .idea

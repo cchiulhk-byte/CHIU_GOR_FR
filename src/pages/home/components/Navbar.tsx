@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { smoothScrollTo } from '@/hooks/useSmoothScroll';
+import { supabase } from '@/lib/supabase';
 
 interface NavbarProps {
   isDark: boolean;
@@ -34,6 +35,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
   const isHomePage = location.pathname === '/';
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [darkAnimKey, setDarkAnimKey] = useState(0);
   const [activeLang, setActiveLang] = useState(i18n.language);
   const [langAnimKey, setLangAnimKey] = useState<Record<string, number>>({});
@@ -48,6 +50,28 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    setActiveLang(i18n.language);
+  }, [i18n.language]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   // Trigger icon animation when dark mode changes
   useEffect(() => {
@@ -111,7 +135,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           <img
             src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
             alt="Chiu Gor French Logo"
-            fetchpriority="high"
+            fetchPriority="high"
             decoding="async"
             className="h-9 w-auto object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
@@ -191,6 +215,29 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <i className="ri-calendar-check-line text-sm"></i>
             {t('booking_title')}
           </Link>
+
+          {/* Visitor Login */}
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="hidden sm:flex px-4 py-2 rounded-full bg-white/80 dark:bg-[#2D1B4E]/60 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] text-sm font-semibold hover:bg-white hover:dark:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer items-center gap-2 whitespace-nowrap"
+              style={{ fontFamily: fontNav }}
+              title={user.email || ''}
+            >
+              <i className="ri-user-line text-sm"></i>
+              {(user.email ? String(user.email).split('@')[0] : 'Account')}
+              <i className="ri-logout-box-r-line text-sm text-coral"></i>
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden sm:flex px-4 py-2 rounded-full bg-white/80 dark:bg-[#2D1B4E]/60 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] text-sm font-semibold hover:bg-white hover:dark:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer items-center gap-2 whitespace-nowrap"
+              style={{ fontFamily: fontNav }}
+            >
+              <i className="ri-login-box-line text-sm"></i>
+              {t('nav_login')}
+            </Link>
+          )}
 
           {/* Language Switcher with pop animation */}
           <div className="flex items-center gap-0.5 bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm rounded-full px-1 py-1 border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40">
@@ -343,6 +390,32 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             {t('booking_title')}
             <i className="ri-arrow-right-s-line ml-auto"></i>
           </Link>
+
+          {user ? (
+            <button
+              onClick={async () => {
+                await handleLogout();
+                setMenuOpen(false);
+              }}
+              className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+              style={{ fontFamily: fontNav }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
+              {t('nav_logout')}
+              <i className="ri-logout-box-r-line ml-auto text-coral"></i>
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+              style={{ fontFamily: fontNav }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
+              {t('nav_login')}
+              <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

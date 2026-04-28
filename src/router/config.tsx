@@ -6,6 +6,7 @@ const BookingPage = lazy(() => import("../pages/booking/page"));
 const PaymentPage = lazy(() => import("../pages/payment/page"));
 const BlogPage = lazy(() => import("../pages/blog/page"));
 const PostPage = lazy(() => import("../pages/blog/PostPage"));
+const LoginPage = lazy(() => import("../pages/login/page"));
 const AdminPage = lazy(() => import("../pages/admin/page"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
@@ -25,6 +26,10 @@ const routes: RouteObject[] = [
   {
     path: "/blog/:slug",
     element: <PostPage />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
   {
     path: "/payment",

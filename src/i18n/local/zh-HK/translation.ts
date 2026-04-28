@@ -5,6 +5,8 @@ const translation = {
   nav_courses: "課程",
   nav_blog: "部落格",
   nav_contact: "聯絡",
+  nav_login: "登入",
+  nav_logout: "登出",
 
   // Hero
   hero_tagline: "令法語學習變得生動有趣、輕鬆自然",

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '@/lib/supabase';
 import BlogCard from './components/BlogCard';
+import Navbar from '@/pages/home/components/Navbar';
+import Footer from '@/pages/home/components/Footer';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 interface BlogPost {
   id: string;
@@ -17,26 +19,43 @@ export default function BlogPage() {
   const { t } = useTranslation();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isDark, toggle } = useDarkMode();
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
   useEffect(() => {
     async function fetchPosts() {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('published_at', { ascending: false });
-
-      if (!error && data) {
-        setPosts(data);
+      try {
+        const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+        const res = await fetch(`${supabaseUrl}/functions/v1/blog-public`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({ action: 'list' }),
+        });
+        const json = await res.json().catch(() => null);
+        if (res.ok && json?.success && json.posts) {
+          setPosts(json.posts);
+        } else {
+          setPosts([]);
+        }
+      } catch {
+        setPosts([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     fetchPosts();
   }, []);
 
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+    <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+      <Navbar isDark={isDark} onToggleDark={toggle} />
+
+      <div className="pt-24 pb-20">
       {/* Hero Header */}
       <div className="relative py-16 mb-12 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-coral/5 to-teal/5 dark:from-coral/10 dark:to-teal/10"></div>
@@ -72,6 +91,10 @@ export default function BlogPage() {
           </div>
         )}
       </div>
+
+      </div>
+
+      <Footer />
     </div>
   );
 }

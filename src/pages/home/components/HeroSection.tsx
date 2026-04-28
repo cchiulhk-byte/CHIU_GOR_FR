@@ -172,7 +172,7 @@ export default function HeroSection() {
           <img
             src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
             alt="Chiu Gor French"
-            fetchpriority="high"
+            fetchPriority="high"
             decoding="async"
             className="relative h-52 md:h-72 w-auto object-contain mx-auto animate-float"
             style={{ animationDuration: '6s' }}

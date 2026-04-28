@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import { AppRoutes } from "./router";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
@@ -9,6 +9,8 @@ import SEO from "./components/feature/SEO";
 
 function App() {
   const [loading, setLoading] = useState(true);
+
+  const Router = __IS_PREVIEW__ ? HashRouter : BrowserRouter;
 
   const handleLoadingComplete = useCallback(() => {
     setLoading(false);
@@ -25,10 +27,10 @@ function App() {
           pointerEvents: loading ? 'none' : 'auto',
         }}
       >
-        <BrowserRouter basename={__BASE_PATH__}>
+        <Router {...(!__IS_PREVIEW__ ? { basename: __BASE_PATH__ } : {})}>
           <ScrollToTop />
           <AppRoutes />
-        </BrowserRouter>
+        </Router>
       </div>
     </I18nextProvider>
   );

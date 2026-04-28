@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabase";
 import AdminLogin from "./components/AdminLogin";
 import BookingCard from "./components/BookingCard";
 import BlogManager from "./components/BlogManager";
@@ -61,16 +60,40 @@ export default function AdminPage() {
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("bookings")
-      .select("*")
-      .order("created_at", { ascending: false });
+    setAuthError("");
+    try {
+      const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+      if (!supabaseUrl) {
+        throw new Error("Missing VITE_PUBLIC_SUPABASE_URL");
+      }
 
-    if (!error && data) {
-      setBookings(data as Booking[]);
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "list", admin_secret: adminSecret, booking_id: "_" }),
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeoutId));
+
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.error || `Failed to load bookings (HTTP ${res.status})`);
+      }
+
+      setBookings((json.bookings || []) as Booking[]);
+    } catch (e) {
+      setBookings([]);
+      if (e instanceof DOMException && e.name === "AbortError") {
+        setAuthError("Request timed out while loading bookings");
+      } else {
+        setAuthError(e instanceof Error ? e.message : "Failed to load bookings");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  }, [adminSecret]);
 
   useEffect(() => {
     if (adminSecret) {
@@ -179,6 +202,21 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
+        {authError && (
+          <div className="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-start justify-between gap-3">
+            <div className="flex items-start gap-2">
+              <i className="ri-error-warning-line text-base mt-0.5"></i>
+              <span>{authError}</span>
+            </div>
+            <button
+              onClick={handleRefresh}
+              className="px-3 py-1.5 rounded-lg bg-white border border-red-200 text-red-600 text-xs font-medium hover:bg-red-50 transition-all cursor-pointer whitespace-nowrap"
+            >
+              Réessayer
+            </button>
+          </div>
+        )}
+
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[
@@ -295,7 +333,7 @@ export default function AdminPage() {
 
         {/* Bookings list or Blog Manager */}
         {filter === "blog" ? (
-          <BlogManager />
+          <BlogManager adminSecret={adminSecret} />
         ) : loading ? (
           <div className="text-center py-16">
             <i className="ri-loader-4-line animate-spin text-3xl text-gray-300 mb-3"></i>

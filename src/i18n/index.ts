@@ -7,10 +7,23 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: 'zh-HK',
-    fallbackLng: 'zh-HK',
+    fallbackLng: {
+      zh: ['zh-HK'],
+      'zh-CN': ['zh-HK'],
+      'zh-TW': ['zh-HK'],
+      'zh-HK': ['zh-HK'],
+      'zh_HK': ['zh-HK'],
+      default: ['zh-HK'],
+    },
     debug: false,
+    supportedLngs: ['zh-HK', 'zh_HK', 'zh', 'zh-CN', 'zh-TW', 'en', 'fr'],
+    nonExplicitSupportedLngs: true,
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+    },
     resources: messages,
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
     },

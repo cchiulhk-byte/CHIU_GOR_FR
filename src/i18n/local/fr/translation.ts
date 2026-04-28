@@ -5,6 +5,8 @@ const translation = {
   nav_courses: "Cours",
   nav_blog: "Blog",
   nav_contact: "Contact",
+  nav_login: "Connexion",
+  nav_logout: "Déconnexion",
 
   // Hero
   hero_tagline: "Apprendre le français de façon fun, naturelle et dynamique",

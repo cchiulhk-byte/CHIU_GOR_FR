@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 interface ManagePayload {
-  action: "approve" | "cancel" | "mark_paid";
+  action: "approve" | "cancel" | "mark_paid" | "list";
   booking_id: string;
   admin_secret: string;
 }
@@ -30,15 +30,44 @@ serve(async (req) => {
     }
 
     if (!payload.booking_id || !payload.action) {
-      return new Response(JSON.stringify({ success: false, error: "Missing booking_id or action" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      if (payload.action !== "list") {
+        return new Response(JSON.stringify({ success: false, error: "Missing booking_id or action" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // ── LIST ─────────────────────────────────────────────────────────────────
+    if (payload.action === "list") {
+      const { data, error } = await supabase
+        .from("bookings")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        return new Response(JSON.stringify({ success: false, error: error.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, bookings: data ?? [] }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!payload.booking_id || !payload.action) {
+      return new Response(JSON.stringify({ success: false, error: "Missing booking_id or action" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const { data: booking, error: fetchError } = await supabase
       .from("bookings")

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 
 interface BlogPost {
   id: string;
@@ -11,27 +10,58 @@ interface BlogPost {
   published_at: string;
 }
 
-export default function BlogManager() {
+interface BlogManagerProps {
+  adminSecret: string;
+}
+
+export default function BlogManager({ adminSecret }: BlogManagerProps) {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [slugEdited, setSlugEdited] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    if (!editingPost) return;
+    setSlugEdited(!!editingPost.id);
+  }, [editingPost]);
+
+  function slugify(input: string) {
+    return input
+      .toLowerCase()
+      .trim()
+      .replace(/['’]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   async function fetchPosts() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .order('published_at', { ascending: false });
-
-    if (!error && data) {
-      setPosts(data);
+    try {
+      const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+      const res = await fetch(`${supabaseUrl}/functions/v1/blog-public`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({ action: 'list' }),
+      });
+      const json = await res.json().catch(() => null);
+      if (res.ok && json?.success) setPosts(json.posts || []);
+      else setPosts([]);
+    } catch {
+      setPosts([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleSave() {
@@ -41,46 +71,105 @@ export default function BlogManager() {
     }
 
     setSaving(true);
-    const postData = {
-      ...editingPost,
-      published_at: editingPost.published_at || new Date().toISOString(),
-    };
-
-    let error;
-    if (editingPost.id) {
-      // Update
-      const { error: err } = await supabase
-        .from('blog_posts')
-        .update(postData)
-        .eq('id', editingPost.id);
-      error = err;
-    } else {
-      // Insert
-      const { error: err } = await supabase
-        .from('blog_posts')
-        .insert(postData);
-      error = err;
+    const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseAnonKey) {
+      alert('Missing VITE_PUBLIC_SUPABASE_ANON_KEY');
+      setSaving(false);
+      return;
     }
-
-    if (!error) {
+    const res = await fetch(`${supabaseUrl}/functions/v1/blog-manage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({
+        action: 'upsert',
+        admin_secret: adminSecret,
+        post: {
+          ...editingPost,
+          published_at: editingPost.published_at || new Date().toISOString(),
+        },
+      }),
+    });
+    const json = await res.json().catch(() => null);
+    if (json?.success) {
       setEditingPost(null);
       fetchPosts();
     } else {
-      alert(error.message);
+      alert(json?.error || `Failed to save post (HTTP ${res.status})`);
     }
     setSaving(false);
   }
 
   async function handleDelete(id: string) {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
-    
-    const { error } = await supabase
-      .from('blog_posts')
-      .delete()
-      .eq('id', id);
 
-    if (!error) {
-      fetchPosts();
+    const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseAnonKey) {
+      alert('Missing VITE_PUBLIC_SUPABASE_ANON_KEY');
+      return;
+    }
+    const res = await fetch(`${supabaseUrl}/functions/v1/blog-manage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({ action: 'delete', admin_secret: adminSecret, post_id: id }),
+    });
+    const json = await res.json().catch(() => null);
+    if (json?.success) fetchPosts();
+    else alert(json?.error || `Failed to delete post (HTTP ${res.status})`);
+  }
+
+  async function handleImageUpload(file: File) {
+    setUploadingImage(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = String(reader.result || '');
+          const comma = result.indexOf(',');
+          resolve(comma >= 0 ? result.slice(comma + 1) : result);
+        };
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
+      });
+
+      const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseAnonKey) {
+        throw new Error('Missing VITE_PUBLIC_SUPABASE_ANON_KEY');
+      }
+      const res = await fetch(`${supabaseUrl}/functions/v1/blog-manage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          action: 'upload_image',
+          admin_secret: adminSecret,
+          image: {
+            file_name: file.name,
+            content_type: file.type || 'application/octet-stream',
+            base64,
+          },
+        }),
+      });
+      const json = await res.json().catch(() => null);
+      if (!json?.success || !json?.public_url) {
+        throw new Error(json?.error || `Upload failed (HTTP ${res.status})`);
+      }
+
+      setEditingPost((prev) => (prev ? { ...prev, image_url: json.public_url } : prev));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setUploadingImage(false);
     }
   }
 
@@ -105,14 +194,27 @@ export default function BlogManager() {
               type="text"
               placeholder="Title"
               value={editingPost.title || ''}
-              onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
+              onChange={(e) => {
+                const title = e.target.value;
+                setEditingPost((prev) => {
+                  if (!prev) return prev;
+                  const next = { ...prev, title };
+                  if (!slugEdited) {
+                    next.slug = slugify(title);
+                  }
+                  return next;
+                });
+              }}
               className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
             />
             <input
               type="text"
               placeholder="Slug (e.g. my-first-post)"
               value={editingPost.slug || ''}
-              onChange={(e) => setEditingPost({ ...editingPost, slug: e.target.value })}
+              onChange={(e) => {
+                setSlugEdited(true);
+                setEditingPost({ ...editingPost, slug: e.target.value });
+              }}
               className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
             />
           </div>
@@ -123,6 +225,62 @@ export default function BlogManager() {
             onChange={(e) => setEditingPost({ ...editingPost, image_url: e.target.value })}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
           />
+          <div
+            onDragEnter={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOver(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOver(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOver(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOver(false);
+              const file = e.dataTransfer.files?.[0];
+              if (file) handleImageUpload(file);
+            }}
+            className={`rounded-xl border-2 border-dashed p-4 transition-all ${
+              dragOver ? 'border-coral bg-coral/5' : 'border-gray-200 bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${dragOver ? 'bg-coral text-white' : 'bg-white border border-gray-200 text-gray-500'}`}>
+                  <i className="ri-image-add-line text-lg"></i>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Drag & drop an image here</p>
+                  <p className="text-xs text-gray-500">or use the file picker below</p>
+                </div>
+              </div>
+              {uploadingImage && (
+                <span className="text-xs text-gray-400 flex items-center gap-1 whitespace-nowrap">
+                  <i className="ri-loader-4-line animate-spin"></i>
+                  Uploading...
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImageUpload(file);
+              }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer"
+            />
+          </div>
           <textarea
             placeholder="Excerpt (short summary)"
             value={editingPost.excerpt || ''}

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface Comment {
   id: string;
@@ -12,31 +13,20 @@ interface Comment {
 
 export default function CommentSection({ postId }: { postId: string }) {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState('');
+  const [editingSaving, setEditingSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    fetchComments();
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [postId]);
-
-  async function fetchComments() {
+  const fetchComments = useCallback(async () => {
     const { data, error } = await supabase
       .from('blog_comments')
       .select('*')
@@ -47,36 +37,155 @@ export default function CommentSection({ postId }: { postId: string }) {
       setComments(data);
     }
     setLoading(false);
-  }
+  }, [postId]);
+
+  useEffect(() => {
+    let isMounted = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
+      setUser(session?.user ?? null);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    fetchComments();
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, [fetchComments]);
 
   async function handleLogin() {
-    // Simple email login or show modal
-    // For now, we'll use a simple alert/prompt or redirect to a login page if one existed
-    // But since we want it "in-place", let's use Supabase Auth UI or a simple email link
-    const email = window.prompt('Enter your email to login:');
-    if (email) {
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      if (error) alert(error.message);
-      else alert('Check your email for the login link!');
+    navigate('/login', { state: { from: window.location.pathname } });
+  }
+
+  async function handleStartEdit(comment: Comment) {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      alert(sessionError.message);
+      return;
     }
+    const currentUser = sessionData.session?.user ?? null;
+    if (!currentUser) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
+    if (currentUser.id !== comment.user_id) return;
+    setEditingId(comment.id);
+    setEditingContent(comment.content);
+  }
+
+  async function handleCancelEdit() {
+    setEditingId(null);
+    setEditingContent('');
+  }
+
+  async function handleSaveEdit(commentId: string) {
+    if (!editingContent.trim()) return;
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      alert(sessionError.message);
+      return;
+    }
+    const currentUser = sessionData.session?.user ?? null;
+    if (!currentUser) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
+
+    setEditingSaving(true);
+    const { error } = await supabase
+      .from('blog_comments')
+      .update({ content: editingContent.trim() })
+      .eq('id', commentId)
+      .eq('user_id', currentUser.id);
+
+    if (error) {
+      alert(error.message);
+      setEditingSaving(false);
+      return;
+    }
+
+    setEditingId(null);
+    setEditingContent('');
+    await fetchComments();
+    setEditingSaving(false);
+  }
+
+  async function handleDeleteComment(comment: Comment) {
+    const ok = window.confirm('Delete this comment?');
+    if (!ok) return;
+
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      alert(sessionError.message);
+      return;
+    }
+    const currentUser = sessionData.session?.user ?? null;
+    if (!currentUser) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
+    if (currentUser.id !== comment.user_id) return;
+
+    setDeletingId(comment.id);
+    const { error } = await supabase
+      .from('blog_comments')
+      .delete()
+      .eq('id', comment.id)
+      .eq('user_id', currentUser.id);
+
+    if (error) {
+      alert(error.message);
+      setDeletingId(null);
+      return;
+    }
+
+    if (editingId === comment.id) {
+      setEditingId(null);
+      setEditingContent('');
+    }
+    await fetchComments();
+    setDeletingId(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!user || !newComment.trim()) return;
+    if (!newComment.trim()) return;
+
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      alert(sessionError.message);
+      return;
+    }
+    const currentUser = sessionData.session?.user ?? null;
+    if (!currentUser) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
 
     setSubmitting(true);
+    const displayName =
+      (currentUser.user_metadata?.username as string | undefined) ||
+      (currentUser.email ? String(currentUser.email).split('@')[0] : 'User');
     const { error } = await supabase.from('blog_comments').insert({
       post_id: postId,
-      user_id: user.id,
-      user_name: user.email?.split('@')[0] || 'User',
+      user_id: currentUser.id,
+      user_name: displayName,
       content: newComment.trim(),
     });
 
-    if (!error) {
-      setNewComment('');
-      fetchComments();
+    if (error) {
+      alert(error.message);
+      setSubmitting(false);
+      return;
     }
+
+    setNewComment('');
+    fetchComments();
     setSubmitting(false);
   }
 
@@ -138,9 +247,62 @@ export default function CommentSection({ postId }: { postId: string }) {
                   {new Date(comment.created_at).toLocaleDateString(i18n.language)}
                 </span>
               </div>
-              <p className="text-sm text-[#4A4440] dark:text-[#C4A8E8] leading-relaxed" style={{ fontFamily }}>
-                {comment.content}
-              </p>
+
+              {editingId === comment.id ? (
+                <div className="space-y-3">
+                  <textarea
+                    value={editingContent}
+                    onChange={(e) => setEditingContent(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-[#D4C8BC]/80 dark:border-[#3B2060]/50 bg-white dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] text-sm focus:outline-none focus:border-coral transition-colors duration-200 resize-none"
+                    rows={3}
+                    style={{ fontFamily }}
+                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleSaveEdit(comment.id)}
+                      disabled={editingSaving || !editingContent.trim()}
+                      className="px-5 py-2 rounded-full bg-coral text-white font-bold text-xs hover:opacity-90 transition-all disabled:opacity-50"
+                      style={{ fontFamily }}
+                    >
+                      {editingSaving ? 'Saving...' : 'Save'}
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      disabled={editingSaving}
+                      className="px-5 py-2 rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] font-bold text-xs hover:opacity-90 transition-all disabled:opacity-50"
+                      style={{ fontFamily }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-[#4A4440] dark:text-[#C4A8E8] leading-relaxed" style={{ fontFamily }}>
+                    {comment.content}
+                  </p>
+
+                  {user?.id === comment.user_id && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <button
+                        onClick={() => handleStartEdit(comment)}
+                        className="px-4 py-1.5 rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] font-bold text-xs hover:opacity-90 transition-all"
+                        style={{ fontFamily }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteComment(comment)}
+                        disabled={deletingId === comment.id}
+                        className="px-4 py-1.5 rounded-full bg-white dark:bg-[#130A22] text-coral border border-coral/30 font-bold text-xs hover:bg-coral/5 transition-all disabled:opacity-50"
+                        style={{ fontFamily }}
+                      >
+                        {deletingId === comment.id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ))
         )}

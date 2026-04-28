@@ -1,10 +1,9 @@
-import { useNavigate, type NavigateFunction } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import routes from "./config";
 import LoadingFallback from "../components/feature/LoadingFallback";
-
-let navigateResolver: (navigate: ReturnType<typeof useNavigate>) => void;
+import { resolveNavigate } from "./navigatePromise";
 
 declare global {
   interface Window {
@@ -12,16 +11,12 @@ declare global {
   }
 }
 
-export const navigatePromise = new Promise<NavigateFunction>((resolve) => {
-  navigateResolver = resolve;
-});
-
 export function AppRoutes() {
   const element = useRoutes(routes);
   const navigate = useNavigate();
   useEffect(() => {
     window.REACT_APP_NAVIGATE = navigate;
-    navigateResolver(window.REACT_APP_NAVIGATE);
+    resolveNavigate(window.REACT_APP_NAVIGATE);
   });
   return <Suspense fallback={<LoadingFallback />}>{element}</Suspense>;
 }

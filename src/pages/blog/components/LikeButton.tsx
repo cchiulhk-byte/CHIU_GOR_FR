@@ -1,27 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface LikeButtonProps {
   postId: string;
 }
 
 export default function LikeButton({ postId }: LikeButtonProps) {
+  const navigate = useNavigate();
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkIfLiked(session.user.id);
-      }
-    });
-
-    fetchLikesCount();
-  }, [postId]);
-
-  async function fetchLikesCount() {
+  const fetchLikesCount = useCallback(async () => {
     const { count, error } = await supabase
       .from('blog_likes')
       .select('*', { count: 'exact', head: true })
@@ -30,24 +21,58 @@ export default function LikeButton({ postId }: LikeButtonProps) {
     if (!error && count !== null) {
       setLikesCount(count);
     }
-  }
+  }, [postId]);
 
-  async function checkIfLiked(userId: string) {
-    const { data, error } = await supabase
-      .from('blog_likes')
-      .select('*')
-      .eq('post_id', postId)
-      .eq('user_id', userId)
-      .single();
+  const checkIfLiked = useCallback(
+    async (userId: string) => {
+      const { data, error } = await supabase
+        .from('blog_likes')
+        .select('*')
+        .eq('post_id', postId)
+        .eq('user_id', userId)
+        .single();
 
-    if (!error && data) {
-      setIsLiked(true);
-    }
-  }
+      if (!error && data) {
+        setIsLiked(true);
+      }
+    },
+    [postId]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
+      setUser(session?.user ?? null);
+      if (session?.user) checkIfLiked(session.user.id);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkIfLiked(session.user.id);
+      } else {
+        setIsLiked(false);
+      }
+    });
+
+    fetchLikesCount();
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, [checkIfLiked, fetchLikesCount]);
 
   async function handleLike() {
-    if (!user) {
-      alert('Please log in to like this post!');
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      alert(sessionError.message);
+      return;
+    }
+    const currentUser = sessionData.session?.user ?? null;
+    if (!currentUser) {
+      navigate('/login', { state: { from: window.location.pathname } });
       return;
     }
 
@@ -57,22 +82,28 @@ export default function LikeButton({ postId }: LikeButtonProps) {
         .from('blog_likes')
         .delete()
         .eq('post_id', postId)
-        .eq('user_id', user.id);
+        .eq('user_id', currentUser.id);
 
-      if (!error) {
-        setIsLiked(false);
-        setLikesCount(prev => prev - 1);
+      if (error) {
+        alert(error.message);
+        return;
       }
+
+      setIsLiked(false);
+      setLikesCount(prev => Math.max(0, prev - 1));
     } else {
       // Like
       const { error } = await supabase
         .from('blog_likes')
-        .insert({ post_id: postId, user_id: user.id });
+        .insert({ post_id: postId, user_id: currentUser.id });
 
-      if (!error) {
-        setIsLiked(true);
-        setLikesCount(prev => prev + 1);
+      if (error) {
+        alert(error.message);
+        return;
       }
+
+      setIsLiked(true);
+      setLikesCount(prev => prev + 1);
     }
   }
 

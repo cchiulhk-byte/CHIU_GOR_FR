@@ -22,4 +22,10 @@ Object.keys(modules).forEach((path) => {
   }
 });
 
-export default messages; 
+if (messages['zh-HK']) {
+  messages['zh'] = messages['zh-HK'];
+  messages['zh-CN'] = messages['zh-HK'];
+  messages['zh-TW'] = messages['zh-HK'];
+}
+
+export default messages;
