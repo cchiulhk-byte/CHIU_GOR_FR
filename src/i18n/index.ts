@@ -18,6 +18,7 @@ i18n
     debug: false,
     supportedLngs: ['zh-HK', 'zh_HK', 'zh', 'zh-CN', 'zh-TW', 'en', 'fr'],
     nonExplicitSupportedLngs: true,
+    lng: 'zh-HK',
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

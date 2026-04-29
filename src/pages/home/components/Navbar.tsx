@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 const LANGUAGES = [
-  { code: 'zh-HK', label: '繁中' },
+  { code: 'zh-HK', label: '中文' },
   { code: 'fr', label: 'FR' },
   { code: 'en', label: 'EN' },
 ];
