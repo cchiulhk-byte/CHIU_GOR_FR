@@ -39,6 +39,11 @@ serve(async (req) => {
   try {
     const payload: BlogManagePayload = await req.json();
 
+    const action = String((payload as any)?.action || "")
+      .trim()
+      .toLowerCase()
+      .replace(/-/g, "_");
+
     const expectedSecret = Deno.env.get("ADMIN_SECRET");
     if (!expectedSecret || payload.admin_secret !== expectedSecret) {
       return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
@@ -51,7 +56,7 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    if (payload.action === "upsert") {
+    if (action === "upsert") {
       if (!payload.post?.title || !payload.post?.slug || !payload.post?.content) {
         return new Response(JSON.stringify({ success: false, error: "Missing required post fields" }), {
           status: 400,
@@ -89,7 +94,7 @@ serve(async (req) => {
       });
     }
 
-    if (payload.action === "set_featured") {
+    if (action === "set_featured" || action === "setfeatured") {
       if (!payload.post_id || typeof payload.is_featured !== "boolean") {
         return new Response(JSON.stringify({ success: false, error: "Missing post_id or is_featured" }), {
           status: 400,
@@ -115,7 +120,7 @@ serve(async (req) => {
       });
     }
 
-    if (payload.action === "delete") {
+    if (action === "delete") {
       if (!payload.post_id) {
         return new Response(JSON.stringify({ success: false, error: "Missing post_id" }), {
           status: 400,
@@ -137,7 +142,7 @@ serve(async (req) => {
       });
     }
 
-    if (payload.action === "upload_image") {
+    if (action === "upload_image") {
       if (!payload.image?.file_name || !payload.image.base64 || !payload.image.content_type) {
         return new Response(JSON.stringify({ success: false, error: "Missing image payload" }), {
           status: 400,

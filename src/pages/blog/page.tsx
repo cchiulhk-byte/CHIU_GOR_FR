@@ -64,10 +64,10 @@ export default function BlogPage() {
             {t('nav_blog')}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6" style={{ fontFamily }}>
-            Insights & Stories
+            {t('blog_title')}
           </h1>
           <p className="max-w-2xl mx-auto text-[#7A7068] dark:text-[#C4A8E8] text-lg" style={{ fontFamily }}>
-            Discover my thoughts on French language learning, Canadian culture, and my teaching journey.
+            {t('blog_subtitle')}
           </p>
         </div>
       </div>
@@ -76,12 +76,12 @@ export default function BlogPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <i className="ri-loader-4-line text-4xl text-coral animate-spin mb-4"></i>
-            <p className="text-[#7A7068] dark:text-[#C4A8E8] font-medium">Loading articles...</p>
+            <p className="text-[#7A7068] dark:text-[#C4A8E8] font-medium">{t('blog_loading')}</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20 bg-white dark:bg-[#1E0D38] rounded-3xl border border-[#D4C8BC]/60 dark:border-[#3B2060]/60">
             <i className="ri-article-line text-5xl text-gray-200 dark:text-gray-700 mb-4"></i>
-            <p className="text-[#7A7068] dark:text-[#C4A8E8] text-lg font-medium">No articles yet. Check back soon!</p>
+            <p className="text-[#7A7068] dark:text-[#C4A8E8] text-lg font-medium">{t('blog_no_articles')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

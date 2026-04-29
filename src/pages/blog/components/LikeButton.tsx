@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface LikeButtonProps {
   postId: string;
 }
 
 export default function LikeButton({ postId }: LikeButtonProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -117,7 +119,7 @@ export default function LikeButton({ postId }: LikeButtonProps) {
       }`}
     >
       <i className={isLiked ? 'ri-heart-fill' : 'ri-heart-line'}></i>
-      {likesCount} Likes
+      {likesCount} {t('blog_likes')}
     </button>
   );
 }

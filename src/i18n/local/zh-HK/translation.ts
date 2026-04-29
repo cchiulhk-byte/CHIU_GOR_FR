@@ -289,6 +289,32 @@ const translation = {
   // Dark mode
   toggle_dark: "深色模式",
   toggle_light: "淺色模式",
+
+  // Blog
+  blog_title: "觀點與故事",
+  blog_subtitle: "探索我對法語學習、加拿大文化及教學旅程的想法。",
+  blog_loading: "載入文章中…",
+  blog_no_articles: "暫無文章，請稍後再來！",
+  blog_article_label: "文章",
+  blog_views: "瀏覽",
+  blog_read_more: "閱讀更多",
+  blog_back_to_blog: "返回部落格",
+  blog_article_not_found: "找不到文章",
+  blog_share_copied: "連結已複製到剪貼簿！",
+  blog_likes: "讚",
+  blog_comments_title: "留言",
+  blog_comments_placeholder: "分享你的想法...",
+  blog_comments_posting: "發佈中...",
+  blog_comments_post: "發佈留言",
+  blog_comments_login_required: "你需要登入才能發佈留言。",
+  blog_comments_login_button: "登入發佈留言",
+  blog_comments_empty: "暫無留言，搶先分享吧！",
+  blog_comments_save: "儲存",
+  blog_comments_cancel: "取消",
+  blog_comments_edit: "編輯",
+  blog_comments_delete: "刪除",
+  blog_comments_deleting: "刪除中...",
+  blog_comments_delete_confirm: "確定刪除這則留言？",
 };
 
 export default translation;

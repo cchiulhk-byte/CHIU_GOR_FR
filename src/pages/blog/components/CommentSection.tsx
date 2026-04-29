@@ -116,7 +116,7 @@ export default function CommentSection({ postId }: { postId: string }) {
   }
 
   async function handleDeleteComment(comment: Comment) {
-    const ok = window.confirm('Delete this comment?');
+    const ok = window.confirm(t('blog_comments_delete_confirm'));
     if (!ok) return;
 
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
@@ -192,7 +192,7 @@ export default function CommentSection({ postId }: { postId: string }) {
   return (
     <div className="mt-12 pt-12 border-t border-[#D4C8BC]/60 dark:border-[#3B2060]/60">
       <h3 className="text-2xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-8" style={{ fontFamily }}>
-        Comments ({comments.length})
+        {t('blog_comments_title')} ({comments.length})
       </h3>
 
       {/* Post a comment */}
@@ -201,7 +201,7 @@ export default function CommentSection({ postId }: { postId: string }) {
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Share your thoughts..."
+            placeholder={t('blog_comments_placeholder')}
             className="w-full px-4 py-3 rounded-2xl border-2 border-[#D4C8BC]/80 dark:border-[#3B2060]/50 bg-white dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] text-sm focus:outline-none focus:border-coral transition-colors duration-200 resize-none mb-4"
             rows={3}
             style={{ fontFamily }}
@@ -212,20 +212,20 @@ export default function CommentSection({ postId }: { postId: string }) {
             className="px-8 py-2.5 rounded-full bg-coral text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50"
             style={{ fontFamily }}
           >
-            {submitting ? 'Posting...' : 'Post Comment'}
+            {submitting ? t('blog_comments_posting') : t('blog_comments_post')}
           </button>
         </form>
       ) : (
         <div className="bg-coral/5 dark:bg-[#CC0000]/5 border border-coral/20 rounded-2xl p-6 text-center mb-10">
           <p className="text-[#7A7068] dark:text-[#C4A8E8] mb-4 font-medium" style={{ fontFamily }}>
-            You need to be logged in to post a comment.
+            {t('blog_comments_login_required')}
           </p>
           <button
             onClick={handleLogin}
             className="px-8 py-2.5 rounded-full bg-coral text-white font-bold text-sm hover:opacity-90 transition-all"
             style={{ fontFamily }}
           >
-            Log In to Comment
+            {t('blog_comments_login_button')}
           </button>
         </div>
       )}
@@ -237,7 +237,7 @@ export default function CommentSection({ postId }: { postId: string }) {
             <i className="ri-loader-4-line animate-spin text-2xl text-coral"></i>
           </div>
         ) : comments.length === 0 ? (
-          <p className="text-[#7A7068] dark:text-[#C4A8E8] italic">No comments yet. Be the first to share!</p>
+          <p className="text-[#7A7068] dark:text-[#C4A8E8] italic">{t('blog_comments_empty')}</p>
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="bg-white dark:bg-[#1E0D38] p-5 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
@@ -264,7 +264,7 @@ export default function CommentSection({ postId }: { postId: string }) {
                       className="px-5 py-2 rounded-full bg-coral text-white font-bold text-xs hover:opacity-90 transition-all disabled:opacity-50"
                       style={{ fontFamily }}
                     >
-                      {editingSaving ? 'Saving...' : 'Save'}
+                      {editingSaving ? t('blog_comments_posting') : t('blog_comments_save')}
                     </button>
                     <button
                       onClick={handleCancelEdit}
@@ -272,7 +272,7 @@ export default function CommentSection({ postId }: { postId: string }) {
                       className="px-5 py-2 rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] font-bold text-xs hover:opacity-90 transition-all disabled:opacity-50"
                       style={{ fontFamily }}
                     >
-                      Cancel
+                      {t('blog_comments_cancel')}
                     </button>
                   </div>
                 </div>
@@ -289,7 +289,7 @@ export default function CommentSection({ postId }: { postId: string }) {
                         className="px-4 py-1.5 rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] font-bold text-xs hover:opacity-90 transition-all"
                         style={{ fontFamily }}
                       >
-                        Edit
+                        {t('blog_comments_edit')}
                       </button>
                       <button
                         onClick={() => handleDeleteComment(comment)}
@@ -297,7 +297,7 @@ export default function CommentSection({ postId }: { postId: string }) {
                         className="px-4 py-1.5 rounded-full bg-white dark:bg-[#130A22] text-coral border border-coral/30 font-bold text-xs hover:bg-coral/5 transition-all disabled:opacity-50"
                         style={{ fontFamily }}
                       >
-                        {deletingId === comment.id ? 'Deleting...' : 'Delete'}
+                        {deletingId === comment.id ? t('blog_comments_deleting') : t('blog_comments_delete')}
                       </button>
                     </div>
                   )}

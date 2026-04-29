@@ -19,7 +19,7 @@ interface BlogPost {
 
 export default function PostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const { isDark, toggle } = useDarkMode();
@@ -70,8 +70,8 @@ export default function PostPage() {
       <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
         <Navbar isDark={isDark} onToggleDark={toggle} />
         <div className="pt-32 min-h-screen text-center">
-          <h2 className="text-2xl font-bold mb-4">Article not found</h2>
-          <Link to="/blog" className="text-coral font-bold hover:underline">Back to Blog</Link>
+          <h2 className="text-2xl font-bold mb-4">{t('blog_article_not_found')}</h2>
+          <Link to="/blog" className="text-coral font-bold hover:underline">{t('blog_back_to_blog')}</Link>
         </div>
         <Footer />
       </div>
@@ -93,14 +93,14 @@ export default function PostPage() {
           {/* Back link */}
           <Link to="/blog" className="inline-flex items-center gap-2 text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-colors mb-8 font-semibold text-sm">
             <i className="ri-arrow-left-line"></i>
-            Back to Blog
+            {t('blog_back_to_blog')}
           </Link>
 
           <header className="mb-12">
             <div className="flex items-center gap-3 text-sm text-[#7A7068] dark:text-[#C4A8E8] font-semibold uppercase tracking-wider mb-4" style={{ fontFamily }}>
               <span>{date}</span>
               <span className="w-1 h-1 rounded-full bg-coral/40"></span>
-              <span>{post.view_count + 1} Views</span>
+              <span>{post.view_count + 1} {t('blog_views')}</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-[#1A1410] dark:text-[#E8E0F5] leading-tight mb-6" style={{ fontFamily }}>
               {post.title}
@@ -139,7 +139,7 @@ export default function PostPage() {
                    });
                  } else {
                    navigator.clipboard.writeText(window.location.href);
-                   alert('Link copied to clipboard!');
+                   alert(t('blog_share_copied'));
                  }
                }}
                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] hover:bg-coral hover:text-white transition-all cursor-pointer"

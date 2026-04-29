@@ -12,6 +12,7 @@ export default function LoginPage() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [showUrlWarning, setShowUrlWarning] = useState(false);
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +21,29 @@ export default function LoginPage() {
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
-  const redirectTo = `${window.location.origin}${__IS_PREVIEW__ ? '/#' : ''}/login`;
+  const from = (location.state as any)?.from || '/blog';
+
+  // Check if using 127.0.0.1 and show warning
+  useEffect(() => {
+    if (window.location.hostname === '127.0.0.1' || window.location.hostname === '::1') {
+      setShowUrlWarning(true);
+    }
+  }, []);
+
+  // Normalize localhost URLs to ensure consistent OAuth redirect
+  const getNormalizedOrigin = () => {
+    const envUrl = import.meta.env.VITE_PUBLIC_SITE_URL;
+    if (envUrl) return envUrl;
+
+    const origin = window.location.origin;
+    // Normalize 127.0.0.1 or other localhost variants to localhost
+    if (origin.includes('127.0.0.1') || origin.match(/:\/\/\[?::1\]?/)) {
+      return origin.replace(/127\.0\.0\.1|\[?::1\]?/, 'localhost');
+    }
+    return origin;
+  };
+
+  const redirectTo = `${getNormalizedOrigin()}${__IS_PREVIEW__ ? '/#' : ''}/login`;
 
   useEffect(() => {
     void (async () => {
@@ -28,7 +51,10 @@ export default function LoginPage() {
       const code = url.searchParams.get('code');
       if (code) {
         setLoading(true);
-        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        // Normalize URL for code exchange (127.0.0.1 -> localhost)
+        const currentUrl = window.location.href;
+        const normalizedUrl = currentUrl.replace(/127\.0\.0\.1|\[?::1\]?/, 'localhost');
+        const { error } = await supabase.auth.exchangeCodeForSession(normalizedUrl);
         url.searchParams.delete('code');
         url.searchParams.delete('state');
         window.history.replaceState({}, document.title, `${url.pathname}${url.search}${url.hash}`);
@@ -44,16 +70,17 @@ export default function LoginPage() {
       setLoading(false);
     })();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (event === 'SIGNED_IN' && session) {
+        navigate(from);
+      }
     });
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
-
-  const from = (location.state as any)?.from || '/blog';
+  }, [from, navigate]);
 
   async function signInWithProvider(provider: 'google' | 'facebook') {
     setLoading(true);
@@ -120,6 +147,15 @@ export default function LoginPage() {
           <i className="ri-arrow-left-line"></i>
           {t('login_back')}
         </Link>
+
+        {showUrlWarning && (
+          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-2xl">
+            <p className="text-amber-800 dark:text-amber-200 text-sm font-medium" style={{ fontFamily }}>
+              <i className="ri-alert-line mr-2"></i>
+              For OAuth login to work, please use <code className="bg-amber-100 dark:bg-amber-800 px-1 py-0.5 rounded">localhost:5173</code> instead of <code className="bg-amber-100 dark:bg-amber-800 px-1 py-0.5 rounded">127.0.0.1:5173</code>
+            </p>
+          </div>
+        )}
 
         <div className="bg-white dark:bg-[#1E0D38] rounded-3xl border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 p-8">
           <h1 className="text-3xl font-extrabold text-[#1A1410] dark:text-[#E8E0F5] mb-2" style={{ fontFamily }}>

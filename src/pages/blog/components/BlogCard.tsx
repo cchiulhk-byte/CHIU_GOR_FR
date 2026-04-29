@@ -15,7 +15,7 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post, index }: BlogCardProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
   const date = new Date(post.published_at).toLocaleDateString(i18n.language, {
@@ -38,7 +38,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
         />
         <div className="absolute top-4 left-4">
           <span className="bg-coral text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
-            Article
+            {t('blog_article_label')}
           </span>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
           <span className="w-1 h-1 rounded-full bg-coral/40"></span>
           <span className="flex items-center gap-1">
             <i className="ri-eye-line text-sm"></i>
-            {post.view_count} views
+            {post.view_count} {t('blog_views')}
           </span>
         </div>
 
@@ -62,7 +62,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
         </p>
 
         <div className="mt-auto flex items-center text-coral text-sm font-bold gap-2 group-hover:gap-3 transition-all duration-300">
-          <span>Read More</span>
+          <span>{t('blog_read_more')}</span>
           <i className="ri-arrow-right-line"></i>
         </div>
       </div>

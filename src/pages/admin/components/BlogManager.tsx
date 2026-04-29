@@ -42,6 +42,32 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
       .replace(/^-+|-+$/g, '');
   }
 
+  function stripMarkdown(input: string) {
+    return input
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/_([^_]+)_/g, '$1')
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '')
+      .replace(/>\s?/g, '')
+      .replace(/\r\n/g, '\n');
+  }
+
+  function generateExcerptFromContent(content: string) {
+    const plain = stripMarkdown(content)
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!plain) return '';
+    const maxLen = 160;
+    if (plain.length <= maxLen) return plain;
+    const sliced = plain.slice(0, maxLen);
+    const lastSpace = sliced.lastIndexOf(' ');
+    return `${(lastSpace > 80 ? sliced.slice(0, lastSpace) : sliced).trim()}…`;
+  }
+
   async function fetchPosts() {
     setLoading(true);
     try {
@@ -90,6 +116,9 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
         admin_secret: adminSecret,
         post: {
           ...editingPost,
+          excerpt:
+            (editingPost.excerpt || '').trim() ||
+            generateExcerptFromContent(String(editingPost.content || '')),
           published_at: editingPost.published_at || new Date().toISOString(),
         },
       }),
@@ -325,6 +354,21 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
             rows={2}
           />
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() =>
+                setEditingPost((prev) => {
+                  if (!prev) return prev;
+                  const nextExcerpt = generateExcerptFromContent(String(prev.content || ''));
+                  return { ...prev, excerpt: nextExcerpt };
+                })
+              }
+              className="px-3 py-1.5 text-xs font-bold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all cursor-pointer"
+            >
+              Auto
+            </button>
+          </div>
           <textarea
             placeholder="Content (Markdown supported)"
             value={editingPost.content || ''}

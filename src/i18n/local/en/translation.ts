@@ -291,6 +291,32 @@ const translation = {
   // Dark mode
   toggle_dark: "Dark Mode",
   toggle_light: "Light Mode",
+
+  // Blog
+  blog_title: "Insights & Stories",
+  blog_subtitle: "Discover my thoughts on French language learning, Canadian culture, and my teaching journey.",
+  blog_loading: "Loading articles…",
+  blog_no_articles: "No articles yet. Check back soon!",
+  blog_article_label: "Article",
+  blog_views: "views",
+  blog_read_more: "Read More",
+  blog_back_to_blog: "Back to Blog",
+  blog_article_not_found: "Article not found",
+  blog_share_copied: "Link copied to clipboard!",
+  blog_likes: "Likes",
+  blog_comments_title: "Comments",
+  blog_comments_placeholder: "Share your thoughts...",
+  blog_comments_posting: "Posting...",
+  blog_comments_post: "Post Comment",
+  blog_comments_login_required: "You need to be logged in to post a comment.",
+  blog_comments_login_button: "Log In to Comment",
+  blog_comments_empty: "No comments yet. Be the first to share!",
+  blog_comments_save: "Save",
+  blog_comments_cancel: "Cancel",
+  blog_comments_edit: "Edit",
+  blog_comments_delete: "Delete",
+  blog_comments_deleting: "Deleting...",
+  blog_comments_delete_confirm: "Delete this comment?",
 };
 
 export default translation;

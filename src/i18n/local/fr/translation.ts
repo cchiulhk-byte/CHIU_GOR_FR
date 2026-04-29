@@ -39,7 +39,7 @@ const translation = {
   about_title: "Bonjour, je suis 超哥!",
   about_subtitle: "Professeur de français passionné",
   about_p1: "Ma passion pour les langues est née tout petit — et c'est le français qui a vraiment capturé mon cœur. De 2010 à 2014, j'ai étudié les Études françaises au Canada, avant de poursuivre avec une Maîtrise en études françaises, m'immergeant profondément dans la langue, la culture et la littérature françaises.",
-  about_p2: "Après mes études, j'ai travaillé comme traducteur et rédacteur en chef dans une maison d'édition, mettant le français en pratique au quotidien. Je me consacre depuis à l'enseignement du français en tant que tuteur indépendant, ayant aidé plus de 120 étudiants — du niveau A1 jusqu'au B2 — à découvrir leur amour pour le français, chacun à son propre rythme.",
+  about_p2: "Après mes études, j'ai travaillé en tant que traducteur et rédacteur en chef dans une maison d'édition, mettant le français en pratique au quotidien. Je me consacre depuis à l'enseignement du français en tant que tuteur indépendant, ayant aidé plus de 120 étudiants — du niveau A1 jusqu'au B2 — à découvrir leur amour pour le français, chacun à son propre rythme.",
   about_tag1: "Enseignement du français",
   about_tag2: "Échange culturel",
   about_tag3: "Cours personnalisés",
@@ -291,6 +291,32 @@ const translation = {
   // Dark mode
   toggle_dark: "Mode sombre",
   toggle_light: "Mode clair",
+
+  // Blog
+  blog_title: "Réflexions et histoires",
+  blog_subtitle: "Découvrez mes réflexions sur l'apprentissage du français, la culture canadienne et mon parcours d'enseignement.",
+  blog_loading: "Chargement des articles…",
+  blog_no_articles: "Aucun article pour le moment. Revenez bientôt!",
+  blog_article_label: "Article",
+  blog_views: "vues",
+  blog_read_more: "Lire la suite",
+  blog_back_to_blog: "Retour au blog",
+  blog_article_not_found: "Article introuvable",
+  blog_share_copied: "Lien copié dans le presse-papiers!",
+  blog_likes: "J'aime",
+  blog_comments_title: "Commentaires",
+  blog_comments_placeholder: "Partagez vos impressions...",
+  blog_comments_posting: "Publication...",
+  blog_comments_post: "Publier",
+  blog_comments_login_required: "Vous devez être connecté pour publier un commentaire.",
+  blog_comments_login_button: "Connexion pour commenter",
+  blog_comments_empty: "Aucun commentaire. Soyez le premier à partager!",
+  blog_comments_save: "Enregistrer",
+  blog_comments_cancel: "Annuler",
+  blog_comments_edit: "Modifier",
+  blog_comments_delete: "Supprimer",
+  blog_comments_deleting: "Suppression...",
+  blog_comments_delete_confirm: "Supprimer ce commentaire?",
 };
 
 export default translation;
