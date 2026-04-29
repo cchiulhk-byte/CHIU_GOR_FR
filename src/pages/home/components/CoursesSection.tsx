@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -86,8 +85,6 @@ const COURSES: Course[] = [
   },
 ];
 
-type FilterType = 'all' | 'beginner' | 'intermediate' | 'advanced';
-
 function CourseCard({ course, index, visible }: { course: Course; index: number; visible: boolean }) {
   const { t, i18n } = useTranslation();
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
@@ -173,20 +170,10 @@ function CourseCard({ course, index, visible }: { course: Course; index: number;
 
 export default function CoursesSection() {
   const { t, i18n } = useTranslation();
-  const [filter, setFilter] = useState<FilterType>('all');
   const { ref: headerRef, visible: headerVisible } = useScrollReveal(0.1);
   const { ref: gridRef, visible: gridVisible } = useScrollReveal(0.05);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
-
-  const filtered = filter === 'all' ? COURSES : COURSES.filter((c) => c.levelFilter === filter);
-
-  const filters: { key: FilterType; label: string; color: string }[] = [
-    { key: 'all', label: t('courses_filter_all'), color: 'bg-gray-800 dark:bg-white text-white dark:text-gray-900' },
-    { key: 'beginner', label: t('courses_filter_beginner'), color: 'bg-teal text-white' },
-    { key: 'intermediate', label: t('courses_filter_intermediate'), color: 'bg-mustard text-gray-800' },
-    { key: 'advanced', label: t('courses_filter_advanced'), color: 'bg-coral text-white' },
-  ];
 
   return (
     <section id="courses" className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-br from-[#F5EFE8] via-[#F7F4EF] to-[#EFF5F4] dark:from-[#0E0818] dark:via-[#130A22] dark:to-[#0E0818]">
@@ -220,37 +207,20 @@ export default function CoursesSection() {
             </h2>
           </div>
 
-          {/* Filter tabs */}
-          <div className="flex items-center gap-2 flex-wrap self-start md:self-auto">
-            {filters.map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer whitespace-nowrap border-2 hover:scale-105 ${
-                  filter === f.key
-                    ? `${f.color} border-transparent shadow-sm`
-                    : 'bg-transparent border-[#D4C8BC] dark:border-[#3B2060]/60 text-[#7A7068] dark:text-[#B89FD8] hover:border-[#CC0000]/40 dark:hover:border-[#8B3FBF]'
-                }`}
-                style={{ fontFamily }}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Course Grid */}
         <div ref={gridRef} className="flex flex-col gap-6">
           {/* First row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.slice(0, 3).map((course, i) => (
+            {COURSES.slice(0, 3).map((course, i) => (
               <CourseCard key={course.titleKey} course={course} index={i} visible={gridVisible} />
             ))}
           </div>
           {/* Second row — centered */}
-          {filtered.length > 3 && (
+          {COURSES.length > 3 && (
             <div className="flex flex-col sm:flex-row justify-center gap-6">
-              {filtered.slice(3).map((course, i) => (
+              {COURSES.slice(3).map((course, i) => (
                 <div key={course.titleKey} className="w-full sm:w-[calc(33.333%-12px)]">
                   <CourseCard course={course} index={i + 3} visible={gridVisible} />
                 </div>
