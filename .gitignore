@@ -16,3 +16,6 @@ supabase/.temp/**
 .vscode
 .idea
 .vercel
+
+# Local Netlify folder
+.netlify
