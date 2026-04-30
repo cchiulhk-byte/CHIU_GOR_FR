@@ -23,8 +23,8 @@ export default function Home() {
         <HeroSection />
         <WhyChooseMeSection />
         <AboutSection />
-        <FeaturedBlogCarousel />
         <ExperienceSection />
+        <FeaturedBlogCarousel />
         <CoursesSection />
         <TestimonialsSection />
         <ContactSection />
