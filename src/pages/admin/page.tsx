@@ -72,9 +72,10 @@ export default function AdminPage() {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 10000);
 
+      const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
       const res = await fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseAnonKey}` },
         body: JSON.stringify({ action: "list", admin_secret: adminSecret, booking_id: "_" }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
@@ -120,9 +121,10 @@ export default function AdminPage() {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 10000);
 
+      const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
       const res = await fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseAnonKey}` },
         body: JSON.stringify({ action: "list", admin_secret: secret, booking_id: "_" }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
