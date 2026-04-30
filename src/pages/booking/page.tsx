@@ -56,7 +56,6 @@ export default function BookingPage() {
             </p>
           </div>
 
-          {/* Booking Form */}
           <div className="bg-[#FFFDF8] dark:bg-[#161D2B] rounded-2xl p-6 md:p-8 border border-gray-100 dark:border-[#232E42]">
             <BookingForm />
           </div>

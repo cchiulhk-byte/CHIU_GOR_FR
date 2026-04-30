@@ -2,6 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { lessonTypes, timeSlots } from "@/mocks/booking";
+import {
+  AvailabilityConfig,
+  defaultAvailabilityConfig,
+  getAvailableTimeSlotsForDate,
+  isDateBlocked,
+  isWeekdayEnabled,
+  loadAvailabilityConfig,
+} from "@/lib/availability";
 
 interface BookingData {
   lessonType: string;
@@ -43,6 +51,7 @@ export default function BookingForm() {
   const [highlightedCourse, setHighlightedCourse] = useState<string | null>(null);
   const [recentBooking, setRecentBooking] = useState<RecentBooking | null>(null);
   const [showRecentBanner, setShowRecentBanner] = useState(true);
+  const [availabilityConfig, setAvailabilityConfig] = useState<AvailabilityConfig>(defaultAvailabilityConfig);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load recent booking from localStorage
@@ -53,6 +62,35 @@ export default function BookingForm() {
     } catch {
       // ignore
     }
+  }, []);
+
+  // Load availability settings from localStorage and remote backend
+  useEffect(() => {
+    const localConfig = loadAvailabilityConfig();
+    setAvailabilityConfig(localConfig);
+
+    const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl) return;
+
+    const controller = new AbortController();
+
+    fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "get_availability" }),
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && data.availability) {
+          setAvailabilityConfig(data.availability);
+        }
+      })
+      .catch(() => {
+        // use local settings if remote fetch fails
+      });
+
+    return () => controller.abort();
   }, []);
 
   // Handle ?course= param — pre-select and skip to step 2 with highlight
@@ -86,8 +124,22 @@ export default function BookingForm() {
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Partial<Record<keyof BookingData, string>> = {};
     if (currentStep === 1 && !booking.lessonType) newErrors.lessonType = t("booking_error_lesson");
-    if (currentStep === 2 && !booking.date) newErrors.date = t("booking_error_date");
-    if (currentStep === 3 && !booking.time) newErrors.time = t("booking_error_time");
+    if (currentStep === 2) {
+      if (!booking.date) {
+        newErrors.date = t("booking_error_date");
+      } else if (!isWeekdayEnabled(booking.date, availabilityConfig)) {
+        newErrors.date = t("booking_error_date") + ". Please choose an available weekday.";
+      } else if (isDateBlocked(booking.date, availabilityConfig)) {
+        newErrors.date = t("booking_error_date") + ". This date is blocked.";
+      }
+    }
+    if (currentStep === 3) {
+      if (!booking.time) {
+        newErrors.time = t("booking_error_time");
+      } else if (booking.date && !getAvailableTimeSlotsForDate(booking.date, availabilityConfig).some(slot => slot.start === booking.time)) {
+        newErrors.time = t("booking_error_time") + ". Please choose a time slot available for the selected date.";
+      }
+    }
     if (currentStep === 4) {
       if (!booking.name.trim()) newErrors.name = t("booking_error_name");
       if (!booking.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email))
@@ -153,6 +205,13 @@ export default function BookingForm() {
     { num: 3, label: t("booking_step_time") },
     { num: 4, label: t("booking_step_info") },
   ];
+
+  const availableTimeSlots = booking.date
+    ? getAvailableTimeSlotsForDate(booking.date, availabilityConfig)
+    : [];
+  const unavailableDateMessage = !availabilityConfig.enabledWeekdays.length
+    ? "No weekdays are currently available. Update availability in the admin settings."
+    : "";
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -327,9 +386,14 @@ export default function BookingForm() {
               <i className="ri-error-warning-line"></i>{errors.date}
             </p>
           )}
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-3 flex items-center gap-1">
-            <i className="ri-calendar-check-line"></i>
-            {t("booking_date_hint")}
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-3 flex flex-col gap-1">
+            <span className="flex items-center gap-1">
+              <i className="ri-calendar-check-line"></i>
+              {t("booking_date_hint")}
+            </span>
+            <span className="text-xs text-gray-400">
+              {unavailableDateMessage || "Bookings are available only on your configured weekdays, and blocked dates are disabled."}
+            </span>
           </p>
         </div>
       )}
@@ -341,32 +405,43 @@ export default function BookingForm() {
             {t("booking_select_time")}
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot}
-                onClick={() => {
-                  setBooking((b) => ({ ...b, time: slot }));
-                  setErrors((e) => ({ ...e, time: undefined }));
-                }}
-                className={`py-3 px-2 rounded-xl border-2 text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap ${
-                  booking.time === slot
-                    ? "border-coral bg-coral text-white"
-                    : "border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-coral/50 hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
-                style={{ fontFamily }}
-              >
-                {slot}
-              </button>
-            ))}
+            {availableTimeSlots.length > 0 ? (
+              availableTimeSlots.map((slot) => (
+                <button
+                  key={slot.start}
+                  onClick={() => {
+                    setBooking((b) => ({ ...b, time: slot.start }));
+                    setErrors((e) => ({ ...e, time: undefined }));
+                  }}
+                  className={`py-3 px-2 rounded-xl border-2 text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap ${
+                    booking.time === slot.start
+                      ? "border-coral bg-coral text-white"
+                      : "border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-coral/50 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  }`}
+                  style={{ fontFamily }}
+                >
+                  {slot.start === slot.end ? slot.start : `${slot.start}-${slot.end}`}
+                </button>
+              ))
+            ) : (
+              <div className="col-span-full rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                No time slots are currently available. Update your availability settings in the admin dashboard.
+              </div>
+            )}
           </div>
           {errors.time && (
             <p className="text-coral text-sm mt-3 flex items-center gap-1">
               <i className="ri-error-warning-line"></i>{errors.time}
             </p>
           )}
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-3 flex items-center gap-1">
-            <i className="ri-time-zone-line"></i>
-            {t("booking_time_hint")}
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-3 flex flex-col gap-1">
+            <span className="flex items-center gap-1">
+              <i className="ri-time-zone-line"></i>
+              {t("booking_time_hint")}
+            </span>
+            <span className="text-xs text-gray-400">
+              Students can only choose times from the slots you configured in the admin settings.
+            </span>
           </p>
         </div>
       )}

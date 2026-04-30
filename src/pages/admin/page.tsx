@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import AdminLogin from "./components/AdminLogin";
 import BookingCard from "./components/BookingCard";
 import BlogManager from "./components/BlogManager";
+import AvailabilityManager from "./components/AvailabilityManager";
 
 interface Booking {
   id: string;
@@ -31,6 +32,7 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 
   const applyQuickRange = (range: "this_week" | "this_month" | "last_month") => {
     const now = new Date();
@@ -77,8 +79,14 @@ export default function AdminPage() {
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
 
+      console.log("Sending request with admin_secret length:", adminSecret.length);
+
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
+        if (res.status === 401) {
+          handleInvalidSecret();
+          return;
+        }
         throw new Error(json?.error || `Failed to load bookings (HTTP ${res.status})`);
       }
 
@@ -101,11 +109,52 @@ export default function AdminPage() {
     }
   }, [adminSecret, fetchBookings]);
 
-  const handleLogin = (secret: string) => {
-    // We'll validate the secret on first action; store it for now
-    sessionStorage.setItem("adminSecret", secret);
-    setAdminSecret(secret);
+  const handleLogin = async (secret: string) => {
+    if (!supabaseUrl) {
+      setAuthError("Missing backend URL. Please configure VITE_PUBLIC_SUPABASE_URL.");
+      return;
+    }
+
     setAuthError("");
+    try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "list", admin_secret: secret, booking_id: "_" }),
+        signal: controller.signal,
+      }).finally(() => window.clearTimeout(timeoutId));
+
+      console.log("Login attempt - sending admin_secret length:", secret.length);
+
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.success) {
+        if (res.status === 401) {
+          setAuthError("Admin secret invalid. Please try again.");
+        } else {
+          setAuthError(json?.error || `Failed to validate admin secret (HTTP ${res.status})`);
+        }
+        return;
+      }
+
+      sessionStorage.setItem("adminSecret", secret);
+      setAdminSecret(secret);
+      setAuthError("");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setAuthError("Login request timed out. Please try again.");
+      } else {
+        setAuthError(error instanceof Error ? error.message : "Failed to validate admin secret.");
+      }
+    }
+  };
+
+  const handleInvalidSecret = () => {
+    sessionStorage.removeItem("adminSecret");
+    setAdminSecret("");
+    setAuthError("Admin secret invalid. Please log in again.");
   };
 
   const handleLogout = () => {
@@ -131,7 +180,7 @@ export default function AdminPage() {
   };
 
   if (!adminSecret) {
-    return <AdminLogin onLogin={handleLogin} />;
+    return <AdminLogin onLogin={handleLogin} error={authError} />;
   }
 
   const counts = {
@@ -216,6 +265,8 @@ export default function AdminPage() {
             </button>
           </div>
         )}
+
+        <AvailabilityManager adminSecret={adminSecret} onUnauthorized={handleInvalidSecret} />
 
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
@@ -343,11 +394,12 @@ export default function AdminPage() {
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
             <i className="ri-inbox-line text-4xl text-gray-200 mb-3"></i>
             <p className="text-gray-400 text-sm">
-              {search.trim() ? `Aucun résultat pour « ${search} »` : `Aucune réservation${filter === "pending_verification" ? " en attente" : filter === "confirmed" ? " confirmée" : filter === "cancelled" ? " annulée" : ""}`}
+              {search.trim() ? `Aucun résultat pour « ${search} »` : `Aucune réservation${filter === "pending_verification" ? " en attente" : filter === "confirmed" ? " confirmée" : filter === "cancelée" ? " annulée" : ""}`}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
+            <AvailabilityManager adminSecret={adminSecret} onUnauthorized={handleInvalidSecret} />
             {filtered.map((booking) => (
               <BookingCard
                 key={booking.id}

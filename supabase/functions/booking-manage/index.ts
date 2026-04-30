@@ -8,10 +8,25 @@ const corsHeaders = {
 };
 
 interface ManagePayload {
-  action: "approve" | "cancel" | "mark_paid" | "list";
-  booking_id: string;
-  admin_secret: string;
+  action:
+    | "approve"
+    | "cancel"
+    | "mark_paid"
+    | "list"
+    | "get_availability"
+    | "get_availability_for_date"
+    | "save_availability";
+  booking_id?: string;
+  admin_secret?: string;
+  date?: string;
+  config?: unknown;
 }
+
+const defaultAvailabilityConfig = {
+  enabledWeekdays: [0, 1, 2, 3, 4, 5, 6],
+  availableTimeSlotsByWeekday: {},
+  blockedDates: [],
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,8 +36,120 @@ serve(async (req) => {
   try {
     const payload: ManagePayload = await req.json();
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return new Response(JSON.stringify({ success: false, error: "Supabase configuration missing" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    if (payload.action === "get_availability" || payload.action === "get_availability_for_date") {
+      const { data, error } = await supabase
+        .from("availability_settings")
+        .select("config")
+        .eq("id", "default")
+        .maybeSingle();
+
+      const config = (data?.config as typeof defaultAvailabilityConfig) || defaultAvailabilityConfig;
+
+      if (payload.action === "get_availability") {
+        return new Response(JSON.stringify({ success: true, availability: config }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (!payload.date) {
+        return new Response(JSON.stringify({ success: false, error: "Missing date for availability lookup" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { data: booked, error: bookedError } = await supabase
+        .from("bookings")
+        .select("preferred_time,status")
+        .eq("preferred_date", payload.date)
+        .in("status", ["pending_verification", "confirmed"]);
+
+      if (bookedError) {
+        return new Response(JSON.stringify({ success: false, error: bookedError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const bookedTimeSlots = Array.from(
+        new Set(
+          (booked ?? [])
+            .filter((item) => item.preferred_time)
+            .map((item) => item.preferred_time)
+        )
+      );
+
+      return new Response(
+        JSON.stringify({ success: true, availability: config, bookedTimeSlots }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    if (payload.action === "save_availability") {
+      const expectedSecret = Deno.env.get("ADMIN_SECRET");
+      if (!expectedSecret) {
+        return new Response(JSON.stringify({ success: false, error: "Server configuration error: ADMIN_SECRET is not set." }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (payload.admin_secret !== expectedSecret) {
+        return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (!payload.config || typeof payload.config !== "object") {
+        return new Response(JSON.stringify({ success: false, error: "Missing availability config" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error: upsertError } = await supabase
+        .from("availability_settings")
+        .upsert({ id: "default", config: payload.config }, { onConflict: "id" });
+
+      if (upsertError) {
+        return new Response(JSON.stringify({ success: false, error: upsertError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, availability: payload.config }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const expectedSecret = Deno.env.get("ADMIN_SECRET");
-    if (!expectedSecret || payload.admin_secret !== expectedSecret) {
+    console.log("ADMIN_SECRET from env:", expectedSecret ? "SET" : "NOT SET");
+    console.log("Received admin_secret:", payload.admin_secret ? "PROVIDED" : "NOT PROVIDED");
+    if (!expectedSecret) {
+      return new Response(JSON.stringify({ success: false, error: "Server configuration error: ADMIN_SECRET is not set." }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (payload.admin_secret !== expectedSecret) {
+      console.log("Admin secret mismatch - expected length:", expectedSecret.length, "received length:", payload.admin_secret?.length);
       return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -37,10 +164,6 @@ serve(async (req) => {
         });
       }
     }
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // ── LIST ─────────────────────────────────────────────────────────────────
     if (payload.action === "list") {

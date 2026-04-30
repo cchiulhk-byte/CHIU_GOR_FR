@@ -2,11 +2,12 @@ import { useState } from "react";
 
 interface AdminLoginProps {
   onLogin: (secret: string) => void;
+  error?: string;
 }
 
-export default function AdminLogin({ onLogin }: AdminLoginProps) {
+export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
   const [input, setInput] = useState("");
-  const [error, setError] = useState("");
+  const [localError, setLocalError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,14 +39,14 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
             <input
               type="password"
               value={input}
-              onChange={(e) => { setInput(e.target.value); setError(""); }}
+              onChange={(e) => { setInput(e.target.value); setLocalError(""); }}
               placeholder="Saisir le mot de passe"
               className="w-full p-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
               autoFocus
             />
-            {error && (
+            {(localError || error) && (
               <p className="text-xs text-coral mt-1.5 flex items-center gap-1">
-                <i className="ri-error-warning-line"></i>{error}
+                <i className="ri-error-warning-line"></i>{localError || error}
               </p>
             )}
           </div>
