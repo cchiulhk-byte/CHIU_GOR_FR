@@ -181,6 +181,8 @@ export default function FeaturedBlogCarousel() {
                   <img
                     src={post.image_url || 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop'}
                     alt={post.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute bottom-3 left-3 bg-black/55 text-white text-[11px] font-bold px-3 py-1 rounded-full backdrop-blur-sm">

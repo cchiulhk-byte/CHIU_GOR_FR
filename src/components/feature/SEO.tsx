@@ -84,6 +84,7 @@ export default function SEO({
       <meta name="description" content={seoDescription} />
       <meta name="keywords" content={seoKeywords} />
       <link rel="canonical" href={canonicalUrl} />
+      <meta name="theme-color" content={i18n.language === 'zh-HK' ? '#FF6B6B' : '#4ECDC4'} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
@@ -93,6 +94,9 @@ export default function SEO({
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content={i18n.language === 'zh-HK' ? 'zh_HK' : 'en_US'} />
+      {i18n.language !== 'zh-HK' && <meta property="og:locale:alternate" content="zh_HK" />}
+      {i18n.language !== 'en' && <meta property="og:locale:alternate" content="en_US" />}
+      {i18n.language !== 'fr' && <meta property="og:locale:alternate" content="fr_FR" />}
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -103,6 +107,7 @@ export default function SEO({
       {/* Multilingual Support (hreflang) */}
       <link rel="alternate" hrefLang="en" href={`${window.location.origin}/en`} />
       <link rel="alternate" hrefLang="zh-HK" href={`${window.location.origin}/zh-HK`} />
+      <link rel="alternate" hrefLang="fr" href={`${window.location.origin}/fr`} />
       <link rel="alternate" hrefLang="x-default" href={window.location.origin} />
 
       {/* Structured Data */}
