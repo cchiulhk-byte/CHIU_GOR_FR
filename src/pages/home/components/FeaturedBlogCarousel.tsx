@@ -18,6 +18,19 @@ export default function FeaturedBlogCarousel() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) {
+      setScrollProgress(0);
+      return;
+    }
+    const progress = (el.scrollLeft / maxScroll) * 100;
+    setScrollProgress(progress);
+  };
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
@@ -146,7 +159,8 @@ export default function FeaturedBlogCarousel() {
 
         <div
           ref={scrollerRef}
-          className="flex gap-6 overflow-x-auto pb-3 scroll-smooth"
+          onScroll={handleScroll}
+          className="flex gap-6 overflow-x-auto pb-3 scroll-smooth hide-scrollbar"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {posts.map((post) => {
@@ -161,7 +175,7 @@ export default function FeaturedBlogCarousel() {
                 key={post.id}
                 to={`/blog/${post.slug}`}
                 data-card="featured-blog-card"
-                className="group min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] bg-white dark:bg-[#1E0D38] rounded-2xl overflow-hidden border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                className="group min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] bg-white dark:bg-[#1E0D38] rounded-2xl overflow-hidden border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 shadow-premium card-hover flex flex-col"
               >
                 <div className="relative h-44 overflow-hidden">
                   <img
@@ -196,6 +210,16 @@ export default function FeaturedBlogCarousel() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Custom Progress Bar */}
+        <div className="max-w-md mx-auto mt-2 px-10">
+          <div className="carousel-progress-track">
+            <div
+              className="carousel-progress-bar"
+              style={{ width: `${Math.max(5, scrollProgress)}%` }}
+            ></div>
+          </div>
         </div>
 
         <div className="sm:hidden flex items-center justify-center gap-3 mt-5">

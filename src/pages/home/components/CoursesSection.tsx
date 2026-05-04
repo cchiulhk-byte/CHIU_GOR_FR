@@ -91,8 +91,8 @@ function CourseCard({ course, index, visible }: { course: Course; index: number;
 
   return (
     <div
-      className={`bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-2xl overflow-hidden border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 card-hover group reveal-scale flex flex-col ${visible ? 'visible' : ''}`}
-      style={{ transitionDelay: `${index * 0.08}s` }}
+      className={`bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-2xl overflow-hidden border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 card-hover shadow-premium group reveal-scale flex flex-col ${visible ? 'visible' : ''}`}
+      style={{ transitionDelay: `${index * 0.12}s`, transitionDuration: '0.6s' }}
     >
       {/* Colorful header strip */}
       <div className={`relative h-2 ${course.headerBg}`}></div>

@@ -68,7 +68,6 @@ export default function HeroSection() {
       <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-[#FF4500]/8 dark:hidden blur-3xl animate-pulse" style={{ animationDuration: '13s', animationDelay: '3s' }} />
 
       {/* ── Aurora borealis band ── */}
-      <div className="absolute top-0 left-0 right-0 h-1 animate-aurora opacity-80 dark:opacity-60" />
 
       {/* ── Giant animated maple leaf watermarks ── */}
       <img
@@ -145,8 +144,8 @@ export default function HeroSection() {
 
         {/* Location badges */}
         <div
-          className={`flex flex-wrap items-center justify-center gap-2 mb-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
-          style={{ transitionDelay: '0.1s' }}
+          className={`flex flex-wrap items-center justify-center gap-2 mb-6 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-12'}`}
+          style={{ transitionDelay: '0.15s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
         >
           {[
             { flag: '🇨🇦', label: 'Canada' },
@@ -165,8 +164,8 @@ export default function HeroSection() {
 
         {/* Logo */}
         <div
-          className={`mb-8 relative transition-all duration-700 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
-          style={{ transitionDelay: '0.2s' }}
+          className={`mb-8 relative transition-all duration-1000 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50 rotate-6'}`}
+          style={{ transitionDelay: '0.3s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
         >
           <h1 className="sr-only">Chiu Gor French - 專業法語教師 | Professional French Teacher in Hong Kong</h1>
           <img
@@ -181,8 +180,8 @@ export default function HeroSection() {
 
         {/* CTA Buttons */}
         <div
-          className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-          style={{ transitionDelay: '0.55s' }}
+          className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
+          style={{ transitionDelay: '0.6s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
         >
           <Link
             to="/booking"

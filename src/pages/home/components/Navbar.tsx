@@ -108,24 +108,14 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-xl"
-      style={scrolled || !isHomePage
-        ? isDark
-          ? {
-              background: 'linear-gradient(135deg, #1A0A2E 0%, #2D1B4E 55%, #1E0D38 100%)',
-              border: 'none',
-              boxShadow: 'none',
-            }
-          : {
-              background: 'rgba(247,244,239,0.98)',
-              border: 'none',
-              boxShadow: 'none',
-            }
-        : { background: 'transparent', border: 'none' }
-      }
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        scrolled || !isHomePage 
+          ? 'glass-surface translate-y-0' 
+          : 'bg-transparent -translate-y-1'
+      }`}
     >
 
-      <div className="max-w-6xl mx-auto px-3 md:px-6 h-16 flex items-center justify-between gap-2">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 h-16 flex items-center justify-between gap-1.5 sm:gap-2">
 
         {/* ── Logo + Brand Name ── */}
         <Link
@@ -141,7 +131,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           />
           <div className="flex flex-col leading-none min-w-0">
             <span
-              className="font-extrabold text-sm sm:text-base whitespace-nowrap flex items-center gap-1"
+              className="font-extrabold text-[13px] sm:text-base whitespace-nowrap flex items-center gap-1"
               style={{ fontFamily: "Candara, 'Nunito', sans-serif", letterSpacing: '-0.01em' }}
             >
               <span className="text-[#CC0000]">Chiu Gor</span>
@@ -165,7 +155,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 <Link
                   key={link.id}
                   to={link.path}
-                  className={`text-sm font-bold tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group ${
+                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-1 ${
                     scrolled
                       ? 'text-[#1A1410] dark:text-[#D4B8F0]'
                       : 'text-gray-800 dark:text-[#E8E0F5]'
@@ -173,13 +163,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                   style={{ fontFamily: fontNav }}
                 >
                   {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
+                  <span className="absolute bottom-0 left-1 right-1 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
                 </Link>
               ) : (
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-bold tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group ${
+                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-1 ${
                     scrolled
                       ? 'text-[#1A1410] dark:text-[#D4B8F0]'
                       : 'text-gray-800 dark:text-[#E8E0F5]'
@@ -187,7 +177,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                   style={{ fontFamily: fontNav }}
                 >
                   {link.label}
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
+                  <span className="absolute bottom-0 left-1 right-1 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
                 </button>
               )
             ))
@@ -278,7 +268,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {/* Dark Mode Toggle with icon swap animation + ripple */}
           <button
             onClick={handleDarkToggle}
-            className="relative w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] hover:bg-[#1A1410]/10 dark:hover:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer overflow-hidden group hover:scale-110 active:scale-95"
+            className="hidden md:flex relative w-8 h-8 sm:w-9 sm:h-9 items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] hover:bg-[#1A1410]/10 dark:hover:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer overflow-hidden group hover:scale-110 active:scale-95"
             aria-label="Toggle dark mode"
           >
             {/* Ripple effects */}
@@ -416,6 +406,25 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
             </Link>
           )}
+
+          {/* Mobile Theme Toggle Row */}
+          <div className="mt-2 pt-2 border-t border-[#D4C8BC]/40 dark:border-[#5B2D8E]/20 flex items-center justify-between px-3 py-1">
+            <span className="text-xs font-bold text-[#7A7068] dark:text-[#B89FD8] uppercase tracking-wider" style={{ fontFamily: fontNav }}>
+              {isDark ? t('theme_dark', 'Dark Mode') : t('theme_light', 'Light Mode')}
+            </span>
+            <button
+              onClick={handleDarkToggle}
+              className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white dark:bg-[#2D1B4E] border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] shadow-sm active:scale-90 transition-transform"
+            >
+              <span key={darkAnimKey}>
+                {isDark ? (
+                  <i className="ri-sun-line text-lg text-yellow-400 animate-spin-in" />
+                ) : (
+                  <i className="ri-moon-line text-lg animate-moon-in" />
+                )}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </nav>
