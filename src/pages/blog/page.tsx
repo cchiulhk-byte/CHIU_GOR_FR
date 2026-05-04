@@ -22,6 +22,26 @@ export default function BlogPage() {
   const { isDark, toggle } = useDarkMode();
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(timer);
+            return 90;
+          }
+          return prev + 5;
+        });
+      }, 100);
+      return () => clearInterval(timer);
+    } else {
+      setProgress(100);
+    }
+  }, [loading]);
+
+  const digits = String(progress).padStart(3, ' ').split('');
 
   useEffect(() => {
     async function fetchPosts() {
@@ -73,10 +93,60 @@ export default function BlogPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <i className="ri-loader-4-line text-4xl text-coral animate-spin mb-4"></i>
-            <p className="text-[#7A7068] dark:text-[#C4A8E8] font-medium">{t('blog_loading')}</p>
+        {loading || progress < 100 ? (
+          <div className="flex flex-col items-center justify-center py-10">
+            {/* Percentage counter */}
+            <div
+              className="mb-6 flex items-baseline gap-0.5"
+              style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+            >
+              {digits.map((d, i) => (
+                <span
+                  key={`${i}-${d}`}
+                  className="text-[#3A2A1A] dark:text-[#E8E0F5] font-bold"
+                  style={{
+                    fontSize: d === ' ' ? '0' : '1.5rem',
+                    width: d === ' ' ? '0' : 'auto',
+                    opacity: d === ' ' ? 0 : 1,
+                    display: 'inline-block',
+                    minWidth: d === ' ' ? '0' : '0.9rem',
+                    textAlign: 'center',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {d === ' ' ? '' : d}
+                </span>
+              ))}
+              <span
+                className="text-[#3A2A1A] dark:text-[#E8E0F5] font-bold ml-0.5"
+                style={{ fontSize: '1.1rem' }}
+              >
+                %
+              </span>
+            </div>
+
+            {/* Brand Icon */}
+            <div className="relative w-40 h-40 md:w-48 md:h-48 mb-8">
+               <div className="absolute inset-0 rounded-full bg-coral/5 animate-pulse"></div>
+               <img 
+                 src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png" 
+                 className="w-full h-full object-contain animate-float opacity-80"
+                 alt="Loading..."
+               />
+            </div>
+
+            {/* Loading Bar */}
+            <div className="w-56 h-2 rounded-full bg-[#E8D5C0] dark:bg-[#130A22] overflow-hidden shadow-inner">
+              <div 
+                className="h-full bg-coral transition-all duration-300 ease-out relative"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/30 animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+              </div>
+            </div>
+            <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily }}>
+              {t('blog_loading')}
+            </p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20 bg-white dark:bg-[#1E0D38] rounded-3xl border border-[#D4C8BC]/60 dark:border-[#3B2060]/60">

@@ -268,7 +268,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {/* Dark Mode Toggle with icon swap animation + ripple */}
           <button
             onClick={handleDarkToggle}
-            className="hidden md:flex relative w-8 h-8 sm:w-9 sm:h-9 items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] hover:bg-[#1A1410]/10 dark:hover:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer overflow-hidden group hover:scale-110 active:scale-95"
+            className="hidden md:flex relative w-11 h-11 items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] hover:bg-[#1A1410]/10 dark:hover:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer overflow-hidden group hover:scale-110 active:scale-95"
             aria-label="Toggle dark mode"
           >
             {/* Ripple effects */}
@@ -301,7 +301,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {/* Mobile Hamburger with animated bars */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden relative w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden"
+            className="md:hidden relative w-11 h-11 flex items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden"
           >
             <span className={`transition-all duration-300 ${menuOpen ? 'rotate-90 opacity-0 scale-50 absolute' : 'rotate-0 opacity-100 scale-100'}`}>
               <i className="ri-menu-line text-sm"></i>

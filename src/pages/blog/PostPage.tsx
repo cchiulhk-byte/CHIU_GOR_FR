@@ -53,12 +53,84 @@ export default function PostPage() {
     fetchPost();
   }, [slug]);
 
-  if (loading) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(timer);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 150);
+      return () => clearInterval(timer);
+    } else {
+      setProgress(100);
+    }
+  }, [loading]);
+
+  const digits = String(progress).padStart(3, ' ').split('');
+
+  if (loading || progress < 100) {
     return (
       <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
         <Navbar isDark={isDark} onToggleDark={toggle} />
-        <div className="pt-24 pb-20 flex items-center justify-center">
-          <i className="ri-loader-4-line animate-spin text-4xl text-coral"></i>
+        <div className="pt-24 pb-20 flex flex-col items-center justify-center min-h-[60vh]">
+          {/* Percentage counter — exactly like home page */}
+          <div
+            className="mb-6 flex items-baseline gap-0.5"
+            style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+          >
+            {digits.map((d, i) => (
+              <span
+                key={`${i}-${d}`}
+                className="text-[#3A2A1A] dark:text-[#E8E0F5] font-bold"
+                style={{
+                  fontSize: d === ' ' ? '0' : '1.5rem',
+                  width: d === ' ' ? '0' : 'auto',
+                  opacity: d === ' ' ? 0 : 1,
+                  display: 'inline-block',
+                  minWidth: d === ' ' ? '0' : '0.9rem',
+                  textAlign: 'center',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {d === ' ' ? '' : d}
+              </span>
+            ))}
+            <span
+              className="text-[#3A2A1A] dark:text-[#E8E0F5] font-bold ml-0.5"
+              style={{ fontSize: '1.1rem' }}
+            >
+              %
+            </span>
+          </div>
+
+          <div className="relative w-52 h-52 md:w-64 md:h-64 mb-8">
+             <div className="absolute inset-0 rounded-full bg-coral/5 animate-pulse"></div>
+             <img 
+               src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png" 
+               className="w-full h-full object-contain animate-float opacity-80"
+               alt="Loading..."
+             />
+          </div>
+          
+          {/* Animated Loading Bar — exactly like home page */}
+          <div className="w-56 h-2 rounded-full bg-[#E8D5C0] dark:bg-[#130A22] overflow-hidden shadow-inner">
+            <div 
+              className="h-full bg-coral transition-all duration-300 ease-out relative"
+              style={{ width: `${progress}%` }}
+            >
+              <div className="absolute inset-0 bg-white/30 animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+            </div>
+          </div>
+
+          <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily }}>
+            {t('blog_loading')}
+          </p>
         </div>
         <Footer />
       </div>
@@ -117,10 +189,10 @@ export default function PostPage() {
         </div>
 
         {/* Content */}
-        <div className="prose prose-lg dark:prose-invert max-w-none" style={{ fontFamily }}>
+        <div className="prose prose-lg md:prose-xl 2xl:prose-2xl dark:prose-invert max-w-none" style={{ fontFamily }}>
           {/* We use a simple strategy to render the content for now. 
               In a real app, you'd use a markdown parser. */}
-          <div className="whitespace-pre-wrap text-[#4A4440] dark:text-[#C4A8E8] leading-relaxed">
+          <div className="whitespace-pre-wrap text-[#4A4440] dark:text-[#C4A8E8] leading-relaxed 2xl:text-2xl 2xl:leading-[1.8]">
             {post.content}
           </div>
         </div>

@@ -113,7 +113,7 @@ function CourseCard({ course, index, visible }: { course: Course; index: number;
       {/* Content */}
       <div className="p-5">
         <h3
-          className="text-base font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-2 leading-snug"
+          className="text-xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-2 leading-snug"
           style={{ fontFamily }}
         >
           {t(course.titleKey)}
