@@ -4,16 +4,21 @@ import { AppRoutes } from "./router";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import LoadingScreen from "./components/feature/LoadingScreen";
+import { LogoutProvider } from "./components/feature/LogoutProvider";
 import ScrollToTop from "./components/feature/ScrollToTop";
 import SEO from "./components/feature/SEO";
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    // Only show loading screen if it hasn't been shown in this session
+    return sessionStorage.getItem('hasLoadedBefore') !== 'true';
+  });
 
   const Router = __IS_PREVIEW__ ? HashRouter : BrowserRouter;
 
   const handleLoadingComplete = useCallback(() => {
     setLoading(false);
+    sessionStorage.setItem('hasLoadedBefore', 'true');
   }, []);
 
   return (
@@ -28,8 +33,10 @@ function App() {
         }}
       >
         <Router {...(!__IS_PREVIEW__ ? { basename: __BASE_PATH__ } : {})}>
-          <ScrollToTop />
-          <AppRoutes />
+          <LogoutProvider>
+            <ScrollToTop />
+            <AppRoutes />
+          </LogoutProvider>
         </Router>
       </div>
     </I18nextProvider>

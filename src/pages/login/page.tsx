@@ -5,6 +5,7 @@ import Navbar from '@/pages/home/components/Navbar';
 import Footer from '@/pages/home/components/Footer';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useTranslation } from 'react-i18next';
+import { useLogout } from '@/components/feature/LogoutProvider';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [showUrlWarning, setShowUrlWarning] = useState(false);
+  const { confirmLogout, isLoggingOut } = useLogout();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,7 @@ export default function LoginPage() {
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
-  const from = (location.state as any)?.from || '/blog';
+  const from = (location.state as any)?.from || '/';
 
   // Check if using 127.0.0.1 and show warning
   useEffect(() => {
@@ -128,15 +130,19 @@ export default function LoginPage() {
     }
   }
 
-  async function handleLogout() {
-    setLoading(true);
-    await supabase.auth.signOut();
-    setLoading(false);
-  }
+  const handleLogout = () => {
+    confirmLogout();
+  };
+
+  // isLoggingOut is now handled by LogoutProvider in App.tsx
+  // We return null here if logging out to avoid rendering the login UI briefly
+  if (isLoggingOut) return null;
 
   return (
     <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
       <Navbar isDark={isDark} onToggleDark={toggle} />
+      
+      {/* Logout confirm is now global via LogoutProvider */}
 
       <div className="pt-24 pb-20">
       <div className="max-w-xl mx-auto px-4">
@@ -186,10 +192,10 @@ export default function LoginPage() {
                   {t('login_continue')}
                 </button>
                 <button
-                  onClick={handleLogout}
+                  onClick={confirmLogout}
                   className="flex-1 px-6 py-3 rounded-2xl bg-white dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 font-bold text-sm hover:bg-[#F0EBE3] dark:hover:bg-[#1A0A2E] transition-all"
                   style={{ fontFamily }}
-                  disabled={loading}
+                  disabled={loading || isLoggingOut}
                 >
                   {t('login_logout')}
                 </button>

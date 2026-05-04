@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AvailabilityConfig,
   TimeSlot,
@@ -6,8 +7,6 @@ import {
   loadAvailabilityConfig,
   saveAvailabilityConfig,
 } from "@/lib/availability";
-
-const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function normalizeTimeSlot(value: string): { start: string; end: string } | null {
   const trimmed = value.trim();
@@ -49,6 +48,17 @@ interface AvailabilityManagerProps {
 }
 
 export default function AvailabilityManager({ adminSecret, onUnauthorized }: AvailabilityManagerProps) {
+  const { t } = useTranslation();
+  const weekdayLabels = [
+    t("admin_avail_day_sun"),
+    t("admin_avail_day_mon"),
+    t("admin_avail_day_tue"),
+    t("admin_avail_day_wed"),
+    t("admin_avail_day_thu"),
+    t("admin_avail_day_fri"),
+    t("admin_avail_day_sat"),
+  ];
+
   const [config, setConfig] = useState<AvailabilityConfig>(defaultAvailabilityConfig);
   const [selectedWeekday, setSelectedWeekday] = useState<number>(1); // Start with Monday
   const [weekdaySlotInput, setWeekdaySlotInput] = useState("");
@@ -111,7 +121,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
   const handleAddWeekdayTimeSlot = () => {
     const normalized = normalizeTimeSlot(weekdaySlotInput);
     if (!normalized) {
-      setInputError("Invalid time format. Use HH:MM-HH:MM (e.g. 09:00-10:30) or HH:MM (e.g. 09:00 for 1-hour slot)");
+      setInputError(t("admin_avail_error_format"));
       return;
     }
     setInputError("");
@@ -175,7 +185,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
 
   const handleSave = async () => {
     saveAvailabilityConfig(config);
-    setSaveMessage("Availability saved locally.");
+    setSaveMessage(t("admin_avail_saved_local"));
     setSaveError("");
 
     const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
@@ -190,16 +200,16 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         if (!res.ok || !data.success) {
           if (res.status === 401) {
             onUnauthorized?.();
-            throw new Error("Unauthorized: invalid admin secret. Please log in again.");
+            throw new Error(t("admin_avail_no_auth"));
           }
           throw new Error(data?.error || `Server error: ${res.status}`);
         }
-        setSaveMessage("Availability saved locally and on the server.");
+        setSaveMessage(t("admin_avail_saved_server"));
       } catch (err) {
-        setSaveError(err instanceof Error ? err.message : "Failed to save availability server-side.");
+        setSaveError(err instanceof Error ? err.message : t("admin_avail_error_server"));
       }
     } else {
-      setSaveMessage("Availability saved locally. Server sync requires admin access.");
+      setSaveMessage(t("admin_avail_saved_local_no_admin"));
     }
 
     window.setTimeout(() => {
@@ -216,9 +226,9 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
     <div className="bg-white border border-gray-100 rounded-3xl p-6 mb-8 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
-          <p className="text-lg font-semibold text-gray-900">Manage Availability</p>
+          <p className="text-lg font-semibold text-gray-900">{t("admin_avail_title")}</p>
           <p className="text-sm text-gray-500 max-w-2xl mt-1">
-            Configure which days and time slots students can book, then save the settings locally on this site.
+            {t("admin_avail_subtitle")}
           </p>
         </div>
         <button
@@ -226,15 +236,15 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           onClick={handleSave}
           className="inline-flex items-center justify-center rounded-full bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
         >
-          Save Availability
+          {t("admin_avail_save")}
         </button>
       </div>
 
       {!canSyncServer && (
         <div className="mb-4 rounded-2xl border px-4 py-3 text-sm text-yellow-700 bg-yellow-50 border-yellow-200">
           {adminSecret
-            ? "Server sync is unavailable because the backend URL is not configured. Availability will be saved locally only."
-            : "Admin access is required to save availability on the server. Please log in again to enable remote sync."}
+            ? t("admin_avail_no_url")
+            : t("admin_avail_no_auth")}
         </div>
       )}
 
@@ -248,7 +258,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         <div className="space-y-6">
           {/* Weekday Selection */}
           <div className="rounded-2xl border border-gray-200 p-4">
-            <p className="text-sm font-semibold text-gray-700 mb-3">Select Day</p>
+            <p className="text-sm font-semibold text-gray-700 mb-3">{t("admin_avail_select_day")}</p>
             <div className="grid grid-cols-7 gap-2">
               {weekdayLabels.map((label, index) => {
                 const hasCustomSlots = config.availableTimeSlotsByWeekday[index] !== undefined;
@@ -271,7 +281,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               })}
             </div>
             <p className="text-xs text-gray-500 mt-3">
-              Blue buttons indicate days with custom time slots configured.
+              {t("admin_avail_hint_blue")}
             </p>
           </div>
 
@@ -279,9 +289,9 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           <div className="rounded-2xl border border-gray-200 p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div>
-                <p className="text-sm font-semibold text-gray-700">Custom time slots for {weekdayLabels[selectedWeekday]}</p>
+                <p className="text-sm font-semibold text-gray-700">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Add custom time ranges for this day. Students can only book during these available slots.
+                  {t("admin_avail_custom_slots_hint")}
                 </p>
               </div>
               <button
@@ -289,14 +299,14 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 onClick={handleResetWeekdaySlots}
                 className="rounded-2xl bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-200 transition-all"
               >
-                Reset to default
+                {t("admin_avail_reset_default")}
               </button>
             </div>
 
             <div className="flex items-center gap-2 flex-wrap mb-4">
               <input
                 type="text"
-                placeholder="Enter time range, e.g. 09:00-10:30"
+                placeholder={t("admin_avail_slot_placeholder")}
                 value={weekdaySlotInput}
                 onChange={(e) => {
                   setWeekdaySlotInput(e.target.value);
@@ -309,7 +319,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 onClick={handleAddWeekdayTimeSlot}
                 className="rounded-2xl bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
               >
-                Add Slot
+                {t("admin_avail_add_slot")}
               </button>
             </div>
             {inputError && (
@@ -347,7 +357,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                         placeholder="HH:MM-HH:MM"
                       />
                       <span className={`text-sm font-medium ${slot.available ? 'text-green-700' : 'text-red-700'}`}>
-                        {slot.available ? '(Available)' : '(Blocked)'}
+                        {slot.available ? `(${t("admin_avail_available")})` : `(${t("admin_avail_blocked")})`}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
@@ -374,7 +384,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             : "bg-green-100 text-green-700 hover:bg-green-200"
                         }`}
                       >
-                        {slot.available ? "Block" : "Unblock"}
+                        {slot.available ? t("admin_avail_block_btn") : t("admin_avail_unblock_btn")}
                       </button>
                       <button
                         type="button"
@@ -393,29 +403,33 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                         }}
                         className="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
                       >
-                        Remove
+                        {t("admin_avail_remove_btn")}
                       </button>
                     </div>
                   </div>
                 ))
               ) : (
                 <p className="text-sm text-gray-500 text-center py-4">
-                  No custom time slots configured for {weekdayLabels[selectedWeekday]}. Add some above.
+                  {t("admin_avail_no_slots")} {weekdayLabels[selectedWeekday]}. {t("admin_avail_add_hint")}
                 </p>
               )}
             </div>
 
             <p className="text-xs text-gray-500">
               {selectedWeekdaySlots.length > 0
-                ? `${selectedWeekdaySlots.filter(s => s.available).length} available, ${selectedWeekdaySlots.filter(s => !s.available).length} blocked slots for ${weekdayLabels[selectedWeekday]}.`
-                : `No slots configured for ${weekdayLabels[selectedWeekday]}.`}
+                ? t("admin_avail_slots_summary", {
+                    available: selectedWeekdaySlots.filter((s) => s.available).length,
+                    blocked: selectedWeekdaySlots.filter((s) => !s.available).length,
+                    day: weekdayLabels[selectedWeekday],
+                  })
+                : t("admin_avail_no_slots_short", { day: weekdayLabels[selectedWeekday] })}
             </p>
           </div>
         </div>
 
         <div className="rounded-2xl border border-gray-200 p-4 space-y-4">
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-3">Blocked dates</p>
+            <p className="text-sm font-semibold text-gray-700 mb-3">{t("admin_avail_blocked_dates")}</p>
             <div className="flex items-center gap-2">
               <input
                 type="date"
@@ -428,7 +442,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 onClick={handleAddBlockedDate}
                 className="rounded-2xl bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
               >
-                Add
+                {t("admin_avail_add_btn")}
               </button>
             </div>
             {config.blockedDates.length > 0 ? (
@@ -441,20 +455,20 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                       onClick={() => handleRemoveBlockedDate(date)}
                       className="text-red-500 hover:text-red-600"
                     >
-                      Remove
+                      {t("admin_avail_remove_btn")}
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-gray-500 mt-3">No blocked dates configured.</p>
+              <p className="text-xs text-gray-500 mt-3">{t("admin_avail_no_blocked")}</p>
             )}
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
-            <p className="font-semibold text-gray-800 mb-2">Booking behaviour</p>
-            <p>Students can only choose dates on allowed weekdays and not on blocked dates.</p>
-            <p className="mt-2">This configuration is stored locally in your browser, so it is editable directly on the site.</p>
+            <p className="font-semibold text-gray-800 mb-2">{t("admin_avail_behavior_title")}</p>
+            <p>{t("admin_avail_behavior_desc")}</p>
+            <p className="mt-2">{t("admin_avail_storage_desc")}</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BlogPost {
   id: string;
@@ -16,6 +17,7 @@ interface BlogManagerProps {
 }
 
 export default function BlogManager({ adminSecret }: BlogManagerProps) {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(null);
@@ -93,7 +95,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
 
   async function handleSave() {
     if (!editingPost?.title || !editingPost?.content || !editingPost?.slug) {
-      alert('Title, Content and Slug are required!');
+      alert(t("admin_blog_required_error")); // Added this to i18n
       return;
     }
 
@@ -134,7 +136,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
   }
 
   async function handleDelete(id: string) {
-    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    if (!window.confirm(t("admin_blog_delete_confirm"))) return;
 
     const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
@@ -242,23 +244,23 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-800">Blog Posts</h2>
+        <h2 className="text-xl font-bold text-gray-800">{t("admin_blog_title")}</h2>
         <button
           onClick={() => setEditingPost({ title: '', content: '', slug: '', excerpt: '', image_url: '' })}
           className="px-4 py-2 bg-coral text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all cursor-pointer flex items-center gap-2"
         >
           <i className="ri-add-line"></i>
-          New Post
+          {t("admin_blog_new")}
         </button>
       </div>
 
       {editingPost ? (
         <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-4">
-          <h3 className="font-bold text-gray-800">{editingPost.id ? 'Edit Post' : 'New Post'}</h3>
+          <h3 className="font-bold text-gray-800">{editingPost.id ? t("admin_blog_edit") : t("admin_blog_new")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Title"
+              placeholder={t("admin_blog_title_placeholder")}
               value={editingPost.title || ''}
               onChange={(e) => {
                 const title = e.target.value;
@@ -275,7 +277,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
             />
             <input
               type="text"
-              placeholder="Slug (e.g. my-first-post)"
+              placeholder={t("admin_blog_slug_placeholder")}
               value={editingPost.slug || ''}
               onChange={(e) => {
                 setSlugEdited(true);
@@ -286,7 +288,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
           </div>
           <input
             type="text"
-            placeholder="Image URL"
+            placeholder={t("admin_blog_image_placeholder")}
             value={editingPost.image_url || ''}
             onChange={(e) => setEditingPost({ ...editingPost, image_url: e.target.value })}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
@@ -324,14 +326,14 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
                   <i className="ri-image-add-line text-lg"></i>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">Drag & drop an image here</p>
-                  <p className="text-xs text-gray-500">or use the file picker below</p>
+                  <p className="text-sm font-semibold text-gray-800">{t("admin_blog_drag_drop")}</p>
+                  <p className="text-xs text-gray-500">{t("admin_blog_upload_hint")}</p>
                 </div>
               </div>
               {uploadingImage && (
                 <span className="text-xs text-gray-400 flex items-center gap-1 whitespace-nowrap">
                   <i className="ri-loader-4-line animate-spin"></i>
-                  Uploading...
+                  {t("admin_blog_uploading")}
                 </span>
               )}
             </div>
@@ -348,7 +350,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
             />
           </div>
           <textarea
-            placeholder="Excerpt (short summary)"
+            placeholder={t("admin_blog_excerpt_placeholder")}
             value={editingPost.excerpt || ''}
             onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
@@ -366,11 +368,11 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
               }
               className="px-3 py-1.5 text-xs font-bold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all cursor-pointer"
             >
-              Auto
+              {t("admin_blog_auto_excerpt")}
             </button>
           </div>
           <textarea
-            placeholder="Content (Markdown supported)"
+            placeholder={t("admin_blog_content_placeholder")}
             value={editingPost.content || ''}
             onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm"
@@ -382,13 +384,13 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
               disabled={saving}
               className="px-6 py-2 bg-gray-800 text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all cursor-pointer"
             >
-              {saving ? 'Saving...' : 'Save Post'}
+              {saving ? t("admin_blog_saving") : t("admin_blog_save")}
             </button>
             <button
               onClick={() => setEditingPost(null)}
               className="px-6 py-2 border border-gray-200 text-gray-500 rounded-lg font-bold text-sm hover:bg-gray-50 transition-all cursor-pointer"
             >
-              Cancel
+              {t("admin_blog_cancel")}
             </button>
           </div>
         </div>
@@ -400,7 +402,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 italic text-gray-400">
-              No posts found.
+              {t("admin_blog_no_posts")}
             </div>
           ) : (
             posts.map((post) => (
@@ -422,7 +424,7 @@ export default function BlogManager({ adminSecret }: BlogManagerProps) {
                         ? 'border-yellow-200 text-yellow-500 bg-yellow-50'
                         : 'border-gray-100 text-gray-400 hover:text-yellow-500 hover:border-yellow-200'
                     }`}
-                    title={post.is_featured ? 'Featured on homepage' : 'Mark as featured'}
+                    title={post.is_featured ? t("admin_blog_featured") : t("admin_blog_mark_featured")}
                   >
                     <i className={post.is_featured ? 'ri-star-fill' : 'ri-star-line'}></i>
                   </button>

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { smoothScrollTo } from '@/hooks/useSmoothScroll';
 import { supabase } from '@/lib/supabase';
+import { useLogout } from '@/components/feature/LogoutProvider';
 
 interface NavbarProps {
   isDark: boolean;
@@ -39,6 +40,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
   const [darkAnimKey, setDarkAnimKey] = useState(0);
   const [activeLang, setActiveLang] = useState(i18n.language);
   const [langAnimKey, setLangAnimKey] = useState<Record<string, number>>({});
+  const { confirmLogout } = useLogout();
   const darkRipple = useRipple();
   const prevDark = useRef(isDark);
 
@@ -69,8 +71,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     setActiveLang(i18n.language);
   }, [i18n.language]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    confirmLogout();
   };
 
   // Trigger icon animation when dark mode changes
@@ -209,7 +211,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {/* Visitor Login */}
           {user ? (
             <button
-              onClick={handleLogout}
+              onClick={confirmLogout}
               className="hidden sm:flex px-4 py-2 rounded-full bg-white/80 dark:bg-[#2D1B4E]/60 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] text-sm font-semibold hover:bg-white hover:dark:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer items-center gap-2 whitespace-nowrap"
               style={{ fontFamily: fontNav }}
               title={user.email || ''}
@@ -383,9 +385,9 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
           {user ? (
             <button
-              onClick={async () => {
-                await handleLogout();
+              onClick={() => {
                 setMenuOpen(false);
+                confirmLogout();
               }}
               className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
               style={{ fontFamily: fontNav }}

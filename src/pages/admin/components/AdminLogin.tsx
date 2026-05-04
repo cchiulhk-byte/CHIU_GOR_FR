@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AdminLoginProps {
   onLogin: (secret: string) => void;
@@ -6,13 +7,14 @@ interface AdminLoginProps {
 }
 
 export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [localError, setLocalError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) {
-      setError("Veuillez saisir le mot de passe administrateur");
+      setLocalError(t("admin_login_error_required"));
       return;
     }
     onLogin(input.trim());
@@ -26,7 +28,7 @@ export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
             <i className="ri-shield-keyhole-line text-white text-2xl"></i>
           </div>
           <h1 className="text-2xl font-bold text-gray-800" style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}>
-            Tableau de bord
+            {t("admin_login_title")}
           </h1>
           <p className="text-gray-500 text-sm mt-1">Chiu Gor French</p>
         </div>
@@ -34,13 +36,13 @@ export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 border border-gray-100">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Mot de passe administrateur
+              {t("admin_login_password")}
             </label>
             <input
               type="password"
               value={input}
               onChange={(e) => { setInput(e.target.value); setLocalError(""); }}
-              placeholder="Saisir le mot de passe"
+              placeholder={t("admin_login_placeholder")}
               className="w-full p-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral/30 focus:border-coral"
               autoFocus
             />
@@ -54,7 +56,7 @@ export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
             type="submit"
             className="w-full py-3 rounded-lg bg-coral text-white font-medium text-sm hover:bg-coral/90 transition-all cursor-pointer whitespace-nowrap"
           >
-            Se connecter
+            {t("admin_login_button")}
           </button>
         </form>
       </div>

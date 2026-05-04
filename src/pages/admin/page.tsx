@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import AdminLogin from "./components/AdminLogin";
 import BookingCard from "./components/BookingCard";
 import BlogManager from "./components/BlogManager";
 import AvailabilityManager from "./components/AvailabilityManager";
+import { useLogout } from "@/components/feature/LogoutProvider";
 
 interface Booking {
   id: string;
@@ -23,6 +25,7 @@ interface Booking {
 type FilterTab = "pending_verification" | "confirmed" | "cancelled" | "all" | "blog";
 
 export default function AdminPage() {
+  const { t, i18n } = useTranslation();
   const [adminSecret, setAdminSecret] = useState<string>(() => sessionStorage.getItem("adminSecret") || "");
   const [authError, setAuthError] = useState("");
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -30,8 +33,8 @@ export default function AdminPage() {
   const [filter, setFilter] = useState<FilterTab>("pending_verification");
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const { confirmLogout, isLoggingOut } = useLogout();
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 
   const applyQuickRange = (range: "this_week" | "this_month" | "last_month") => {
@@ -95,9 +98,9 @@ export default function AdminPage() {
     } catch (e) {
       setBookings([]);
       if (e instanceof DOMException && e.name === "AbortError") {
-        setAuthError("Request timed out while loading bookings");
+        setAuthError(t("admin_error_timeout"));
       } else {
-        setAuthError(e instanceof Error ? e.message : "Failed to load bookings");
+        setAuthError(e instanceof Error ? e.message : t("admin_error_generic"));
       }
     } finally {
       setLoading(false);
@@ -112,7 +115,7 @@ export default function AdminPage() {
 
   const handleLogin = async (secret: string) => {
     if (!supabaseUrl) {
-      setAuthError("Missing backend URL. Please configure VITE_PUBLIC_SUPABASE_URL.");
+      setAuthError(t("admin_error_missing_url"));
       return;
     }
 
@@ -134,9 +137,9 @@ export default function AdminPage() {
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
         if (res.status === 401) {
-          setAuthError("Admin secret invalid. Please try again.");
+          setAuthError(t("admin_login_error_invalid"));
         } else {
-          setAuthError(json?.error || `Failed to validate admin secret (HTTP ${res.status})`);
+          setAuthError(json?.error || t("admin_login_error_generic"));
         }
         return;
       }
@@ -146,9 +149,9 @@ export default function AdminPage() {
       setAuthError("");
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
-        setAuthError("Login request timed out. Please try again.");
+        setAuthError(t("admin_login_timeout"));
       } else {
-        setAuthError(error instanceof Error ? error.message : "Failed to validate admin secret.");
+        setAuthError(error instanceof Error ? error.message : t("admin_login_error_generic"));
       }
     }
   };
@@ -156,13 +159,11 @@ export default function AdminPage() {
   const handleInvalidSecret = () => {
     sessionStorage.removeItem("adminSecret");
     setAdminSecret("");
-    setAuthError("Admin secret invalid. Please log in again.");
+    setAuthError(t("admin_login_error_invalid"));
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("adminSecret");
-    setAdminSecret("");
-    setBookings([]);
+    confirmLogout();
   };
 
   const handleRefresh = async () => {
@@ -212,45 +213,75 @@ export default function AdminPage() {
     : byDate;
 
   const tabs: { key: FilterTab; label: string; color: string }[] = [
-    { key: "pending_verification", label: "En attente", color: "text-yellow-600" },
-    { key: "confirmed", label: "Confirmé", color: "text-teal-600" },
-    { key: "cancelled", label: "Annulé", color: "text-red-500" },
-    { key: "blog", label: "Blog", color: "text-coral" },
-    { key: "all", label: "Tout", color: "text-gray-600" },
+    { key: "pending_verification", label: t("admin_tab_pending"), color: "text-yellow-600" },
+    { key: "confirmed", label: t("admin_tab_confirmed"), color: "text-teal-600" },
+    { key: "cancelled", label: t("admin_tab_cancelled"), color: "text-red-500" },
+    { key: "blog", label: t("admin_tab_blog"), color: "text-coral" },
+    { key: "all", label: t("admin_tab_all"), color: "text-gray-600" },
   ];
+
+  // isLoggingOut is now handled by LogoutProvider in App.tsx
+  if (isLoggingOut) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-coral flex items-center justify-center">
             <i className="ri-calendar-check-line text-white text-base"></i>
           </div>
           <div>
             <h1 className="font-bold text-gray-800 text-base leading-tight" style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}>
-              Tableau de bord
+              {t("admin_dashboard")}
             </h1>
             <p className="text-xs text-gray-400">Chiu Gor French</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-50"
-          >
-            <i className={`ri-refresh-line text-base ${refreshing ? "animate-spin" : ""}`}></i>
-          </button>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
-          >
-            <i className="ri-logout-box-r-line"></i>
-            Déconnexion
-          </button>
+
+        <div className="flex items-center gap-4">
+          {/* Language Switcher Tabs */}
+          <div className="flex bg-gray-100 p-1 rounded-xl">
+            {[
+              { code: "fr", label: "FR" },
+              { code: "en", label: "EN" },
+              { code: "zh-HK", label: "中文" },
+            ].map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => i18n.changeLanguage(lang.code)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  i18n.language === lang.code
+                    ? "bg-white text-coral shadow-sm"
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                {lang.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              title={t("admin_refresh")}
+              className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-50"
+            >
+              <i className={`ri-refresh-line text-base ${refreshing ? "animate-spin" : ""}`}></i>
+            </button>
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+            >
+              <i className="ri-logout-box-r-line"></i>
+              {t("admin_logout")}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Logout confirm is now global via LogoutProvider */}
 
       <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
         {authError && (
@@ -263,7 +294,7 @@ export default function AdminPage() {
               onClick={handleRefresh}
               className="px-3 py-1.5 rounded-lg bg-white border border-red-200 text-red-600 text-xs font-medium hover:bg-red-50 transition-all cursor-pointer whitespace-nowrap"
             >
-              Réessayer
+              {t("admin_refresh")}
             </button>
           </div>
         )}
@@ -273,10 +304,10 @@ export default function AdminPage() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[
-            { label: "En attente", count: counts.pending_verification, icon: "ri-time-line", bg: "bg-yellow-50", text: "text-yellow-600", border: "border-yellow-200" },
-            { label: "Confirmé", count: counts.confirmed, icon: "ri-checkbox-circle-line", bg: "bg-teal-50", text: "text-teal-600", border: "border-teal-200" },
-            { label: "Annulé", count: counts.cancelled, icon: "ri-close-circle-line", bg: "bg-red-50", text: "text-red-500", border: "border-red-200" },
-            { label: "Total", count: counts.all, icon: "ri-file-list-3-line", bg: "bg-gray-50", text: "text-gray-600", border: "border-gray-200" },
+            { label: t("admin_tab_pending"), count: counts.pending_verification, icon: "ri-time-line", bg: "bg-yellow-50", text: "text-yellow-600", border: "border-yellow-200" },
+            { label: t("admin_tab_confirmed"), count: counts.confirmed, icon: "ri-checkbox-circle-line", bg: "bg-teal-50", text: "text-teal-600", border: "border-teal-200" },
+            { label: t("admin_tab_cancelled"), count: counts.cancelled, icon: "ri-close-circle-line", bg: "bg-red-50", text: "text-red-500", border: "border-red-200" },
+            { label: t("admin_tab_all"), count: counts.all, icon: "ri-file-list-3-line", bg: "bg-gray-50", text: "text-gray-600", border: "border-gray-200" },
           ].map((stat) => (
             <div key={stat.label} className={`${stat.bg} border ${stat.border} rounded-xl p-4`}>
               <div className={`w-8 h-8 flex items-center justify-center mb-2`}>
@@ -295,7 +326,7 @@ export default function AdminPage() {
               <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
                 <i className="ri-calendar-line text-gray-400 text-sm"></i>
               </div>
-              <span className="text-sm text-gray-500 whitespace-nowrap">Date du cours :</span>
+              <span className="text-sm text-gray-500 whitespace-nowrap">{t("admin_booking_date")} :</span>
               <input
                 type="date"
                 value={dateFrom}
