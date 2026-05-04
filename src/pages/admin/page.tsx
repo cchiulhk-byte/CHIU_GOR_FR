@@ -33,6 +33,7 @@ export default function AdminPage() {
   const [filter, setFilter] = useState<FilterTab>("pending_verification");
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const { confirmLogout, isLoggingOut } = useLogout();
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
@@ -271,7 +272,7 @@ export default function AdminPage() {
               <i className={`ri-refresh-line text-base ${refreshing ? "animate-spin" : ""}`}></i>
             </button>
             <button
-              onClick={() => setShowLogoutConfirm(true)}
+              onClick={confirmLogout}
               className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
             >
               <i className="ri-logout-box-r-line"></i>
