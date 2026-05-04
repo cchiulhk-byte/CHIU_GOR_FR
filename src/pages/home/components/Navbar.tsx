@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { smoothScrollTo } from '@/hooks/useSmoothScroll';
 import { supabase } from '@/lib/supabase';
 import { useLogout } from '@/components/feature/LogoutProvider';
+import { Button } from '@/design-system/atoms/Button';
+import { tokens } from '@/design-system/tokens';
 
 interface NavbarProps {
   isDark: boolean;
@@ -129,19 +131,19 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             alt="Chiu Gor French Logo"
             fetchPriority="high"
             decoding="async"
-            className="h-9 w-auto object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+            className="h-8 sm:h-10 w-auto object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
           <div className="flex flex-col leading-none min-w-0">
             <span
-              className="font-extrabold text-[13px] sm:text-base whitespace-nowrap flex items-center gap-1"
+              className="font-extrabold text-[11px] sm:text-base whitespace-nowrap flex items-center gap-0.5 sm:gap-1"
               style={{ fontFamily: "Candara, 'Nunito', sans-serif", letterSpacing: '-0.01em' }}
             >
               <span className="text-[#CC0000]">Chiu Gor</span>
-              <img src="https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png" alt="" className="w-3 h-3" />
+              <img src="https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png" alt="" className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               <span className="text-teal">French</span>
             </span>
             <span
-              className="hidden xs:block text-[9px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#7A7068] dark:text-gray-500 mt-0.5 whitespace-nowrap"
+              className="hidden sm:block text-[9px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#7A7068] dark:text-gray-500 mt-0.5"
               style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
             >
               Langue Française
@@ -157,29 +159,29 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 <Link
                   key={link.id}
                   to={link.path}
-                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-1 ${
+                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-2 py-1 ${
                     scrolled
                       ? 'text-[#1A1410] dark:text-[#D4B8F0]'
                       : 'text-gray-800 dark:text-[#E8E0F5]'
                   }`}
-                  style={{ fontFamily: fontNav }}
+                  style={{ fontFamily: tokens.typography.fontFamily }}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-1 right-1 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
+                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
                 </Link>
               ) : (
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-1 ${
+                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-2 py-1 ${
                     scrolled
                       ? 'text-[#1A1410] dark:text-[#D4B8F0]'
                       : 'text-gray-800 dark:text-[#E8E0F5]'
                   }`}
-                  style={{ fontFamily: fontNav }}
+                  style={{ fontFamily: tokens.typography.fontFamily }}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-1 right-1 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
+                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
                 </button>
               )
             ))
@@ -199,36 +201,37 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         <div className="flex items-center gap-1.5 flex-shrink-0">
 
           {/* Book Now Button */}
-          <Link
-            to="/booking"
-            className="hidden sm:flex px-4 py-2 rounded-full bg-coral text-white text-sm font-semibold hover:bg-coral/90 transition-all duration-200 cursor-pointer items-center gap-1.5 shadow-sm hover:shadow-md whitespace-nowrap"
-            style={{ fontFamily: fontNav }}
+          {/* Book Now Button */}
+          <Button
+            variant="primary"
+            onClick={() => window.location.href = '/booking'}
+            className="hidden sm:flex !px-5 !py-2 !text-xs !rounded-full shadow-md"
           >
-            <i className="ri-calendar-check-line text-sm"></i>
+            <i className="ri-calendar-check-line"></i>
             {t('booking_title')}
-          </Link>
+          </Button>
 
           {/* Visitor Login */}
           {user ? (
-            <button
+            <Button
+              variant="outline"
               onClick={confirmLogout}
-              className="hidden sm:flex px-4 py-2 rounded-full bg-white/80 dark:bg-[#2D1B4E]/60 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] text-sm font-semibold hover:bg-white hover:dark:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer items-center gap-2 whitespace-nowrap"
-              style={{ fontFamily: fontNav }}
+              className="hidden sm:flex !px-4 !py-2 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
               title={user.email || ''}
             >
-              <i className="ri-user-line text-sm"></i>
-              {(user.email ? String(user.email).split('@')[0] : 'Account')}
-              <i className="ri-logout-box-r-line text-sm text-coral"></i>
-            </button>
+              <i className="ri-user-line"></i>
+              <span className="max-w-[80px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
+              <i className="ri-logout-box-r-line text-coral"></i>
+            </Button>
           ) : (
-            <Link
-              to="/login"
-              className="hidden sm:flex px-4 py-2 rounded-full bg-white/80 dark:bg-[#2D1B4E]/60 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] text-sm font-semibold hover:bg-white hover:dark:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer items-center gap-2 whitespace-nowrap"
-              style={{ fontFamily: fontNav }}
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = '/login'}
+              className="hidden sm:flex !px-5 !py-2 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
             >
-              <i className="ri-login-box-line text-sm"></i>
+              <i className="ri-login-box-line"></i>
               {t('nav_login')}
-            </Link>
+            </Button>
           )}
 
           {/* Language Switcher with pop animation */}

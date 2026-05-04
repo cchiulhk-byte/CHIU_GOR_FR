@@ -7,6 +7,9 @@ import CommentSection from './components/CommentSection';
 import Navbar from '@/pages/home/components/Navbar';
 import Footer from '@/pages/home/components/Footer';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { tokens } from '@/design-system/tokens';
+import { Card } from '@/design-system/atoms/Card';
+import { Button } from '@/design-system/atoms/Button';
 
 interface BlogPost {
   id: string;
@@ -79,10 +82,10 @@ export default function PostPage() {
       <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
         <Navbar isDark={isDark} onToggleDark={toggle} />
         <div className="pt-24 pb-20 flex flex-col items-center justify-center min-h-[60vh]">
-          {/* Percentage counter — exactly like home page */}
+          {/* Percentage counter */}
           <div
             className="mb-6 flex items-baseline gap-0.5"
-            style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+            style={{ fontFamily: tokens.typography.fontFamilyEn }}
           >
             {digits.map((d, i) => (
               <span
@@ -109,7 +112,7 @@ export default function PostPage() {
             </span>
           </div>
 
-          <div className="relative w-52 h-52 md:w-64 md:h-64 mb-8">
+          <div className="relative w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 mb-8">
              <div className="absolute inset-0 rounded-full bg-coral/5 animate-pulse"></div>
              <img 
                src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png" 
@@ -118,7 +121,6 @@ export default function PostPage() {
              />
           </div>
           
-          {/* Animated Loading Bar — exactly like home page */}
           <div className="w-56 h-2 rounded-full bg-[#E8D5C0] dark:bg-[#130A22] overflow-hidden shadow-inner">
             <div 
               className="h-full bg-coral transition-all duration-300 ease-out relative"
@@ -128,7 +130,7 @@ export default function PostPage() {
             </div>
           </div>
 
-          <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily }}>
+          <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t('blog_loading')}
           </p>
         </div>
@@ -169,12 +171,12 @@ export default function PostPage() {
           </Link>
 
           <header className="mb-12">
-            <div className="flex items-center gap-3 text-sm text-[#7A7068] dark:text-[#C4A8E8] font-semibold uppercase tracking-wider mb-4" style={{ fontFamily }}>
+            <div className="flex items-center gap-3 text-sm text-[#7A7068] dark:text-[#C4A8E8] font-bold uppercase tracking-widest mb-4" style={{ fontFamily: tokens.typography.fontFamily }}>
               <span>{date}</span>
-              <span className="w-1 h-1 rounded-full bg-coral/40"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-coral/40"></span>
               <span>{post.view_count + 1} {t('blog_views')}</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-[#1A1410] dark:text-[#E8E0F5] leading-tight mb-6" style={{ fontFamily }}>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1A1410] dark:text-[#E8E0F5] leading-tight mb-8 tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
               {post.title}
             </h1>
           </header>
@@ -189,20 +191,20 @@ export default function PostPage() {
         </div>
 
         {/* Content */}
-        <div className="prose prose-lg md:prose-xl 2xl:prose-2xl dark:prose-invert max-w-none" style={{ fontFamily }}>
-          {/* We use a simple strategy to render the content for now. 
-              In a real app, you'd use a markdown parser. */}
-          <div className="whitespace-pre-wrap text-[#4A4440] dark:text-[#C4A8E8] leading-relaxed 2xl:text-2xl 2xl:leading-[1.8]">
+        <div className="prose prose-lg md:prose-xl dark:prose-invert max-w-none" style={{ fontFamily: tokens.typography.fontFamily }}>
+          <div className="whitespace-pre-wrap text-[#4A4440] dark:text-[#C4A8E8] leading-[1.8] text-lg md:text-xl">
             {post.content}
           </div>
         </div>
 
         {/* Footer actions */}
-        <div className="mt-16 pt-8 border-t border-[#D4C8BC]/60 dark:border-[#3B2060]/60 flex items-center justify-between">
+        {/* Footer actions */}
+        <Card className="mt-16 p-6 flex items-center justify-between border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
            <LikeButton postId={post.id} />
            
            <div className="flex items-center gap-4">
-             <button 
+             <Button 
+               variant="ghost"
                onClick={() => {
                  if (navigator.share) {
                    navigator.share({
@@ -214,12 +216,12 @@ export default function PostPage() {
                    alert(t('blog_share_copied'));
                  }
                }}
-               className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F0EBE3] dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] hover:bg-coral hover:text-white transition-all cursor-pointer"
+               className="w-12 h-12 !p-0 !rounded-full"
              >
-               <i className="ri-share-line"></i>
-             </button>
+               <i className="ri-share-line text-xl"></i>
+             </Button>
            </div>
-        </div>
+        </Card>
 
         {/* Comments Section */}
         <CommentSection postId={post.id} />

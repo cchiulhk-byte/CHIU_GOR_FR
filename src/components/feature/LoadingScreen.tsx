@@ -150,7 +150,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           <img
             src={LOGO_URL}
             alt="Chiu Gor French"
-            className="relative w-52 h-52 md:w-64 md:h-64 object-contain"
+            className="relative w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 object-contain"
             style={{
               animation: logoVisible ? 'loading-logo-float 4s ease-in-out infinite' : 'none',
             }}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
+import { Button } from "@/design-system/atoms/Button";
+import { tokens } from "@/design-system/tokens";
 
 interface Booking {
   id: string;
@@ -91,56 +93,61 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
   const isPending = booking.status === "pending_verification";
 
   return (
-    <div className={`bg-white rounded-2xl border p-5 transition-all ${
-      isPending ? "border-yellow-200" : booking.status === "confirmed" ? "border-teal-200" : "border-red-100 opacity-70"
+    <div className={`bg-white dark:bg-[#1E0D38] rounded-[2.5rem] border p-8 transition-all shadow-lg ${
+      isPending 
+        ? "border-yellow-200 shadow-yellow-500/5 dark:border-yellow-500/20" 
+        : booking.status === "confirmed" 
+          ? "border-teal-200 shadow-teal-500/5 dark:border-teal-500/20" 
+          : "border-[#D4C8BC]/20 dark:border-[#3B2060]/20 opacity-70"
     }`}>
-      {/* Header row */}
-      <div className="flex items-start justify-between gap-3 mb-4">
+      <div className="flex items-start justify-between gap-4 mb-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-bold text-gray-800 text-base">{booking.student_name}</h3>
-            <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
+          <div className="flex items-center gap-3 mb-2">
+            <h3 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-xl tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
+              {booking.student_name}
+            </h3>
+            <span className={`text-[10px] px-3 py-1 rounded-full border font-black uppercase tracking-widest ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
               {statusLabels[booking.status] || booking.status}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <p className="text-sm text-gray-500">{booking.student_email} · {booking.student_phone}</p>
+            <p className="text-base text-[#7A7068] dark:text-[#B89FD8] font-medium">{booking.student_email} · {booking.student_phone}</p>
             <button
               onClick={handleCopyEmail}
               title={t("admin_booking_copy_email")}
-              className="w-6 h-6 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all cursor-pointer flex-shrink-0"
+              className="w-8 h-8 flex items-center justify-center rounded-xl text-[#7A7068] dark:text-[#B89FD8] hover:text-coral hover:bg-coral/10 transition-all cursor-pointer flex-shrink-0"
             >
-              <i className={`text-xs ${emailCopied ? "ri-check-line text-teal-500" : "ri-file-copy-line"}`}></i>
+              <i className={`text-base ${emailCopied ? "ri-check-line text-teal-500" : "ri-file-copy-line"}`}></i>
             </button>
-            {emailCopied && <span className="text-xs text-teal-500 font-medium">{t("admin_booking_copied")}</span>}
+            {emailCopied && <span className="text-xs text-teal-500 font-bold uppercase tracking-widest">{t("admin_booking_copied")}</span>}
           </div>
         </div>
-        <p className="text-xs text-gray-400 whitespace-nowrap">
+        <p className="text-sm text-[#7A7068]/60 dark:text-[#B89FD8]/60 font-bold whitespace-nowrap bg-[#F7F4EF] dark:bg-[#0E0818] px-3 py-1 rounded-lg">
           {new Date(booking.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
         </p>
       </div>
 
       {/* Details grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        <div className="bg-gray-50 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-0.5">{t("admin_booking_course")}</p>
-          <p className="text-sm font-semibold text-gray-800 leading-tight">{booking.course_type}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-2xl p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_course")}</p>
+          <p className="text-base font-bold text-[#1A1410] dark:text-[#E8E0F5] leading-tight">{booking.course_type}</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-0.5">{t("admin_booking_date")}</p>
-          <p className="text-sm font-semibold text-gray-800">{booking.preferred_date}</p>
+        <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-2xl p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_date")}</p>
+          <p className="text-base font-bold text-[#1A1410] dark:text-[#E8E0F5]">{booking.preferred_date}</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-0.5">{t("admin_booking_time")}</p>
-          <p className="text-sm font-semibold text-gray-800">{booking.preferred_time} HKT</p>
+        <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-2xl p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_time")}</p>
+          <p className="text-base font-bold text-[#1A1410] dark:text-[#E8E0F5]">{booking.preferred_time} HKT</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-3">
-          <p className="text-xs text-gray-400 mb-0.5">{t("admin_booking_payment")}</p>
-          <div className="flex items-center gap-1.5">
+        <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-2xl p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_payment")}</p>
+          <div className="flex items-center gap-2">
             {booking.payment_method && (
-              <i className={`${methodIcons[booking.payment_method] || "ri-money-dollar-circle-line"} text-gray-600 text-sm`}></i>
+              <i className={`${methodIcons[booking.payment_method] || "ri-money-dollar-circle-line"} text-coral text-lg`}></i>
             )}
-            <p className="text-sm font-semibold text-gray-800 capitalize">{booking.payment_method || "—"}</p>
+            <p className="text-base font-bold text-[#1A1410] dark:text-[#E8E0F5] capitalize">{booking.payment_method || "—"}</p>
           </div>
         </div>
       </div>

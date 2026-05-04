@@ -224,22 +224,20 @@ export default function FeaturedBlogCarousel() {
           </div>
         </div>
 
-        <div className="sm:hidden flex items-center justify-center gap-3 mt-5">
+        <div className="sm:hidden flex items-center justify-center gap-4 mt-6">
           <button
             type="button"
             onClick={() => scrollByCards(-1)}
-            className="px-4 py-2 rounded-full border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 bg-white/80 dark:bg-[#1E0D38]/70 backdrop-blur-sm text-[#4A4440] dark:text-[#D4B8F0] hover:bg-coral hover:text-white transition-all cursor-pointer font-bold text-sm"
-            style={{ fontFamily }}
+            className="w-11 h-11 flex items-center justify-center rounded-full border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 bg-white/80 dark:bg-[#1E0D38]/70 backdrop-blur-sm text-[#4A4440] dark:text-[#D4B8F0] active:bg-coral active:text-white transition-all cursor-pointer shadow-sm"
           >
-            Prev
+            <i className="ri-arrow-left-s-line text-2xl"></i>
           </button>
           <button
             type="button"
             onClick={() => scrollByCards(1)}
-            className="px-4 py-2 rounded-full border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 bg-white/80 dark:bg-[#1E0D38]/70 backdrop-blur-sm text-[#4A4440] dark:text-[#D4B8F0] hover:bg-coral hover:text-white transition-all cursor-pointer font-bold text-sm"
-            style={{ fontFamily }}
+            className="w-11 h-11 flex items-center justify-center rounded-full border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 bg-white/80 dark:bg-[#1E0D38]/70 backdrop-blur-sm text-[#4A4440] dark:text-[#D4B8F0] active:bg-coral active:text-white transition-all cursor-pointer shadow-sm"
           >
-            Next
+            <i className="ri-arrow-right-s-line text-2xl"></i>
           </button>
         </div>
       </div>

@@ -5,6 +5,10 @@ import BookingCard from "./components/BookingCard";
 import BlogManager from "./components/BlogManager";
 import AvailabilityManager from "./components/AvailabilityManager";
 import { useLogout } from "@/components/feature/LogoutProvider";
+import { useDarkMode } from "@/hooks/useDarkMode";
+import { Card } from "@/design-system/atoms/Card";
+import { Button } from "@/design-system/atoms/Button";
+import { tokens } from "@/design-system/tokens";
 
 interface Booking {
   id: string;
@@ -36,6 +40,7 @@ export default function AdminPage() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const { confirmLogout, isLoggingOut } = useLogout();
+  const { isDark, toggle: toggleDark } = useDarkMode();
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 
   const applyQuickRange = (range: "this_week" | "this_month" | "last_month") => {
@@ -84,8 +89,6 @@ export default function AdminPage() {
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
 
-      console.log("Sending request with admin_secret length:", adminSecret.length);
-
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
         if (res.status === 401) {
@@ -132,8 +135,6 @@ export default function AdminPage() {
         body: JSON.stringify({ action: "list", admin_secret: secret, booking_id: "_" }),
         signal: controller.signal,
       }).finally(() => window.clearTimeout(timeoutId));
-
-      console.log("Login attempt - sending admin_secret length:", secret.length);
 
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.success) {
@@ -192,10 +193,18 @@ export default function AdminPage() {
     pending_verification: bookings.filter((b) => b.status === "pending_verification").length,
     confirmed: bookings.filter((b) => b.status === "confirmed").length,
     cancelled: bookings.filter((b) => b.status === "cancelled").length,
+    blog: 0,
   };
 
-  const byStatus = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
+  const tabs: { key: FilterTab; label: string; color: string; bgColor: string }[] = [
+    { key: "pending_verification", label: t("admin_tab_pending"), color: "text-yellow-600", bgColor: "bg-yellow-50" },
+    { key: "confirmed", label: t("admin_tab_confirmed"), color: "text-teal-600", bgColor: "bg-teal-50" },
+    { key: "cancelled", label: t("admin_tab_cancelled"), color: "text-red-600", bgColor: "bg-red-50" },
+    { key: "blog", label: t("admin_tab_blog"), color: "text-coral", bgColor: "bg-coral/5" },
+    { key: "all", label: t("admin_tab_all"), color: "text-gray-600", bgColor: "bg-gray-50" },
+  ];
 
+  const byStatus = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
   const byDate = byStatus.filter((b) => {
     const bookingDate = b.preferred_date;
     if (dateFrom && bookingDate < dateFrom) return false;
@@ -213,36 +222,46 @@ export default function AdminPage() {
       })
     : byDate;
 
-  const tabs: { key: FilterTab; label: string; color: string }[] = [
-    { key: "pending_verification", label: t("admin_tab_pending"), color: "text-yellow-600" },
-    { key: "confirmed", label: t("admin_tab_confirmed"), color: "text-teal-600" },
-    { key: "cancelled", label: t("admin_tab_cancelled"), color: "text-red-500" },
-    { key: "blog", label: t("admin_tab_blog"), color: "text-coral" },
-    { key: "all", label: t("admin_tab_all"), color: "text-gray-600" },
-  ];
-
-  // isLoggingOut is now handled by LogoutProvider in App.tsx
   if (isLoggingOut) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top bar */}
-      <div className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-coral flex items-center justify-center">
-            <i className="ri-calendar-check-line text-white text-base"></i>
+    <div className={`min-h-screen ${isDark ? 'dark bg-[#0E0818]' : 'bg-[#F7F4EF]'}`}>
+      <div className="bg-white/80 dark:bg-[#1E0D38]/80 backdrop-blur-md border-b border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#2D1B4E] p-1 shadow-lg border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+            <img 
+              src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
+              alt="Admin Icon"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div>
-            <h1 className="font-bold text-gray-800 text-base leading-tight" style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}>
+            <h1 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-lg leading-tight tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
               {t("admin_dashboard")}
             </h1>
-            <p className="text-xs text-gray-400">Chiu Gor French</p>
+            <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] font-black uppercase tracking-[0.2em] mt-0.5">Chiu Gor French</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Language Switcher Tabs */}
-          <div className="flex bg-gray-100 p-1 rounded-xl">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => window.location.href = '/'}
+            className="!px-6 !py-3 !text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest"
+          >
+            <i className="ri-home-4-line mr-2 text-base"></i>
+            {t("admin_home", "Home")}
+          </Button>
+
+          <Button
+            variant="ghost"
+            onClick={toggleDark}
+            className="!w-10 !h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
+          >
+            <i className={isDark ? 'ri-sun-line text-lg' : 'ri-moon-line text-lg'}></i>
+          </Button>
+
+          <div className="flex bg-gray-100/50 dark:bg-[#2D1B4E]/50 p-1 rounded-full backdrop-blur-sm">
             {[
               { code: "fr", label: "FR" },
               { code: "en", label: "EN" },
@@ -251,10 +270,10 @@ export default function AdminPage() {
               <button
                 key={lang.code}
                 onClick={() => i18n.changeLanguage(lang.code)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
                   i18n.language === lang.code
-                    ? "bg-white text-coral shadow-sm"
-                    : "text-gray-400 hover:text-gray-600"
+                    ? 'bg-white dark:bg-coral text-coral dark:text-white shadow-sm'
+                    : 'text-[#7A7068] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5]'
                 }`}
               >
                 {lang.label}
@@ -262,27 +281,16 @@ export default function AdminPage() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              title={t("admin_refresh")}
-              className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-50"
-            >
-              <i className={`ri-refresh-line text-base ${refreshing ? "animate-spin" : ""}`}></i>
-            </button>
-            <button
-              onClick={confirmLogout}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <i className="ri-logout-box-r-line"></i>
-              {t("admin_logout")}
-            </button>
-          </div>
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="!px-6 !py-3 !text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest !text-[#7A7068] dark:!text-[#B89FD8] hover:!text-coral"
+          >
+            <i className="ri-logout-box-line mr-2 text-base"></i>
+            {t("admin_logout")}
+          </Button>
         </div>
       </div>
-
-      {/* Logout confirm is now global via LogoutProvider */}
 
       <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
         {authError && (
@@ -302,114 +310,112 @@ export default function AdminPage() {
 
         <AvailabilityManager adminSecret={adminSecret} onUnauthorized={handleInvalidSecret} />
 
-        {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {[
-            { label: t("admin_tab_pending"), count: counts.pending_verification, icon: "ri-time-line", bg: "bg-yellow-50", text: "text-yellow-600", border: "border-yellow-200" },
-            { label: t("admin_tab_confirmed"), count: counts.confirmed, icon: "ri-checkbox-circle-line", bg: "bg-teal-50", text: "text-teal-600", border: "border-teal-200" },
-            { label: t("admin_tab_cancelled"), count: counts.cancelled, icon: "ri-close-circle-line", bg: "bg-red-50", text: "text-red-500", border: "border-red-200" },
-            { label: t("admin_tab_all"), count: counts.all, icon: "ri-file-list-3-line", bg: "bg-gray-50", text: "text-gray-600", border: "border-gray-200" },
+            { label: t("admin_tab_pending"), count: counts.pending_verification, icon: "ri-time-line", bg: "bg-yellow-500/10", text: "text-yellow-600 dark:text-yellow-400", border: "border-yellow-500/20" },
+            { label: t("admin_tab_confirmed"), count: counts.confirmed, icon: "ri-checkbox-circle-line", bg: "bg-teal-500/10", text: "text-teal-600 dark:text-teal-400", border: "border-teal-500/20" },
+            { label: t("admin_tab_cancelled"), count: counts.cancelled, icon: "ri-close-circle-line", bg: "bg-red-500/10", text: "text-red-500 dark:text-red-400", border: "border-red-500/20" },
+            { label: t("admin_tab_all"), count: counts.all, icon: "ri-file-list-3-line", bg: "bg-coral/10", text: "text-coral", border: "border-coral/20" },
           ].map((stat) => (
-            <div key={stat.label} className={`${stat.bg} border ${stat.border} rounded-xl p-4`}>
-              <div className={`w-8 h-8 flex items-center justify-center mb-2`}>
-                <i className={`${stat.icon} ${stat.text} text-xl`}></i>
+            <Card key={stat.label} className="!bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 flex flex-col items-center text-center !rounded-[2.5rem] shadow-sm hover:shadow-lg transition-all">
+              <div className={`w-14 h-14 rounded-2xl ${stat.bg} flex items-center justify-center mb-4`}>
+                <i className={`${stat.icon} ${stat.text} text-2xl`}></i>
               </div>
-              <p className={`text-2xl font-bold ${stat.text}`}>{stat.count}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
-            </div>
+              <p className={`text-4xl font-black ${stat.text}`} style={{ fontFamily: tokens.typography.fontFamilyEn }}>{stat.count}</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-2">{stat.label}</p>
+            </Card>
           ))}
         </div>
 
         {/* Date range filter */}
-        <div className="bg-white border border-gray-100 rounded-xl p-4 mb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <Card className="p-6 mb-8 !rounded-[2.5rem] !bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-2 flex-1">
-              <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                <i className="ri-calendar-line text-gray-400 text-sm"></i>
+              <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl text-coral">
+                <i className="ri-calendar-line text-lg"></i>
               </div>
-              <span className="text-sm text-gray-500 whitespace-nowrap">{t("admin_booking_date")} :</span>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="flex-1 min-w-0 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-gray-400 cursor-pointer"
-              />
-              <span className="text-gray-400 text-sm">—</span>
-              <input
-                type="date"
-                value={dateTo}
-                min={dateFrom}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="flex-1 min-w-0 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-gray-400 cursor-pointer"
-              />
+              <div className="flex-1 flex items-center gap-2">
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="flex-1 min-w-0 px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
+                />
+                <span className="text-[#7A7068] dark:text-[#B89FD8] text-sm">—</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  min={dateFrom}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="flex-1 min-w-0 px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
+                />
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {(["this_week", "this_month", "last_month"] as const).map((r) => (
-                <button
+                <Button
                   key={r}
+                  variant="ghost"
                   onClick={() => applyQuickRange(r)}
-                  className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-500 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer whitespace-nowrap"
+                  className="!px-3 !py-2 !text-sm !rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20"
                 >
-                  {r === "this_week" ? "Cette semaine" : r === "this_month" ? "Ce mois-ci" : "Mois dernier"}
-                </button>
+                  {r === "this_week" ? "Semaine" : r === "this_month" ? "Mois" : "Dernier"}
+                </Button>
               ))}
               {hasDateFilter && (
-                <button
+                <Button
+                  variant="outline"
                   onClick={clearDateRange}
-                  className="px-3 py-1.5 rounded-lg bg-gray-100 text-xs text-gray-500 hover:bg-gray-200 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1"
+                  className="!px-3 !py-2 !text-sm !rounded-xl flex items-center gap-1"
                 >
-                  <i className="ri-close-line"></i>Effacer
-                </button>
+                  <i className="ri-close-line"></i>Clear
+                </Button>
               )}
             </div>
           </div>
-          {hasDateFilter && (
-            <p className="text-xs text-gray-400 mt-2 ml-7">
-              Cours affichés {dateFrom && `du ${dateFrom}`}{dateFrom && dateTo && " "}{dateTo && `au ${dateTo}`}
-            </p>
-          )}
-        </div>
+        </Card>
 
         {/* Search bar */}
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-3 w-5 h-full flex items-center justify-center pointer-events-none">
-            <i className="ri-search-line text-gray-400 text-sm"></i>
+        <div className="relative mb-8">
+          <div className="absolute inset-y-0 left-5 w-5 h-full flex items-center justify-center pointer-events-none">
+            <i className="ri-search-line text-[#7A7068] dark:text-[#B89FD8] text-lg"></i>
           </div>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Rechercher par nom ou e-mail..."
-            className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-all"
+            placeholder={t("admin_search_placeholder", "Search students...")}
+            className="w-full pl-14 pr-14 py-4 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-full text-base text-[#1A1410] dark:text-[#E8E0F5] placeholder-[#7A7068]/50 dark:placeholder-[#B89FD8]/50 focus:outline-none focus:border-coral transition-all font-bold shadow-inner"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute inset-y-0 right-3 w-5 h-full flex items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer"
+              className="absolute inset-y-0 right-5 w-10 h-full flex items-center justify-center text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-colors cursor-pointer"
             >
-              <i className="ri-close-line text-sm"></i>
+              <i className="ri-close-line text-xl"></i>
             </button>
           )}
         </div>
 
-        {/* Filter tabs */}
-        <div className="flex items-center gap-1 bg-white border border-gray-100 rounded-xl p-1 mb-6 w-fit">
+        <div className="flex items-center gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-full p-1.5 mb-8 w-fit overflow-x-auto max-w-full no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
                 filter === tab.key
-                  ? "bg-gray-800 text-white"
-                  : `${tab.color} hover:bg-gray-50`
+                  ? tab.key === "cancelled" 
+                    ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
+                    : "bg-[#1A1410] dark:bg-coral text-white shadow-lg shadow-coral/20"
+                  : `${tab.color} hover:bg-[#F7F4EF] dark:hover:bg-[#2D1B4E]`
               }`}
             >
               {tab.label}
-              {counts[tab.key] > 0 && (
-                <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                  filter === tab.key ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
+              {counts[tab.key as keyof typeof counts] > 0 && (
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+                  filter === tab.key ? "bg-white/20 text-white" : `${tab.bgColor} ${tab.color}`
                 }`}>
-                  {counts[tab.key]}
+                  {counts[tab.key as keyof typeof counts]}
                 </span>
               )}
             </button>

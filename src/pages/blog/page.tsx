@@ -5,6 +5,9 @@ import Navbar from '@/pages/home/components/Navbar';
 import Footer from '@/pages/home/components/Footer';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
+import { tokens } from '@/design-system/tokens';
+import { Card } from '@/design-system/atoms/Card';
+
 interface BlogPost {
   id: string;
   title: string;
@@ -80,13 +83,13 @@ export default function BlogPage() {
       <div className="relative py-16 mb-12 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-coral/5 to-teal/5 dark:from-coral/10 dark:to-teal/10"></div>
         <div className="max-w-6xl mx-auto px-4 relative z-10 text-center">
-          <p className="text-coral font-bold text-sm uppercase tracking-widest mb-3" style={{ fontFamily }}>
+          <p className="text-coral font-bold text-sm uppercase tracking-widest mb-3" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t('nav_blog')}
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6" style={{ fontFamily }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t('blog_title')}
           </h1>
-          <p className="max-w-2xl mx-auto text-[#7A7068] dark:text-[#C4A8E8] text-lg" style={{ fontFamily }}>
+          <p className="max-w-2xl mx-auto text-[#7A7068] dark:text-[#C4A8E8] text-lg" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t('blog_subtitle')}
           </p>
         </div>
@@ -98,7 +101,7 @@ export default function BlogPage() {
             {/* Percentage counter */}
             <div
               className="mb-6 flex items-baseline gap-0.5"
-              style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+              style={{ fontFamily: tokens.typography.fontFamilyEn }}
             >
               {digits.map((d, i) => (
                 <span
@@ -144,15 +147,17 @@ export default function BlogPage() {
                 <div className="absolute inset-0 bg-white/30 animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
               </div>
             </div>
-            <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily }}>
+            <p className="mt-6 text-[#8A6A4A] dark:text-[#B89FD8] text-xs tracking-[0.25em] uppercase font-semibold animate-pulse" style={{ fontFamily: tokens.typography.fontFamily }}>
               {t('blog_loading')}
             </p>
           </div>
         ) : posts.length === 0 ? (
-          <div className="text-center py-20 bg-white dark:bg-[#1E0D38] rounded-3xl border border-[#D4C8BC]/60 dark:border-[#3B2060]/60">
+          <Card className="text-center py-20 px-6">
             <i className="ri-article-line text-5xl text-gray-200 dark:text-gray-700 mb-4"></i>
-            <p className="text-[#7A7068] dark:text-[#C4A8E8] text-lg font-medium">{t('blog_no_articles')}</p>
-          </div>
+            <p className="text-[#7A7068] dark:text-[#C4A8E8] text-lg font-medium" style={{ fontFamily: tokens.typography.fontFamily }}>
+              {t('blog_no_articles')}
+            </p>
+          </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post, i) => (

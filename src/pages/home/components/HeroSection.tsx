@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '@/design-system/atoms/Button';
+import { tokens } from '@/design-system/tokens';
 
 const LEAF_URL = 'https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png';
 
@@ -17,6 +19,7 @@ const AUTUMN_FILTERS = [
 
 export default function HeroSection() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [isGust, setIsGust] = useState(false);
   const [watermarkGust, setWatermarkGust] = useState(false);
@@ -173,49 +176,42 @@ export default function HeroSection() {
             alt="Chiu Gor French"
             fetchPriority="high"
             decoding="async"
-            className="relative h-52 md:h-72 w-auto object-contain mx-auto animate-float"
+            className="relative h-40 sm:h-52 md:h-72 w-auto object-contain mx-auto animate-float"
             style={{ animationDuration: '6s' }}
           />
         </div>
 
         {/* CTA Buttons */}
         <div
-          className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
-          style={{ transitionDelay: '0.6s', transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+          className={`flex flex-col sm:flex-row items-center gap-5 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
+          style={{ transitionDelay: '0.6s', transitionTimingFunction: tokens.animations.spring }}
         >
-          <Link
-            to="/booking"
-            className="relative px-10 py-4 rounded-full bg-gradient-to-r from-[#CC0000] to-[#FF3333] text-white font-bold text-base hover:opacity-95 transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap overflow-hidden group flex items-center gap-3 canada-glow"
-            style={{ fontFamily }}
+          <Button
+            variant="primary"
+            onClick={() => navigate('/booking')}
+            className="group relative px-10 min-w-[220px] canada-glow"
           >
-            <span className="absolute inset-0 rounded-full border-2 border-white/30 scale-100 group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500" />
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-            <span className="relative z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
+            <span className="w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
               <i className="ri-calendar-check-line text-sm" />
             </span>
-            <span className="relative z-10">{t('hero_cta_booking')}</span>
-            <span className="relative z-10 w-5 h-5 flex items-center justify-center">
-              <i className="ri-arrow-right-line text-sm group-hover:translate-x-1 transition-transform duration-200" />
-            </span>
-          </Link>
+            <span>{t('hero_cta_booking')}</span>
+            <i className="ri-arrow-right-line text-sm group-hover:translate-x-1 transition-transform duration-200" />
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={() => {
               const el = document.getElementById('courses');
               if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
-            className="px-10 py-4 rounded-full bg-gradient-to-r from-teal to-[#38B2AC] text-white font-bold text-base hover:opacity-95 transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap shadow-lg shadow-teal/30 flex items-center gap-3"
-            style={{ fontFamily }}
+            className="group px-10 min-w-[220px]"
           >
-            <span className="relative z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
+            <span className="w-6 h-6 flex items-center justify-center rounded-full bg-white/20">
               <i className="ri-book-open-line text-sm" />
             </span>
-            <span className="relative z-10">{t('hero_cta_courses')}</span>
-            <span className="relative z-10 w-5 h-5 flex items-center justify-center">
-              <i className="ri-arrow-down-line text-sm group-hover:translate-y-1 transition-transform duration-200" />
-            </span>
-          </button>
+            <span>{t('hero_cta_courses')}</span>
+            <i className="ri-arrow-down-line text-sm group-hover:translate-y-1 transition-transform duration-200" />
+          </Button>
         </div>
 
       </div>

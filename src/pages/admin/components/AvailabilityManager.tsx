@@ -7,6 +7,8 @@ import {
   loadAvailabilityConfig,
   saveAvailabilityConfig,
 } from "@/lib/availability";
+import { Button } from "@/design-system/atoms/Button";
+import { tokens } from "@/design-system/tokens";
 
 function normalizeTimeSlot(value: string): { start: string; end: string } | null {
   const trimmed = value.trim();
@@ -223,25 +225,26 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
   const canSyncServer = Boolean(adminSecret && supabaseUrl);
 
   return (
-    <div className="bg-white border border-gray-100 rounded-3xl p-6 mb-8 shadow-sm">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+    <div className="bg-white dark:bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-[2.5rem] p-8 mb-8 shadow-xl shadow-[#D4C8BC]/10 dark:shadow-[#000000]/20">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
         <div>
-          <p className="text-lg font-semibold text-gray-900">{t("admin_avail_title")}</p>
-          <p className="text-sm text-gray-500 max-w-2xl mt-1">
+          <p className="text-2xl font-black text-[#1A1410] dark:text-[#E8E0F5] tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>{t("admin_avail_title")}</p>
+          <p className="text-sm text-[#7A7068] dark:text-[#B89FD8] max-w-2xl mt-2 font-medium">
             {t("admin_avail_subtitle")}
           </p>
         </div>
-        <button
-          type="button"
+        <Button
           onClick={handleSave}
-          className="inline-flex items-center justify-center rounded-full bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
+          variant="primary"
+          className="!px-8 !py-3 shadow-lg shadow-coral/20"
         >
           {t("admin_avail_save")}
-        </button>
+        </Button>
       </div>
 
       {!canSyncServer && (
-        <div className="mb-4 rounded-2xl border px-4 py-3 text-sm text-yellow-700 bg-yellow-50 border-yellow-200">
+        <div className="mb-6 rounded-2xl border px-4 py-3 text-sm text-yellow-700 dark:text-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700/50 font-bold">
+          <i className="ri-alert-line mr-2"></i>
           {adminSecret
             ? t("admin_avail_no_url")
             : t("admin_avail_no_auth")}
@@ -249,17 +252,22 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
       )}
 
       {(saveMessage || saveError) && (
-        <div className="mb-4 rounded-2xl border px-4 py-3 text-sm text-gray-700 bg-gray-50 border-gray-200">
-          {saveError ? <span className="text-red-600">{saveError}</span> : <span>{saveMessage}</span>}
+        <div className={`mb-6 rounded-2xl border px-4 py-3 text-sm font-bold ${
+          saveError 
+            ? "text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700/50" 
+            : "text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700/50"
+        }`}>
+          <i className={saveError ? "ri-error-warning-line mr-2" : "ri-checkbox-circle-line mr-2"}></i>
+          {saveError ? saveError : saveMessage}
         </div>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">
           {/* Weekday Selection */}
-          <div className="rounded-2xl border border-gray-200 p-4">
-            <p className="text-sm font-semibold text-gray-700 mb-3">{t("admin_avail_select_day")}</p>
-            <div className="grid grid-cols-7 gap-2">
+          <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_select_day")}</p>
+            <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
               {weekdayLabels.map((label, index) => {
                 const hasCustomSlots = config.availableTimeSlotsByWeekday[index] !== undefined;
                 return (
@@ -267,12 +275,12 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                     key={label}
                     type="button"
                     onClick={() => setSelectedWeekday(index)}
-                    className={`rounded-2xl px-3 py-2 text-sm font-medium transition-all ${
+                    className={`rounded-2xl px-3 py-3 text-xs font-black transition-all ${
                       selectedWeekday === index
-                        ? "bg-coral text-white"
+                        ? "bg-coral text-white shadow-lg shadow-coral/20"
                         : hasCustomSlots
-                        ? "bg-blue-100 text-blue-800 border border-blue-300"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20"
+                        : "bg-white dark:bg-[#1E0D38] text-[#7A7068] dark:text-[#B89FD8] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 hover:border-coral/50"
                     }`}
                   >
                     {label}
@@ -280,30 +288,30 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 );
               })}
             </div>
-            <p className="text-xs text-gray-500 mt-3">
-              {t("admin_avail_hint_blue")}
+            <p className="text-[10px] font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">
+              * {t("admin_avail_hint_blue")}
             </p>
           </div>
 
           {/* Time Slot Customization */}
-          <div className="rounded-2xl border border-gray-200 p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
-                <p className="text-sm font-semibold text-gray-700">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-sm font-black text-[#1A1410] dark:text-[#E8E0F5] uppercase tracking-wider">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
+                <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] mt-1 font-medium">
                   {t("admin_avail_custom_slots_hint")}
                 </p>
               </div>
-              <button
-                type="button"
+              <Button
                 onClick={handleResetWeekdaySlots}
-                className="rounded-2xl bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-200 transition-all"
+                variant="outline"
+                className="!px-4 !py-2 !text-[10px] !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
               >
                 {t("admin_avail_reset_default")}
-              </button>
+              </Button>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap mb-4">
+            <div className="flex items-center gap-3 flex-wrap mb-6">
               <input
                 type="text"
                 placeholder={t("admin_avail_slot_placeholder")}
@@ -312,25 +320,28 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                   setWeekdaySlotInput(e.target.value);
                   setInputError("");
                 }}
-                className="min-w-[200px] flex-1 rounded-2xl border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-coral"
+                className="min-w-[200px] flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
               />
-              <button
-                type="button"
+              <Button
                 onClick={handleAddWeekdayTimeSlot}
-                className="rounded-2xl bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
+                variant="primary"
+                className="!px-6 !py-3 shadow-lg shadow-coral/10"
               >
                 {t("admin_avail_add_slot")}
-              </button>
+              </Button>
             </div>
             {inputError && (
-              <p className="text-sm text-red-600 mb-4">{inputError}</p>
+              <p className="text-xs text-red-600 dark:text-red-400 mb-4 font-bold ml-1 flex items-center gap-2">
+                <i className="ri-error-warning-line"></i>{inputError}
+              </p>
             )}
 
-            <div className="space-y-2 mb-4">
+            <div className="space-y-3 mb-6">
               {selectedWeekdaySlots.length > 0 ? (
                 selectedWeekdaySlots.map((slot, index) => (
-                  <div key={`${slot.start}-${slot.end}-${index}`} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                    <div className="flex items-center gap-2 flex-1">
+                  <div key={`${slot.start}-${slot.end}-${index}`} className="flex items-center justify-between rounded-2xl bg-white dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-4 py-3 shadow-sm">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className={`w-2 h-2 rounded-full ${slot.available ? 'bg-teal-500 animate-pulse' : 'bg-red-500'}`}></div>
                       <input
                         type="text"
                         value={`${slot.start}-${slot.end}`}
@@ -353,14 +364,14 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             });
                           }
                         }}
-                        className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:border-coral"
+                        className="flex-1 px-2 py-1 text-sm bg-transparent text-[#1A1410] dark:text-[#E8E0F5] border-b border-transparent focus:border-coral focus:outline-none font-bold"
                         placeholder="HH:MM-HH:MM"
                       />
-                      <span className={`text-sm font-medium ${slot.available ? 'text-green-700' : 'text-red-700'}`}>
-                        {slot.available ? `(${t("admin_avail_available")})` : `(${t("admin_avail_blocked")})`}
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${slot.available ? 'text-teal-600' : 'text-red-500'}`}>
+                        {slot.available ? t("admin_avail_available") : t("admin_avail_blocked")}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 ml-2">
+                    <div className="flex items-center gap-2 ml-4">
                       <button
                         type="button"
                         onClick={() => {
@@ -378,10 +389,10 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             };
                           });
                         }}
-                        className={`px-2 py-1 rounded text-xs font-medium transition-all ${
+                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                           slot.available
-                            ? "bg-red-100 text-red-700 hover:bg-red-200"
-                            : "bg-green-100 text-green-700 hover:bg-green-200"
+                            ? "bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                            : "bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20"
                         }`}
                       >
                         {slot.available ? t("admin_avail_block_btn") : t("admin_avail_unblock_btn")}
@@ -401,7 +412,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             };
                           });
                         }}
-                        className="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                        className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-[#F7F4EF] dark:bg-[#1E0D38] text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-all"
                       >
                         {t("admin_avail_remove_btn")}
                       </button>
@@ -409,13 +420,16 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">
-                  {t("admin_avail_no_slots")} {weekdayLabels[selectedWeekday]}. {t("admin_avail_add_hint")}
-                </p>
+                <div className="text-center py-10 bg-[#F7F4EF]/30 dark:bg-[#130A22]/30 rounded-2xl border border-dashed border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
+                  <i className="ri-calendar-event-line text-3xl text-[#D4C8BC] dark:text-[#3B2060] mb-3 block"></i>
+                  <p className="text-sm text-[#7A7068] dark:text-[#B89FD8] font-medium px-4">
+                    {t("admin_avail_no_slots")} {weekdayLabels[selectedWeekday]}.<br/>{t("admin_avail_add_hint")}
+                  </p>
+                </div>
               )}
             </div>
 
-            <p className="text-xs text-gray-500">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068]/60 dark:text-[#B89FD8]/60 ml-1">
               {selectedWeekdaySlots.length > 0
                 ? t("admin_avail_slots_summary", {
                     available: selectedWeekdaySlots.filter((s) => s.available).length,
@@ -427,48 +441,48 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 p-4 space-y-4">
+        <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 space-y-6">
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-3">{t("admin_avail_blocked_dates")}</p>
-            <div className="flex items-center gap-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_blocked_dates")}</p>
+            <div className="flex items-center gap-3">
               <input
                 type="date"
                 value={blockedDateInput}
                 onChange={(e) => setBlockedDateInput(e.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-coral"
+                className="w-full rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
               />
-              <button
-                type="button"
+              <Button
                 onClick={handleAddBlockedDate}
-                className="rounded-2xl bg-coral px-4 py-2 text-sm font-semibold text-white hover:bg-coral-600 transition-all"
+                variant="primary"
+                className="!px-6 !py-3 shadow-lg shadow-coral/10"
               >
                 {t("admin_avail_add_btn")}
-              </button>
+              </Button>
             </div>
             {config.blockedDates.length > 0 ? (
-              <div className="mt-4 grid gap-2">
+              <div className="mt-6 grid gap-2">
                 {config.blockedDates.map((date) => (
-                  <div key={date} className="flex items-center justify-between rounded-2xl bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                  <div key={date} className="flex items-center justify-between rounded-2xl bg-white dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-4 py-3 text-sm font-bold text-[#1A1410] dark:text-[#E8E0F5] shadow-sm">
                     <span>{date}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveBlockedDate(date)}
-                      className="text-red-500 hover:text-red-600"
+                      className="text-red-500 hover:text-red-600 transition-colors p-1"
                     >
-                      {t("admin_avail_remove_btn")}
+                      <i className="ri-delete-bin-line"></i>
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-gray-500 mt-3">{t("admin_avail_no_blocked")}</p>
+              <p className="text-[10px] font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">{t("admin_avail_no_blocked")}</p>
             )}
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm text-gray-600">
-            <p className="font-semibold text-gray-800 mb-2">{t("admin_avail_behavior_title")}</p>
-            <p>{t("admin_avail_behavior_desc")}</p>
-            <p className="mt-2">{t("admin_avail_storage_desc")}</p>
+          <div className="rounded-[1.5rem] border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50 p-6 text-sm text-[#7A7068] dark:text-[#B89FD8]">
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#1A1410] dark:text-[#E8E0F5] mb-3">{t("admin_avail_behavior_title")}</p>
+            <p className="leading-relaxed font-medium">{t("admin_avail_behavior_desc")}</p>
+            <p className="mt-3 leading-relaxed font-medium opacity-80">{t("admin_avail_storage_desc")}</p>
           </div>
         </div>
       </div>
