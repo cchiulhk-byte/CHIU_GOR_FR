@@ -36,7 +36,7 @@ const translation = {
 
   // About
   about_label: "À propos",
-  about_title: "Bonjour et bienvenue, je suis Chiu Gor!",
+  about_title: "Bonjour, je suis Chiu Gor!",
   about_subtitle: "Professeur de français passionné",
   about_p1: "Ma passion pour les langues est née tout petit — et c'est le français qui a vraiment capturé mon cœur. De 2010 à 2014, j'ai étudié les Études françaises au Canada, avant de poursuivre avec une Maîtrise en études françaises, m'immergeant profondément dans la langue, la culture et la littérature françaises.",
   about_p2: "Après mes études, j'ai travaillé en tant que traducteur et rédacteur en chef dans une maison d'édition, mettant le français en pratique au quotidien. Je me consacre depuis à l'enseignement du français en tant que tuteur indépendant, ayant aidé plus de 120 étudiants — du niveau A1 jusqu'au B2 — à découvrir leur amour pour le français, chacun à son propre rythme.",
