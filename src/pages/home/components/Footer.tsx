@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const LEAF_URL = 'https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png';
@@ -18,8 +20,21 @@ const SOCIAL_COLORS = [
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const [tapCount, setTapCount] = useState(0);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
+
+  const handleLogoTap = () => {
+    const newCount = tapCount + 1;
+    if (newCount >= 5) {
+      setTapCount(0);
+      navigate('/admin');
+    } else {
+      setTapCount(newCount);
+      setTimeout(() => setTapCount(0), 3000);
+    }
+  };
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -61,8 +76,9 @@ export default function Footer() {
             <img
               src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
               alt="Chiu Gor French"
-              className="h-16 w-auto object-contain"
+              className="h-16 w-auto object-contain cursor-pointer select-none"
               style={{ imageRendering: 'crisp-edges' }}
+              onClick={handleLogoTap}
             />
 
             {/* Canada × HK flags */}
