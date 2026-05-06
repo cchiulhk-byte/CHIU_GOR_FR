@@ -317,7 +317,7 @@ const translation = {
   blog_comments_delete_confirm: "確定刪除這則留言？",
 
   // Admin
-  admin_dashboard: "管理後台",
+  admin_dashboard: "後台管理",
   admin_logout: "登出",
   admin_refresh: "重新整理",
   admin_login_title: "管理後台",
