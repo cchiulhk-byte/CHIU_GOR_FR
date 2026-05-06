@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const NAME_VARIANTS = ['超哥 - 你的法文老師', ' Chiu Gor - Votre prof de français', ' Chiu Gor - Your French Teacher'];
+const NAME_VARIANTS = ['超哥 - 你的法文老師', ' Chiu Gor - Votre professeur de français', ' Chiu Gor - Your French Teacher'];
 
 export default function AboutSection() {
   const { t, i18n } = useTranslation();
@@ -132,7 +132,7 @@ export default function AboutSection() {
           {/* Right: Text */}
           <div ref={textRef} className={`flex-1 reveal-right ${textVisible ? 'visible' : ''}`}>
             <h2
-              className="text-3xl md:text-4xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6 leading-tight"
+              className="text-3xl md:text-4xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6 leading-tight min-h-[5rem] md:min-h-[6rem]"
               style={{ fontFamily }}
             >
               {renderTitle()}
