@@ -1,13 +1,42 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+
+const ABOUT_TYPING_WORDS = ['Chiu Gor 超哥', 'votre prof de français', 'your French teacher', '你的法語老師'];
 
 export default function AboutSection() {
   const { t, i18n } = useTranslation();
   const { ref: sectionRef, visible } = useScrollReveal(0.1);
   const { ref: imgRef, visible: imgVisible } = useScrollReveal(0.1);
   const { ref: textRef, visible: textVisible } = useScrollReveal(0.1);
+  const [typingText, setTypingText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
+
+  useEffect(() => {
+    const currentWord = ABOUT_TYPING_WORDS[wordIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && typingText === currentWord) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && typingText === '') {
+      setIsDeleting(false);
+      setWordIndex((prev) => (prev + 1) % ABOUT_TYPING_WORDS.length);
+    } else {
+      const speed = isDeleting ? 60 : 120;
+      timeout = setTimeout(() => {
+        setTypingText(
+          isDeleting
+            ? currentWord.substring(0, typingText.length - 1)
+            : currentWord.substring(0, typingText.length + 1)
+        );
+      }, speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeleting, wordIndex]);
 
   const tags = [
     { key: 'about_tag1', color: 'bg-coral text-white' },
@@ -84,11 +113,15 @@ export default function AboutSection() {
           {/* Right: Text */}
           <div ref={textRef} className={`flex-1 reveal-right ${textVisible ? 'visible' : ''}`}>
             <h2
-              className="text-3xl md:text-4xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6 leading-tight"
+              className="text-3xl md:text-4xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-2 leading-tight"
               style={{ fontFamily }}
             >
               {t('about_title')}
             </h2>
+            <p className="text-lg sm:text-xl font-bold mb-6" style={{ fontFamily }}>
+              <span className="text-[#0ABAB5]">{typingText}</span>
+              <span className="animate-pulse text-[#0ABAB5]">|</span>
+            </p>
 
             {/* Canada experience highlight */}
             <div className="flex items-start gap-3 bg-gradient-to-r from-[#FF0000]/8 to-[#FF0000]/3 dark:from-[#FF0000]/10 dark:to-transparent border border-[#FF0000]/15 rounded-2xl p-4 mb-5">
