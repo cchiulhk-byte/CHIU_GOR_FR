@@ -17,9 +17,13 @@ function ExperienceCard({ exp, index }: { exp: ExperienceItem; index: number }) 
       <div className="flex-1 ml-12 md:ml-0">
         <div className={`bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-2xl p-6 card-hover border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 ${exp.cardAccent} group`}>
           <div className="flex items-start gap-4">
-            <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-              <i className={`${exp.icon} text-lg`}></i>
-            </div>
+            {exp.image ? (
+              <img src={exp.image} alt="" className="w-10 h-10 rounded-xl flex-shrink-0 object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6" />
+            ) : (
+              <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                <i className={`${exp.icon} text-lg`}></i>
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span className="inline-block bg-mustard text-gray-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap" style={{ fontFamily }}>
@@ -53,6 +57,7 @@ interface ExperienceItem {
   iconBg: string;
   icon: string;
   flag?: string;
+  image?: string;
 }
 
 const EXPERIENCES: ExperienceItem[] = [
@@ -66,6 +71,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-mustard/20 text-yellow-600',
     icon: 'ri-heart-line',
     flag: '🇭🇰',
+    image: '/exp-passion.png',
   },
   {
     yearKey: 'exp2_year',
