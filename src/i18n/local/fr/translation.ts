@@ -356,7 +356,7 @@ const translation = {
   admin_booking_notes: "Notes",
   admin_booking_approve: "Approuver & Confirmer",
   admin_booking_cancel: "Annuler la réservation",
-  admin_booking_confirm_cancel_title: "Annuler cette réservation ?",
+  admin_booking_confirm_cancel_title: "Annuler cette réservation?",
   admin_booking_confirm_cancel_desc: "Un e-mail d'annulation sera envoyé à l'étudiant. Cette action est irréversible.",
   admin_booking_confirm_cancel_btn: "Oui, annuler & notifier l'étudiant",
   admin_booking_back: "Retour",
