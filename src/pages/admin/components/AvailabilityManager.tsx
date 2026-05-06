@@ -225,7 +225,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
   const canSyncServer = Boolean(adminSecret && supabaseUrl);
 
   return (
-    <div className="bg-white dark:bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-8 mb-6 sm:mb-8 shadow-xl shadow-[#D4C8BC]/10 dark:shadow-[#000000]/20">
+    <div className="bg-white dark:bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-8 mb-6 sm:mb-8 shadow-xl shadow-[#D4C8BC]/10 dark:shadow-[#000000]/20 overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div>
           <p className="text-xl sm:text-2xl font-black text-[#1A1410] dark:text-[#E8E0F5] tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>{t("admin_avail_title")}</p>
@@ -297,8 +297,8 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
-                <p className="text-sm font-black text-[#1A1410] dark:text-[#E8E0F5] uppercase tracking-wider">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
-                <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] mt-1 font-medium">
+                <p className="text-sm font-black text-[#1A1410] dark:text-[#E8E0F5] uppercase tracking-wider break-words">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
+                <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] mt-1 font-medium break-words">
                   {t("admin_avail_custom_slots_hint")}
                 </p>
               </div>
@@ -320,7 +320,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                   setWeekdaySlotInput(e.target.value);
                   setInputError("");
                 }}
-                className="min-w-[200px] flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
+                className="min-w-0 flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
               />
               <Button
                 onClick={handleAddWeekdayTimeSlot}

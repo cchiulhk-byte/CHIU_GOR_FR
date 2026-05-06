@@ -225,7 +225,7 @@ export default function AdminPage() {
   if (isLoggingOut) return null;
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark bg-[#0E0818]' : 'bg-[#F7F4EF]'}`}>
+    <div className={`min-h-screen overflow-x-hidden ${isDark ? 'dark bg-[#0E0818]' : 'bg-[#F7F4EF]'}`}>
       <div className="bg-white/80 dark:bg-[#1E0D38]/80 backdrop-blur-md border-b border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-3 sm:px-4 md:px-8 py-3 sm:py-4 sticky top-0 z-40">
         <div className="flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -292,7 +292,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 md:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-8 py-6 sm:py-8 overflow-x-hidden">
         {authError && (
           <div className="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-start justify-between gap-3">
             <div className="flex items-start gap-2">
