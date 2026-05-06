@@ -226,69 +226,71 @@ export default function AdminPage() {
 
   return (
     <div className={`min-h-screen ${isDark ? 'dark bg-[#0E0818]' : 'bg-[#F7F4EF]'}`}>
-      <div className="bg-white/80 dark:bg-[#1E0D38]/80 backdrop-blur-md border-b border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#2D1B4E] p-1 shadow-lg border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-            <img 
-              src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
-              alt="Admin Icon"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <div>
-            <h1 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-lg leading-tight tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
-              {t("admin_dashboard")}
-            </h1>
-            <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] font-black uppercase tracking-[0.2em] mt-0.5">Chiu Gor French</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => window.location.href = '/'}
-            className="!px-6 !py-3 !text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest"
-          >
-            <i className="ri-home-4-line mr-2 text-base"></i>
-            {t("admin_home", "Home")}
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={toggleDark}
-            className="!w-10 !h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
-          >
-            <i className={isDark ? 'ri-sun-line text-lg' : 'ri-moon-line text-lg'}></i>
-          </Button>
-
-          <div className="flex bg-gray-100/50 dark:bg-[#2D1B4E]/50 p-1 rounded-full backdrop-blur-sm">
-            {[
-              { code: "fr", label: "FR" },
-              { code: "en", label: "EN" },
-              { code: "zh-HK", label: "中文" },
-            ].map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => i18n.changeLanguage(lang.code)}
-                className={`px-4 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
-                  i18n.language === lang.code
-                    ? 'bg-white dark:bg-coral text-coral dark:text-white shadow-sm'
-                    : 'text-[#7A7068] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5]'
-                }`}
-              >
-                {lang.label}
-              </button>
-            ))}
+      <div className="bg-white/80 dark:bg-[#1E0D38]/80 backdrop-blur-md border-b border-[#D4C8BC]/40 dark:border-[#3B2060]/40 px-3 sm:px-4 md:px-8 py-3 sm:py-4 sticky top-0 z-40">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white dark:bg-[#2D1B4E] p-0.5 sm:p-1 shadow-lg border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 flex-shrink-0">
+              <img 
+                src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
+                alt="Admin Icon"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="min-w-0">
+              <h1 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-sm sm:text-lg leading-tight tracking-tight truncate" style={{ fontFamily: tokens.typography.fontFamily }}>
+                {t("admin_dashboard")}
+              </h1>
+              <p className="text-[9px] sm:text-xs text-[#7A7068] dark:text-[#B89FD8] font-black uppercase tracking-[0.2em] mt-0.5 hidden sm:block">Chiu Gor French</p>
+            </div>
           </div>
 
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="!px-6 !py-3 !text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest !text-[#7A7068] dark:!text-[#B89FD8] hover:!text-coral"
-          >
-            <i className="ri-logout-box-line mr-2 text-base"></i>
-            {t("admin_logout")}
-          </Button>
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = '/'}
+              className="!px-2.5 sm:!px-6 !py-2 sm:!py-3 !text-xs sm:!text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest"
+            >
+              <i className="ri-home-4-line text-base"></i>
+              <span className="hidden sm:inline ml-2">{t("admin_home", "Home")}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={toggleDark}
+              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
+            >
+              <i className={isDark ? 'ri-sun-line text-base sm:text-lg' : 'ri-moon-line text-base sm:text-lg'}></i>
+            </Button>
+
+            <div className="flex bg-gray-100/50 dark:bg-[#2D1B4E]/50 p-0.5 sm:p-1 rounded-full backdrop-blur-sm">
+              {[
+                { code: "fr", label: "FR" },
+                { code: "en", label: "EN" },
+                { code: "zh-HK", label: "中文" },
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => i18n.changeLanguage(lang.code)}
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-black transition-all cursor-pointer ${
+                    i18n.language === lang.code
+                      ? 'bg-white dark:bg-coral text-coral dark:text-white shadow-sm'
+                      : 'text-[#7A7068] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5]'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="!px-2.5 sm:!px-6 !py-2 sm:!py-3 !text-xs sm:!text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest !text-[#7A7068] dark:!text-[#B89FD8] hover:!text-coral"
+            >
+              <i className="ri-logout-box-line text-base"></i>
+              <span className="hidden sm:inline ml-2">{t("admin_logout")}</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -310,25 +312,25 @@ export default function AdminPage() {
 
         <AvailabilityManager adminSecret={adminSecret} onUnauthorized={handleInvalidSecret} />
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4 mb-10">
           {[
             { label: t("admin_tab_pending"), count: counts.pending_verification, icon: "ri-time-line", bg: "bg-yellow-500/10", text: "text-yellow-600 dark:text-yellow-400", border: "border-yellow-500/20" },
             { label: t("admin_tab_confirmed"), count: counts.confirmed, icon: "ri-checkbox-circle-line", bg: "bg-teal-500/10", text: "text-teal-600 dark:text-teal-400", border: "border-teal-500/20" },
             { label: t("admin_tab_cancelled"), count: counts.cancelled, icon: "ri-close-circle-line", bg: "bg-red-500/10", text: "text-red-500 dark:text-red-400", border: "border-red-500/20" },
             { label: t("admin_tab_all"), count: counts.all, icon: "ri-file-list-3-line", bg: "bg-coral/10", text: "text-coral", border: "border-coral/20" },
           ].map((stat) => (
-            <Card key={stat.label} className="!bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 flex flex-col items-center text-center !rounded-[2.5rem] shadow-sm hover:shadow-lg transition-all">
-              <div className={`w-14 h-14 rounded-2xl ${stat.bg} flex items-center justify-center mb-4`}>
-                <i className={`${stat.icon} ${stat.text} text-2xl`}></i>
+            <Card key={stat.label} className="!bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-3 sm:p-6 flex flex-col items-center text-center !rounded-2xl sm:!rounded-[2.5rem] shadow-sm hover:shadow-lg transition-all">
+              <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${stat.bg} flex items-center justify-center mb-2 sm:mb-4`}>
+                <i className={`${stat.icon} ${stat.text} text-xl sm:text-2xl`}></i>
               </div>
-              <p className={`text-4xl font-black ${stat.text}`} style={{ fontFamily: tokens.typography.fontFamilyEn }}>{stat.count}</p>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-2">{stat.label}</p>
+              <p className={`text-2xl sm:text-4xl font-black ${stat.text}`} style={{ fontFamily: tokens.typography.fontFamilyEn }}>{stat.count}</p>
+              <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-1 sm:mt-2">{stat.label}</p>
             </Card>
           ))}
         </div>
 
         {/* Date range filter */}
-        <Card className="p-6 mb-8 !rounded-[2.5rem] !bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
+        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 !rounded-2xl sm:!rounded-[2.5rem] !bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-2 flex-1">
               <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl text-coral">
@@ -397,12 +399,12 @@ export default function AdminPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-full p-1.5 mb-8 w-fit overflow-x-auto max-w-full no-scrollbar">
+        <div className="flex items-center gap-1 sm:gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-full p-1 sm:p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 sm:gap-2 ${
                 filter === tab.key
                   ? tab.key === "cancelled" 
                     ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
@@ -434,7 +436,7 @@ export default function AdminPage() {
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
             <i className="ri-inbox-line text-4xl text-gray-200 mb-3"></i>
             <p className="text-gray-400 text-sm">
-              {search.trim() ? `Aucun résultat pour « ${search} »` : `Aucune réservation${filter === "pending_verification" ? " en attente" : filter === "confirmed" ? " confirmée" : filter === "cancelée" ? " annulée" : ""}`}
+              {search.trim() ? `Aucun résultat pour « ${search} »` : `Aucune réservation${filter === "pending_verification" ? " en attente" : filter === "confirmed" ? " confirmée" : filter === "cancelled" ? " annulée" : ""}`}
             </p>
           </div>
         ) : (

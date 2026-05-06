@@ -225,18 +225,18 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
   const canSyncServer = Boolean(adminSecret && supabaseUrl);
 
   return (
-    <div className="bg-white dark:bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-[2.5rem] p-8 mb-8 shadow-xl shadow-[#D4C8BC]/10 dark:shadow-[#000000]/20">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+    <div className="bg-white dark:bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-8 mb-6 sm:mb-8 shadow-xl shadow-[#D4C8BC]/10 dark:shadow-[#000000]/20">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div>
-          <p className="text-2xl font-black text-[#1A1410] dark:text-[#E8E0F5] tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>{t("admin_avail_title")}</p>
-          <p className="text-sm text-[#7A7068] dark:text-[#B89FD8] max-w-2xl mt-2 font-medium">
+          <p className="text-xl sm:text-2xl font-black text-[#1A1410] dark:text-[#E8E0F5] tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>{t("admin_avail_title")}</p>
+          <p className="text-xs sm:text-sm text-[#7A7068] dark:text-[#B89FD8] max-w-2xl mt-1 sm:mt-2 font-medium">
             {t("admin_avail_subtitle")}
           </p>
         </div>
         <Button
           onClick={handleSave}
           variant="primary"
-          className="!px-8 !py-3 shadow-lg shadow-coral/20"
+          className="!px-6 sm:!px-8 !py-2.5 sm:!py-3 shadow-lg shadow-coral/20 w-full sm:w-auto"
         >
           {t("admin_avail_save")}
         </Button>
@@ -262,10 +262,10 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">
           {/* Weekday Selection */}
-          <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50">
+          <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50">
             <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_select_day")}</p>
             <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
               {weekdayLabels.map((label, index) => {
@@ -294,7 +294,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           </div>
 
           {/* Time Slot Customization */}
-          <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6">
+          <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
                 <p className="text-sm font-black text-[#1A1410] dark:text-[#E8E0F5] uppercase tracking-wider">{t("admin_avail_custom_slots_for")} {weekdayLabels[selectedWeekday]}</p>
@@ -371,7 +371,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                         {slot.available ? t("admin_avail_available") : t("admin_avail_blocked")}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 ml-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-4 flex-shrink-0">
                       <button
                         type="button"
                         onClick={() => {
@@ -441,7 +441,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-6 space-y-6">
+        <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_blocked_dates")}</p>
             <div className="flex items-center gap-3">
