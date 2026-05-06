@@ -17,12 +17,17 @@ const AUTUMN_FILTERS = [
   'sepia(0.3) hue-rotate(35deg) saturate(1.5) brightness(1.1)',
 ];
 
+const TYPING_WORDS = ['Chiu Gor', '超哥', 'French Teacher', '法語老師'];
+
 export default function HeroSection() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
   const [isGust, setIsGust] = useState(false);
   const [watermarkGust, setWatermarkGust] = useState(false);
+  const [typingText, setTypingText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
@@ -30,6 +35,29 @@ export default function HeroSection() {
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const currentWord = TYPING_WORDS[wordIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && typingText === currentWord) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && typingText === '') {
+      setIsDeleting(false);
+      setWordIndex((prev) => (prev + 1) % TYPING_WORDS.length);
+    } else {
+      const speed = isDeleting ? 60 : 120;
+      timeout = setTimeout(() => {
+        setTypingText(
+          isDeleting
+            ? currentWord.substring(0, typingText.length - 1)
+            : currentWord.substring(0, typingText.length + 1)
+        );
+      }, speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeleting, wordIndex]);
 
   // Gentle gust — just sways the watermark leaves, doesn't affect falling leaves
   const triggerGust = useCallback(() => {
@@ -179,6 +207,17 @@ export default function HeroSection() {
             className="relative h-40 sm:h-52 md:h-72 w-auto object-contain mx-auto animate-float"
             style={{ animationDuration: '6s' }}
           />
+        </div>
+
+        {/* Typing animation */}
+        <div
+          className={`mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          style={{ transitionDelay: '0.5s', transitionTimingFunction: tokens.animations.spring }}
+        >
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1A1410] dark:text-[#E8E0F5]" style={{ fontFamily }}>
+            <span className="text-coral">{typingText}</span>
+            <span className="animate-pulse text-coral">|</span>
+          </p>
         </div>
 
         {/* CTA Buttons */}
