@@ -426,7 +426,7 @@ const translation = {
   admin_avail_day_wed: "Mer",
   admin_avail_day_thu: "Jeu",
   admin_avail_day_fri: "Ven",
-  admin_avail_day_sat: "de",
+  admin_avail_day_sat: "Sam",
   admin_logout_confirm_title: "Se déconnecter?",
   admin_logout_confirm_desc: "Êtes-vous sûr(e) de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder aux fonctionnalités protégées.",
   admin_logout_confirm_btn: "Oui, se déconnecter",
