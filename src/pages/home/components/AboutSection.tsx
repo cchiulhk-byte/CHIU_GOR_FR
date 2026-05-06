@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const NAME_VARIANTS = ['超哥 - 你的法文老師', ' Chiu Gor - Votre professeur de français', ' Chiu Gor - Your French Teacher'];
+const NAME_VARIANTS = ['超哥 - 你的法文老師', ' Chiu Gor - Votre prof de français', ' Chiu Gor - Your French Teacher'];
 
 export default function AboutSection() {
   const { t, i18n } = useTranslation();
