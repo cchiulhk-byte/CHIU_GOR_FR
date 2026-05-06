@@ -18,12 +18,12 @@ function ExperienceCard({ exp, index }: { exp: ExperienceItem; index: number }) 
         <div className={`bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-2xl p-6 card-hover border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 ${exp.cardAccent} group`}>
           <div className="flex items-start gap-4">
             {exp.image ? (
-              <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
+              <div className={`w-20 h-20 flex items-center justify-center rounded-2xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
                 <img src={exp.image} alt="" className="w-full h-full object-cover" />
               </div>
             ) : (
-              <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                <i className={`${exp.icon} text-lg`}></i>
+              <div className={`w-12 h-12 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                <i className={`${exp.icon} text-xl`}></i>
               </div>
             )}
             <div className="flex-1 min-w-0">
@@ -85,6 +85,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-[#FF0000]/10 text-[#FF0000]',
     icon: 'ri-graduation-cap-line',
     flag: '🇨🇦',
+    image: '/exp-graduation.png',
   },
   {
     yearKey: 'exp3_year',
@@ -95,7 +96,8 @@ const EXPERIENCES: ExperienceItem[] = [
     cardAccent: 'border-l-4 border-teal',
     iconBg: 'bg-teal/10 text-teal',
     icon: 'ri-book-open-line',
-    flag: '🇨🇦',
+    flag: '🇨🇦', 
+    image: '/exp-graduation2.png',
   },
   {
     yearKey: 'exp4_year',
@@ -107,6 +109,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-coral/10 text-coral',
     icon: 'ri-edit-line',
     flag: '🇭🇰',
+    image: "/edit_trad.png"
   },
   {
     yearKey: 'exp5_year',
@@ -118,6 +121,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-[#7C3AED]/10 text-[#7C3AED]',
     icon: 'ri-user-star-line',
     flag: '🇭🇰',
+    image:'/teacher.png'
   },
 ];
 
