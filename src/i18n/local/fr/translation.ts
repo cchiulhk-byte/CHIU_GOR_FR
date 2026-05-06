@@ -428,12 +428,10 @@ const translation = {
   admin_avail_day_thu: "Jeu",
   admin_avail_day_fri: "Ven",
   admin_avail_day_sat: "Sam",
-  admin_logout_confirm_title: "Se déconnecter ?",
+  admin_logout_confirm_title: "Se déconnecter?",
   admin_logout_confirm_desc: "Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder aux fonctionnalités protégées.",
   admin_logout_confirm_btn: "Oui, se déconnecter",
   admin_logout_cancel_btn: "Annuler",
-  admin_logout_message: "Déconnexion en cours...",
-  admin_logout_redirect: "Veuillez patienter pendant que nous sécurisons votre session.",
 };
 
 export default translation;
