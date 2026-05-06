@@ -305,7 +305,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               <Button
                 onClick={handleResetWeekdaySlots}
                 variant="outline"
-                className="!px-4 !py-2 !text-[10px] !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
+                className="!px-5 !py-2.5 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_reset_default")}
               </Button>

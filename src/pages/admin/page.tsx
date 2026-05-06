@@ -329,25 +329,25 @@ export default function AdminPage() {
 
         {/* Date range filter */}
         <Card className="p-4 sm:p-6 mb-6 sm:mb-8 !rounded-2xl sm:!rounded-[2.5rem] !bg-white dark:!bg-[#1E0D38] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex items-center gap-2 flex-1">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
               <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl text-coral">
                 <i className="ri-calendar-line text-lg"></i>
               </div>
-              <div className="flex-1 flex items-center gap-2">
+              <div className="flex-1 flex items-center gap-2 min-w-0">
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
+                  className="flex-1 min-w-0 px-2 sm:px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-xs sm:text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
                 />
-                <span className="text-[#7A7068] dark:text-[#B89FD8] text-sm">—</span>
+                <span className="text-[#7A7068] dark:text-[#B89FD8] text-sm flex-shrink-0">—</span>
                 <input
                   type="date"
                   value={dateTo}
                   min={dateFrom}
                   onChange={(e) => setDateTo(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
+                  className="flex-1 min-w-0 px-2 sm:px-3 py-2 bg-[#F7F4EF] dark:bg-[#0E0818] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-xl text-xs sm:text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all"
                 />
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function AdminPage() {
                   key={r}
                   variant="ghost"
                   onClick={() => applyQuickRange(r)}
-                  className="!px-3 !py-2 !text-sm !rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20"
+                  className="!px-3 !py-2 !text-xs sm:!text-sm !rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20"
                 >
                   {r === "this_week" ? "Semaine" : r === "this_month" ? "Mois" : "Dernier"}
                 </Button>
@@ -366,7 +366,7 @@ export default function AdminPage() {
                 <Button
                   variant="outline"
                   onClick={clearDateRange}
-                  className="!px-3 !py-2 !text-sm !rounded-xl flex items-center gap-1"
+                  className="!px-3 !py-2 !text-xs sm:!text-sm !rounded-xl flex items-center gap-1"
                 >
                   <i className="ri-close-line"></i>Clear
                 </Button>
