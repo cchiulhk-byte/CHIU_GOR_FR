@@ -18,7 +18,9 @@ function ExperienceCard({ exp, index }: { exp: ExperienceItem; index: number }) 
         <div className={`bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-2xl p-6 card-hover border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 ${exp.cardAccent} group`}>
           <div className="flex items-start gap-4">
             {exp.image ? (
-              <img src={exp.image} alt="" className="w-10 h-10 rounded-xl flex-shrink-0 object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6" />
+              <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
+                <img src={exp.image} alt="" className="w-full h-full object-cover" />
+              </div>
             ) : (
               <div className={`w-10 h-10 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
                 <i className={`${exp.icon} text-lg`}></i>
