@@ -311,7 +311,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               </Button>
             </div>
 
-            <div className="flex items-center gap-3 flex-wrap mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
               <input
                 type="text"
                 placeholder={t("admin_avail_slot_placeholder")}
@@ -320,12 +320,12 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                   setWeekdaySlotInput(e.target.value);
                   setInputError("");
                 }}
-                className="min-w-0 flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
+                className="w-full sm:flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
               />
               <Button
                 onClick={handleAddWeekdayTimeSlot}
                 variant="primary"
-                className="!px-6 !py-3 shadow-lg shadow-coral/10"
+                className="!px-6 !py-3 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_add_slot")}
               </Button>
@@ -444,17 +444,17 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_blocked_dates")}</p>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <input
                 type="date"
                 value={blockedDateInput}
                 onChange={(e) => setBlockedDateInput(e.target.value)}
-                className="w-full rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
+                className="w-full sm:flex-1 rounded-2xl border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 bg-[#F7F4EF] dark:bg-[#0E0818] px-4 py-3 text-sm text-[#1A1410] dark:text-[#E8E0F5] focus:outline-none focus:border-coral transition-all font-medium"
               />
               <Button
                 onClick={handleAddBlockedDate}
                 variant="primary"
-                className="!px-6 !py-3 shadow-lg shadow-coral/10"
+                className="!px-6 !py-3 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_add_btn")}
               </Button>
@@ -479,7 +479,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
             )}
           </div>
 
-          <div className="rounded-[1.5rem] border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50 p-6 text-sm text-[#7A7068] dark:text-[#B89FD8]">
+          <div className="rounded-xl sm:rounded-[1.5rem] border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50 p-4 sm:p-6 text-sm text-[#7A7068] dark:text-[#B89FD8]">
             <p className="text-[10px] font-black uppercase tracking-widest text-[#1A1410] dark:text-[#E8E0F5] mb-3">{t("admin_avail_behavior_title")}</p>
             <p className="leading-relaxed font-medium">{t("admin_avail_behavior_desc")}</p>
             <p className="mt-3 leading-relaxed font-medium opacity-80">{t("admin_avail_storage_desc")}</p>
