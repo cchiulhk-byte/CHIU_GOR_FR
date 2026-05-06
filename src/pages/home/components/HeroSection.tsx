@@ -17,7 +17,7 @@ const AUTUMN_FILTERS = [
   'sepia(0.3) hue-rotate(35deg) saturate(1.5) brightness(1.1)',
 ];
 
-const TYPING_WORDS = ['Chiu Gor', '超哥', 'French Teacher', '法語老師'];
+const TYPING_WORDS = ['Chiu Gor 超哥', "Professeur de français", 'French Teacher', '法語老師'];
 
 export default function HeroSection() {
   const { t, i18n } = useTranslation();
@@ -32,7 +32,7 @@ export default function HeroSection() {
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 100);
+    const timer = setTimeout(() => setMounted(true), 200);
     return () => clearTimeout(timer);
   }, []);
 
