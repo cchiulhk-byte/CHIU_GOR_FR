@@ -1,15 +1,45 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+
+const NAME_VARIANTS = ['超哥', 'Chiu Gor', 'le prof Chiu'];
 
 export default function AboutSection() {
   const { t, i18n } = useTranslation();
   const { ref: sectionRef, visible } = useScrollReveal(0.1);
   const { ref: imgRef, visible: imgVisible } = useScrollReveal(0.1);
   const { ref: textRef, visible: textVisible } = useScrollReveal(0.1);
+  const [typingText, setTypingText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fontFamily = "'Chiron GoRound TC', Candara, 'Nunito', 'Segoe UI', sans-serif";
 
-  const highlightName = (title: string) => {
+  useEffect(() => {
+    const currentWord = NAME_VARIANTS[wordIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && typingText === currentWord) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && typingText === '') {
+      setIsDeleting(false);
+      setWordIndex((prev) => (prev + 1) % NAME_VARIANTS.length);
+    } else {
+      const speed = isDeleting ? 60 : 120;
+      timeout = setTimeout(() => {
+        setTypingText(
+          isDeleting
+            ? currentWord.substring(0, typingText.length - 1)
+            : currentWord.substring(0, typingText.length + 1)
+        );
+      }, speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeleting, wordIndex]);
+
+  const renderTitle = () => {
+    const title = t('about_title');
     const names = ['超哥', 'Chiu Gor'];
     for (const name of names) {
       const idx = title.indexOf(name);
@@ -17,7 +47,8 @@ export default function AboutSection() {
         return (
           <>
             {title.slice(0, idx)}
-            <span className="text-[#0ABAB5]">{name}</span>
+            <span className="text-[#0ABAB5]">{typingText}</span>
+            <span className="animate-pulse text-[#0ABAB5]">|</span>
             {title.slice(idx + name.length)}
           </>
         );
@@ -104,7 +135,7 @@ export default function AboutSection() {
               className="text-3xl md:text-4xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-6 leading-tight"
               style={{ fontFamily }}
             >
-              {highlightName(t('about_title'))}
+              {renderTitle()}
             </h2>
 
             {/* Canada experience highlight */}
