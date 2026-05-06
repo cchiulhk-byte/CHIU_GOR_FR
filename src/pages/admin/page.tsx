@@ -246,12 +246,11 @@ export default function AdminPage() {
 
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={() => window.location.href = '/'}
-              className="!px-2.5 sm:!px-6 !py-2 sm:!py-3 !text-xs sm:!text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest"
+              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
             >
-              <i className="ri-home-4-line text-base"></i>
-              <span className="hidden sm:inline ml-2">{t("admin_home", "Home")}</span>
+              <i className="ri-home-4-line text-base sm:text-lg"></i>
             </Button>
 
             <Button
@@ -283,12 +282,11 @@ export default function AdminPage() {
             </div>
 
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={handleLogout}
-              className="!px-2.5 sm:!px-6 !py-2 sm:!py-3 !text-xs sm:!text-sm !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 font-black uppercase tracking-widest !text-[#7A7068] dark:!text-[#B89FD8] hover:!text-coral"
+              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-red-600 hover:!bg-red-700 !text-white"
             >
-              <i className="ri-logout-box-line text-base"></i>
-              <span className="hidden sm:inline ml-2">{t("admin_logout")}</span>
+              <i className="ri-logout-box-line text-base sm:text-lg"></i>
             </Button>
           </div>
         </div>
