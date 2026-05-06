@@ -365,7 +365,7 @@ const translation = {
   admin_booking_confirmed_desc: "Confirmé — Agenda synchronisé & e-mail envoyé",
   admin_booking_cancelled_desc: "Annulé — Étudiant notifié par e-mail",
   admin_booking_copy_email: "Copier l'e-mail",
-  admin_booking_copied: "Copié !",
+  admin_booking_copied: "Copié!",
   admin_blog_title: "Articles du blog",
   admin_blog_new: "Nouvel article",
   admin_blog_edit: "Modifier l'article",
@@ -385,7 +385,7 @@ const translation = {
   admin_blog_excerpt_placeholder: "Extrait (résumé court)",
   admin_blog_content_placeholder: "Contenu (Markdown supporté)",
   admin_blog_auto_excerpt: "Auto",
-  admin_blog_required_error: "Le titre, le contenu et le slug sont Dim!",
+  admin_blog_required_error: "Le titre, le contenu et le slug sont obligatoires!",
 
   // Availability
   admin_avail_title: "Gérer la disponibilité",
