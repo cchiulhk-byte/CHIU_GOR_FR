@@ -249,8 +249,7 @@ const translation = {
   payment_submitted_title: "Paiement soumis pour vérification",
   payment_pending_msg1: "Votre réservation est en attente de vérification. Nous vérifierons votre paiement et enverrons un e-mail de confirmation à ",
   payment_pending_msg2: " une fois vérifié.",
-  payment_allow_24h: "Veuillez allouer jusqu'à 24 heures pour la vérification.",
-  payment_what_happens_next: "Que se passe-t-il ensuite?",
+  payment_allow_24h: "Veuillez allouer jusqu'à 24 heures pour la vérificsûrus  payment_what_happens_next: "Que se passe-t-il ensuite?",
   payment_step1: "Nous vérifierons votre paiement sous 24 heures",
   payment_step2: "Une fois vérifié, votre créneau sera réservé",
   payment_step3: "Vous recevrez un e-mail de confirmation avec tous les détails",
@@ -429,7 +428,7 @@ const translation = {
   admin_avail_day_fri: "Vendredi",
   admin_avail_day_sat: "Samedi",
   admin_logout_confirm_title: "Se déconnecter?",
-  admin_logout_confirm_desc: "Êtes-vous sûr de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder aux fonctionnalités protégées.",
+  admin_logout_confirm_desc: "Êtes-vous sûr(e) de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder aux fonctionnalités protégées.",
   admin_logout_confirm_btn: "Oui, se déconnecter",
   admin_logout_cancel_btn: "Annuler",
 };
