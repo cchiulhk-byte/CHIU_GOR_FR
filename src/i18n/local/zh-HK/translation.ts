@@ -121,7 +121,7 @@ const translation = {
   footer_tagline: "",
   footer_quicklinks: "快速連結",
   footer_follow: "追蹤我",
-  footer_copyright: "© 2025 Chiu Gor French. 版權所有。",
+  footer_copyright: "© 2026 Chiu Gor French. 版權所有。",
   // Testimonials
   testimonials_label: "學員心聲",
   testimonials_title: "學生說什麼？",

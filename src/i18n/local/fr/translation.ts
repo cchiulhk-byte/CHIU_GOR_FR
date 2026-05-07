@@ -121,7 +121,7 @@ const translation = {
   footer_tagline: "",
   footer_quicklinks: "Liens rapides",
   footer_follow: "Suivez-moi",
-  footer_copyright: "© 2025 Chiu Gor French. Tous droits réservés.",
+  footer_copyright: "© 2026 Chiu Gor French. Tous droits réservés.",
 
   // Testimonials
   testimonials_label: "Témoignages",
