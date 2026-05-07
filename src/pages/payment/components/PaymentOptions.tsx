@@ -133,7 +133,7 @@ export default function PaymentOptions() {
 
     try {
       // 1. Save booking to Supabase as PENDING (no calendar sync yet)
-      const { data: savedBooking, error: bookingError } = await supabase
+      const { error: bookingError } = await supabase
         .from("bookings")
         .insert({
           student_name: bookingData.name,
@@ -147,12 +147,10 @@ export default function PaymentOptions() {
           payment_method: selectedMethod,
           payment_status: "pending",
           payment_reference: paymentReference.trim(),
-        })
-        .select("id")
-        .single();
+        });
 
-      if (bookingError || !savedBooking) {
-        throw new Error(bookingError?.message || "Failed to save booking");
+      if (bookingError) {
+        throw new Error(bookingError.message || "Failed to save booking");
       }
 
       // 2. Clear pending booking

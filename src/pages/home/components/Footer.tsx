@@ -60,7 +60,7 @@ export default function Footer() {
       <img
         src={FOOTER_IMAGE}
         alt="Footer background"
-        className="absolute inset-0 z-0 w-full h-full object-cover object-center opacity-80 dark:opacity-45"
+        className="absolute inset-0 z-0 w-full h-full object-cover object-center opacity-80 dark:opacity-50"
       />
 
 
