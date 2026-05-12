@@ -437,7 +437,7 @@ const translation = {
   admin_logout_cancel_btn: "Annuler",
 
   // Student Bookings
-  my_bookings_title: "Mes cours",
+  my_bookings_title: "Mes leçons réservées",
   my_bookings_subtitle: "Gérez vos prochains cours de français et consultez votre historique.",
   my_bookings_no_bookings: "Aucune réservation trouvée",
   my_bookings_no_bookings_desc: "Vous n'avez pas encore réservé de cours.",

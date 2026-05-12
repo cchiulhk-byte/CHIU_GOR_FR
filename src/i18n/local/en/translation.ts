@@ -435,7 +435,7 @@ const translation = {
   admin_logout_cancel_btn: "Cancel",
 
   // Student Bookings
-  my_bookings_title: "My Lessons",
+  my_bookings_title: "My Booked Lessons",
   my_bookings_subtitle: "Manage your upcoming French lessons and view your history.",
   my_bookings_no_bookings: "No bookings found",
   my_bookings_no_bookings_desc: "You haven't booked any lessons yet.",
