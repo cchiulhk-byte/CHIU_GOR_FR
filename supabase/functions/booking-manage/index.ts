@@ -349,7 +349,7 @@ serve(async (req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Chiu Gor French <noreply@chiugorfrench.com>",
+            from: "Chiu Gor French <noreply@chiugorfr.com>",
             to: [booking.student_email],
             subject: "Your Booking Has Been Cancelled — Chiu Gor French",
             html: emailHtml,
@@ -425,7 +425,7 @@ serve(async (req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "Chiu Gor French <noreply@chiugorfrench.com>",
+            from: "Chiu Gor French <noreply@chiugorfr.com>",
             to: [booking.student_email],
             subject: "Your Lesson is Confirmed! — Chiu Gor French",
             html: emailHtml,
@@ -489,7 +489,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Chiu Gor French <noreply@chiugorfrench.com>",
+          from: "Chiu Gor French <noreply@chiugorfr.com>",
           to: [booking.student_email],
           subject: subject,
           html: emailHtml,
