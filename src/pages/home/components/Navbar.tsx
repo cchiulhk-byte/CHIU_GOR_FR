@@ -106,6 +106,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     { id: 'about', label: t('nav_about') },
     { id: 'experience', label: t('nav_experience') },
     { id: 'courses', label: t('nav_courses') },
+    ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
     { id: 'blog', label: t('nav_blog'), path: '/blog' },
     { id: 'contact', label: t('nav_contact') },
   ];
@@ -213,15 +214,6 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
           {/* Visitor Login */}
           {user ? (
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = '/my-bookings'}
-              className="hidden sm:flex !px-4 !py-2 !text-xs !rounded-full !bg-coral/10 !text-coral !border-coral/30 hover:!bg-coral hover:!text-white transition-all shadow-sm"
-            >
-              <i className="ri-history-line"></i>
-              My Lessons
-            </Button>
-
             <Button
               variant="outline"
               onClick={confirmLogout}
@@ -404,7 +396,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 style={{ fontFamily: fontNav }}
               >
                 <i className="ri-history-line text-coral"></i>
-                My Lessons
+                {t('my_bookings_title')}
                 <i className="ri-arrow-right-s-line ml-auto text-coral/40 group-hover:translate-x-1 transition-all"></i>
               </Link>
               <button

@@ -182,21 +182,32 @@ export default function LoginPage() {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col gap-3">
                 <button
                   onClick={() => navigate(from)}
-                  className="flex-1 px-6 py-3 rounded-2xl bg-coral text-white font-bold text-sm hover:opacity-90 transition-all"
+                  className="w-full px-6 py-4 rounded-2xl bg-coral text-white font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
                   style={{ fontFamily }}
                   disabled={loading}
                 >
+                  <i className="ri-arrow-right-line"></i>
                   {t('login_continue')}
                 </button>
                 <button
+                  onClick={() => navigate('/my-bookings')}
+                  className="w-full px-6 py-4 rounded-2xl bg-[#F0EBE3] dark:bg-[#130A22] text-teal font-bold text-sm hover:bg-[#D4C8BC]/20 transition-all border border-teal/20 flex items-center justify-center gap-2"
+                  style={{ fontFamily }}
+                  disabled={loading}
+                >
+                  <i className="ri-history-line"></i>
+                  {t('my_bookings_title')}
+                </button>
+                <button
                   onClick={confirmLogout}
-                  className="flex-1 px-6 py-3 rounded-2xl bg-white dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 font-bold text-sm hover:bg-[#F0EBE3] dark:hover:bg-[#1A0A2E] transition-all"
+                  className="w-full px-6 py-4 rounded-2xl bg-white dark:bg-[#130A22] text-[#7A7068] dark:text-[#C4A8E8] border border-[#D4C8BC]/60 dark:border-[#3B2060]/60 font-bold text-sm hover:bg-[#F0EBE3] dark:hover:bg-[#1A0A2E] transition-all flex items-center justify-center gap-2"
                   style={{ fontFamily }}
                   disabled={loading || isLoggingOut}
                 >
+                  <i className="ri-logout-box-line"></i>
                   {t('login_logout')}
                 </button>
               </div>
