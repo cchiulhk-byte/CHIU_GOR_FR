@@ -510,7 +510,7 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid action" }), {
+    return new Response(JSON.stringify({ success: false, error: "Invalid action (v2)" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
