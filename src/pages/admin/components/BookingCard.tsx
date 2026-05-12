@@ -28,11 +28,12 @@ interface BookingCardProps {
 
 export default function BookingCard({ booking, adminSecret, onStatusChange }: BookingCardProps) {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState<"approve" | "cancel" | "mark_paid" | null>(null);
+  const [loading, setLoading] = useState<"approve" | "cancel" | "mark_paid" | "resend_email" | null>(null);
   const [error, setError] = useState("");
   const [showConfirmCancel, setShowConfirmCancel] = useState(false);
   const [emailCopied, setEmailCopied] = useState(false);
   const [paidMarked, setPaidMarked] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(booking.student_email).then(() => {
@@ -43,7 +44,7 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
 
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 
-  const handleAction = async (action: "approve" | "cancel" | "mark_paid") => {
+  const handleAction = async (action: "approve" | "cancel" | "mark_paid" | "resend_email") => {
     setLoading(action);
     setError("");
     try {
@@ -61,6 +62,9 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
       if (!data.success) throw new Error(data.error || "Action failed");
       if (action === "mark_paid") {
         setPaidMarked(true);
+      } else if (action === "resend_email") {
+        setResendSuccess(true);
+        setTimeout(() => setResendSuccess(false), 3000);
       } else {
         onStatusChange(booking.id, action === "approve" ? "confirmed" : "cancelled");
       }
@@ -257,17 +261,57 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
 
       {/* Confirmed state */}
       {booking.status === "confirmed" && (
-        <div className="flex items-center gap-2 pt-1 text-teal-600 text-sm">
-          <i className="ri-checkbox-circle-fill text-lg"></i>
-          <span className="font-medium">{t("admin_booking_confirmed_desc")}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+          <div className="flex items-center gap-2 text-teal-600 text-sm">
+            <i className="ri-checkbox-circle-fill text-lg"></i>
+            <span className="font-medium">{t("admin_booking_confirmed_desc")}</span>
+          </div>
+          
+          <button
+            onClick={() => handleAction("resend_email")}
+            disabled={loading !== null}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50
+              ${resendSuccess 
+                ? "bg-teal-50 text-teal-600 border border-teal-200" 
+                : "bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100 hover:text-gray-700"
+              }`}
+          >
+            {loading === "resend_email" ? (
+              <><i className="ri-loader-4-line animate-spin"></i> {t("admin_booking_resending")}</>
+            ) : resendSuccess ? (
+              <><i className="ri-check-line"></i> {t("admin_booking_resend_success")}</>
+            ) : (
+              <><i className="ri-mail-send-line"></i> {t("admin_booking_resend_email")}</>
+            )}
+          </button>
         </div>
       )}
 
       {/* Cancelled state */}
       {booking.status === "cancelled" && (
-        <div className="flex items-center gap-2 pt-1 text-red-400 text-sm">
-          <i className="ri-close-circle-fill text-lg"></i>
-          <span className="font-medium">{t("admin_booking_cancelled_desc")}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+          <div className="flex items-center gap-2 text-red-400 text-sm">
+            <i className="ri-close-circle-fill text-lg"></i>
+            <span className="font-medium">{t("admin_booking_cancelled_desc")}</span>
+          </div>
+
+          <button
+            onClick={() => handleAction("resend_email")}
+            disabled={loading !== null}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50
+              ${resendSuccess 
+                ? "bg-teal-50 text-teal-600 border border-teal-200" 
+                : "bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100 hover:text-gray-700"
+              }`}
+          >
+            {loading === "resend_email" ? (
+              <><i className="ri-loader-4-line animate-spin"></i> {t("admin_booking_resending")}</>
+            ) : resendSuccess ? (
+              <><i className="ri-check-line"></i> {t("admin_booking_resend_success")}</>
+            ) : (
+              <><i className="ri-mail-send-line"></i> {t("admin_booking_resend_email")}</>
+            )}
+          </button>
         </div>
       )}
     </div>
