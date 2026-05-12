@@ -20,6 +20,6 @@ jobs:
           node-version: '18'
 
       - name: Deploy Function
-        run: npx supabase functions deploy booking-manage --project-ref ohjthcqdqtitrbmcrdzi --no-verify-jwt
+        run: npx supabase functions deploy booking-manage --project-ref ohjthcqdqtltrtkbmcdz --no-verify-jwt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
