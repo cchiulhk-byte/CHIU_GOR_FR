@@ -215,6 +215,15 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {user ? (
             <Button
               variant="outline"
+              onClick={() => window.location.href = '/my-bookings'}
+              className="hidden sm:flex !px-4 !py-2 !text-xs !rounded-full !bg-coral/10 !text-coral !border-coral/30 hover:!bg-coral hover:!text-white transition-all shadow-sm"
+            >
+              <i className="ri-history-line"></i>
+              My Lessons
+            </Button>
+
+            <Button
+              variant="outline"
               onClick={confirmLogout}
               className="hidden sm:flex !px-4 !py-2 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
               title={user.email || ''}
@@ -387,18 +396,30 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           </Link>
 
           {user ? (
-            <button
-              onClick={() => {
-                setMenuOpen(false);
-                confirmLogout();
-              }}
-              className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-              style={{ fontFamily: fontNav }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-              {t('nav_logout')}
-              <i className="ri-logout-box-r-line ml-auto text-coral"></i>
-            </button>
+            <>
+              <Link
+                to="/my-bookings"
+                onClick={() => setMenuOpen(false)}
+                className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-coral/8 dark:hover:bg-coral/10 hover:text-coral transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+                style={{ fontFamily: fontNav }}
+              >
+                <i className="ri-history-line text-coral"></i>
+                My Lessons
+                <i className="ri-arrow-right-s-line ml-auto text-coral/40 group-hover:translate-x-1 transition-all"></i>
+              </Link>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  confirmLogout();
+                }}
+                className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+                style={{ fontFamily: fontNav }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
+                {t('nav_logout')}
+                <i className="ri-logout-box-r-line ml-auto text-coral"></i>
+              </button>
+            </>
           ) : (
             <Link
               to="/login"

@@ -107,11 +107,21 @@ interface ManagePayload {
     | "get_availability"
     | "get_availability_for_date"
     | "save_availability"
-    | "resend_email";
+    | "resend_email"
+    | "archive"
+    | "delete"
+    | "student_edit"
+    | "approve_edit"
+    | "reject_edit";
   booking_id?: string;
   admin_secret?: string;
   date?: string;
   config?: unknown;
+  edit_data?: {
+    preferred_date: string;
+    preferred_time: string;
+    course_type?: string;
+  };
 }
 
 const defaultAvailabilityConfig = {
@@ -510,7 +520,182 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid action (v2)" }), {
+    // ── ARCHIVE ──────────────────────────────────────────────────────────────
+    if (payload.action === "archive") {
+      const { error: archiveError } = await supabase
+        .from("bookings")
+        .update({ is_archived: true })
+        .eq("id", payload.booking_id);
+
+      if (archiveError) {
+        return new Response(JSON.stringify({ success: false, error: archiveError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "archived", booking_id: payload.booking_id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── DELETE ───────────────────────────────────────────────────────────────
+    if (payload.action === "delete") {
+      const { error: deleteError } = await supabase
+        .from("bookings")
+        .delete()
+        .eq("id", payload.booking_id);
+
+      if (deleteError) {
+        return new Response(JSON.stringify({ success: false, error: deleteError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "deleted", booking_id: payload.booking_id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── STUDENT EDIT ──────────────────────────────────────────────────────────
+    if (payload.action === "student_edit") {
+      if (!payload.edit_data) {
+        return new Response(JSON.stringify({ success: false, error: "Missing edit data" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error: editError } = await supabase
+        .from("bookings")
+        .update({
+          edit_request: payload.edit_data,
+          status: "pending_reapproval",
+        })
+        .eq("id", payload.booking_id);
+
+      if (editError) {
+        return new Response(JSON.stringify({ success: false, error: editError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Notify Admin via Email
+      if (resendApiKey) {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Chiu Gor French <noreply@chiugorfr.com>",
+            to: ["chichiulam@gmail.com"], // Hardcoded admin email as requested in previous context
+            subject: "Action Required: Booking Edit Request — Chiu Gor French",
+            html: `
+              <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                <h2>Booking Edit Request</h2>
+                <p>Student <strong>${booking.student_name}</strong> has requested to change their booking.</p>
+                <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
+                  <p><strong>Current:</strong> ${booking.preferred_date} at ${booking.preferred_time}</p>
+                  <p><strong>Requested:</strong> ${payload.edit_data.preferred_date} at ${payload.edit_data.preferred_time}</p>
+                </div>
+                <p>Please log in to the Admin Dashboard to approve or deny this request.</p>
+                <a href="https://chiugorfr.com/admin" style="display: inline-block; background: #0d9488; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+              </div>
+            `,
+          }),
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "edit_submitted", booking_id: payload.booking_id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── APPROVE EDIT ──────────────────────────────────────────────────────────
+    if (payload.action === "approve_edit") {
+      if (!booking.edit_request) {
+        return new Response(JSON.stringify({ success: false, error: "No pending edit request found" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error: approveEditError } = await supabase
+        .from("bookings")
+        .update({
+          preferred_date: booking.edit_request.preferred_date,
+          preferred_time: booking.edit_request.preferred_time,
+          course_type: booking.edit_request.course_type || booking.course_type,
+          edit_request: null,
+          status: "confirmed",
+        })
+        .eq("id", payload.booking_id);
+
+      if (approveEditError) {
+        return new Response(JSON.stringify({ success: false, error: approveEditError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Update Calendar if event exists
+      if (booking.google_event_id) {
+        try {
+          const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+          await fetch(`${supabaseUrl}/functions/v1/calendar-sync`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({
+              action: "update",
+              event_id: booking.google_event_id,
+              preferred_date: booking.edit_request.preferred_date,
+              preferred_time: booking.edit_request.preferred_time,
+              booking_id: booking.id,
+            }),
+          });
+        } catch { /* ignore */ }
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "edit_approved", booking_id: payload.booking_id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── REJECT EDIT ──────────────────────────────────────────────────────────
+    if (payload.action === "reject_edit") {
+      const { error: rejectEditError } = await supabase
+        .from("bookings")
+        .update({
+          edit_request: null,
+          status: "confirmed", // Revert to confirmed
+        })
+        .eq("id", payload.booking_id);
+
+      if (rejectEditError) {
+        return new Response(JSON.stringify({ success: false, error: rejectEditError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "edit_rejected", booking_id: payload.booking_id }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ success: false, error: "Invalid action (v4)" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

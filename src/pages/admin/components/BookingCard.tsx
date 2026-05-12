@@ -18,19 +18,28 @@ interface Booking {
   payment_status: string | null;
   payment_reference: string | null;
   created_at: string;
+  is_archived: boolean;
+  edit_request?: {
+    preferred_date: string;
+    preferred_time: string;
+    course_type?: string;
+  };
 }
 
 interface BookingCardProps {
   booking: Booking;
   adminSecret: string;
   onStatusChange: (id: string, newStatus: string) => void;
+  onArchiveChange: (id: string, isArchived: boolean) => void;
+  onDelete: (id: string) => void;
 }
 
-export default function BookingCard({ booking, adminSecret, onStatusChange }: BookingCardProps) {
+export default function BookingCard({ booking, adminSecret, onStatusChange, onArchiveChange, onDelete }: BookingCardProps) {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState<"approve" | "cancel" | "mark_paid" | "resend_email" | null>(null);
+  const [loading, setLoading] = useState<"approve" | "cancel" | "mark_paid" | "resend_email" | "archive" | "delete" | "approve_edit" | "reject_edit" | null>(null);
   const [error, setError] = useState("");
   const [showConfirmCancel, setShowConfirmCancel] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [emailCopied, setEmailCopied] = useState(false);
   const [paidMarked, setPaidMarked] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
@@ -44,7 +53,7 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
 
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
 
-  const handleAction = async (action: "approve" | "cancel" | "mark_paid" | "resend_email") => {
+  const handleAction = async (action: "approve" | "cancel" | "mark_paid" | "resend_email" | "archive" | "delete" | "approve_edit" | "reject_edit") => {
     setLoading(action);
     setError("");
     try {
@@ -60,11 +69,19 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error || "Action failed");
+      
       if (action === "mark_paid") {
         setPaidMarked(true);
       } else if (action === "resend_email") {
         setResendSuccess(true);
         setTimeout(() => setResendSuccess(false), 3000);
+      } else if (action === "archive") {
+        onArchiveChange(booking.id, true);
+      } else if (action === "delete") {
+        onDelete(booking.id);
+        setShowConfirmDelete(false);
+      } else if (action === "approve_edit" || action === "reject_edit") {
+        onStatusChange(booking.id, "confirmed"); // Both return to confirmed, but with different data (handled by backend)
       } else {
         onStatusChange(booking.id, action === "approve" ? "confirmed" : "cancelled");
       }
@@ -72,18 +89,20 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
       setError(err instanceof Error ? err.message : t("admin_booking_error_generic"));
     } finally {
       setLoading(null);
-      setShowConfirmCancel(false);
+      if (action === "cancel") setShowConfirmCancel(false);
     }
   };
 
   const statusColors: Record<string, string> = {
     pending_verification: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    pending_reapproval: "bg-orange-100 text-orange-700 border-orange-200",
     confirmed: "bg-teal-100 text-teal-700 border-teal-200",
     cancelled: "bg-red-100 text-red-600 border-red-200",
   };
 
   const statusLabels: Record<string, string> = {
     pending_verification: t("admin_tab_pending"),
+    pending_reapproval: t("admin_booking_change_requested"),
     confirmed: t("admin_tab_confirmed"),
     cancelled: t("admin_tab_cancelled"),
   };
@@ -126,9 +145,27 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
             {emailCopied && <span className="text-xs text-teal-500 font-bold uppercase tracking-widest">{t("admin_booking_copied")}</span>}
           </div>
         </div>
-        <p className="text-xs sm:text-sm text-[#7A7068]/60 dark:text-[#B89FD8]/60 font-bold whitespace-nowrap bg-[#F7F4EF] dark:bg-[#0E0818] px-3 py-1 rounded-lg self-start">
-          {new Date(booking.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-        </p>
+        <div className="flex items-center gap-2 self-start flex-shrink-0">
+          <p className="text-xs sm:text-sm text-[#7A7068]/60 dark:text-[#B89FD8]/60 font-bold whitespace-nowrap bg-[#F7F4EF] dark:bg-[#0E0818] px-3 py-1 rounded-lg">
+            {new Date(booking.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+          </p>
+          <button
+            onClick={() => handleAction("archive")}
+            disabled={loading !== null}
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-[#2D1B4E] text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-all cursor-pointer"
+            title={t("admin_booking_archived")}
+          >
+            <i className="ri-archive-line"></i>
+          </button>
+          <button
+            onClick={() => setShowConfirmDelete(true)}
+            disabled={loading !== null}
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 transition-all cursor-pointer"
+            title={t("admin_booking_delete_forever")}
+          >
+            <i className="ri-delete-bin-line"></i>
+          </button>
+        </div>
       </div>
 
       {/* Details grid */}
@@ -155,6 +192,61 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
           </div>
         </div>
       </div>
+
+      {/* Change Request Info */}
+      {booking.status === "pending_reapproval" && booking.edit_request && (
+        <div className="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 rounded-2xl p-4 sm:p-6 mb-6">
+          <h4 className="text-orange-800 dark:text-orange-300 font-black text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
+            <i className="ri-error-warning-line"></i> {t("admin_booking_requested_changes")}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-800/30 flex items-center justify-center text-orange-600">
+                <i className="ri-calendar-line"></i>
+              </div>
+              <div>
+                <p className="text-[10px] text-orange-600/60 uppercase font-bold tracking-widest">{t("admin_booking_date")}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400 line-through">{booking.preferred_date}</span>
+                  <i className="ri-arrow-right-line text-orange-600"></i>
+                  <span className="text-sm font-bold text-orange-800 dark:text-orange-200">{booking.edit_request.preferred_date}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-800/30 flex items-center justify-center text-orange-600">
+                <i className="ri-time-line"></i>
+              </div>
+              <div>
+                <p className="text-[10px] text-orange-600/60 uppercase font-bold tracking-widest">{t("admin_booking_time")}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400 line-through">{booking.preferred_time}</span>
+                  <i className="ri-arrow-right-line text-orange-600"></i>
+                  <span className="text-sm font-bold text-orange-800 dark:text-orange-200">{booking.edit_request.preferred_time}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 mt-6">
+            <button
+              onClick={() => handleAction("approve_edit")}
+              disabled={loading !== null}
+              className="flex-1 py-2.5 rounded-xl bg-orange-600 text-white text-xs font-bold uppercase tracking-widest hover:bg-orange-700 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              {loading === "approve_edit" ? <i className="ri-loader-4-line animate-spin"></i> : <i className="ri-check-line"></i>}
+              {t("admin_booking_approve_change")}
+            </button>
+            <button
+              onClick={() => handleAction("reject_edit")}
+              disabled={loading !== null}
+              className="flex-1 py-2.5 rounded-xl bg-white dark:bg-[#1E0D38] text-orange-600 border border-orange-200 dark:border-orange-800 text-xs font-bold uppercase tracking-widest hover:bg-orange-50 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              {loading === "reject_edit" ? <i className="ri-loader-4-line animate-spin"></i> : <i className="ri-close-line"></i>}
+              {t("admin_booking_reject_change")}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Payment reference */}
       {booking.payment_reference && (
@@ -312,6 +404,36 @@ export default function BookingCard({ booking, adminSecret, onStatusChange }: Bo
               <><i className="ri-mail-send-line"></i> {t("admin_booking_resend_email")}</>
             )}
           </button>
+        </div>
+      )}
+
+      {/* Delete Confirmation */}
+      {showConfirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-[#1E0D38] rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl border border-red-200 dark:border-red-900/50">
+            <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-6 text-red-600">
+              <i className="ri-delete-bin-line text-3xl"></i>
+            </div>
+            <h3 className="text-xl font-black text-[#1A1410] dark:text-[#E8E0F5] text-center mb-2">{t("admin_booking_delete_title")}</h3>
+            <p className="text-sm text-[#7A7068] dark:text-[#B89FD8] text-center mb-8">
+              {t("admin_booking_delete_desc", { name: booking.student_name })}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => handleAction("delete")}
+                disabled={loading === "delete"}
+                className="w-full py-3.5 rounded-2xl bg-red-600 text-white font-black text-sm uppercase tracking-widest hover:bg-red-700 transition-all cursor-pointer"
+              >
+                {loading === "delete" ? <i className="ri-loader-4-line animate-spin"></i> : t("admin_booking_delete_forever")}
+              </button>
+              <button
+                onClick={() => setShowConfirmDelete(false)}
+                className="w-full py-3.5 rounded-2xl bg-gray-100 dark:bg-[#2D1B4E] text-[#1A1410] dark:text-[#E8E0F5] font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all cursor-pointer"
+              >
+                {t("admin_blog_cancel")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -24,6 +24,12 @@ interface Booking {
   payment_status: string | null;
   payment_reference: string | null;
   created_at: string;
+  is_archived: boolean;
+  edit_request?: {
+    preferred_date: string;
+    preferred_time: string;
+    course_type?: string;
+  };
 }
 
 type FilterTab = "pending_verification" | "confirmed" | "cancelled" | "all" | "blog";
@@ -39,6 +45,7 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const { confirmLogout, isLoggingOut } = useLogout();
   const { isDark, toggle: toggleDark } = useDarkMode();
   const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
@@ -178,10 +185,20 @@ export default function AdminPage() {
     setBookings((prev) =>
       prev.map((b) =>
         b.id === id
-          ? { ...b, status: newStatus, payment_status: newStatus === "confirmed" ? "paid" : "cancelled" }
+          ? { ...b, status: newStatus, payment_status: (newStatus === "confirmed" || newStatus === "pending_reapproval") ? "paid" : "cancelled" }
           : b
       )
     );
+  };
+
+  const handleArchiveChange = (id: string, isArchived: boolean) => {
+    setBookings((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, is_archived: isArchived } : b))
+    );
+  };
+
+  const handleDelete = (id: string) => {
+    setBookings((prev) => prev.filter((b) => b.id !== id));
   };
 
   if (!adminSecret) {
@@ -189,22 +206,26 @@ export default function AdminPage() {
   }
 
   const counts = {
-    all: bookings.length,
-    pending_verification: bookings.filter((b) => b.status === "pending_verification").length,
-    confirmed: bookings.filter((b) => b.status === "confirmed").length,
-    cancelled: bookings.filter((b) => b.status === "cancelled").length,
+    all: bookings.filter(b => !b.is_archived).length,
+    pending_verification: bookings.filter((b) => b.status === "pending_verification" && !b.is_archived).length,
+    pending_reapproval: bookings.filter((b) => b.status === "pending_reapproval" && !b.is_archived).length,
+    confirmed: bookings.filter((b) => b.status === "confirmed" && !b.is_archived).length,
+    cancelled: bookings.filter((b) => b.status === "cancelled" && !b.is_archived).length,
+    archived: bookings.filter((b) => b.is_archived).length,
     blog: 0,
   };
 
   const tabs: { key: FilterTab; label: string; color: string; bgColor: string }[] = [
     { key: "pending_verification", label: t("admin_tab_pending"), color: "text-yellow-600", bgColor: "bg-yellow-50" },
+    { key: "pending_reapproval", label: t("admin_tab_reapproval"), color: "text-orange-600", bgColor: "bg-orange-50" },
     { key: "confirmed", label: t("admin_tab_confirmed"), color: "text-teal-600", bgColor: "bg-teal-50" },
     { key: "cancelled", label: t("admin_tab_cancelled"), color: "text-red-600", bgColor: "bg-red-50" },
     { key: "blog", label: t("admin_tab_blog"), color: "text-coral", bgColor: "bg-coral/5" },
     { key: "all", label: t("admin_tab_all"), color: "text-gray-600", bgColor: "bg-gray-50" },
   ];
 
-  const byStatus = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
+  const baseBookings = showArchived ? bookings.filter(b => b.is_archived) : bookings.filter(b => !b.is_archived);
+  const byStatus = filter === "all" ? baseBookings : baseBookings.filter((b) => b.status === filter);
   const byDate = byStatus.filter((b) => {
     const bookingDate = b.preferred_date;
     if (dateFrom && bookingDate < dateFrom) return false;
@@ -293,6 +314,23 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-8 py-6 sm:py-8 overflow-x-hidden">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowArchived(false)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${!showArchived ? 'bg-[#1A1410] dark:bg-coral text-white' : 'text-[#7A7068] dark:text-[#B89FD8]'}`}
+            >
+              {t("admin_booking_active")}
+            </button>
+            <button
+              onClick={() => setShowArchived(true)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${showArchived ? 'bg-[#1A1410] dark:bg-coral text-white' : 'text-[#7A7068] dark:text-[#B89FD8]'}`}
+            >
+              {t("admin_booking_archived")}
+              {counts.archived > 0 && <span className="px-1.5 py-0.5 rounded-full bg-gray-500/20 text-[10px]">{counts.archived}</span>}
+            </button>
+          </div>
+        </div>
         {authError && (
           <div className="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-start justify-between gap-3">
             <div className="flex items-start gap-2">
@@ -359,7 +397,7 @@ export default function AdminPage() {
                   onClick={() => applyQuickRange(r)}
                   className="!px-3 !py-2 !text-xs sm:!text-sm !rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20"
                 >
-                  {r === "this_week" ? "Semaine" : r === "this_month" ? "Mois" : "Dernier"}
+                  {r === "this_week" ? t("admin_filter_this_week") : r === "this_month" ? t("admin_filter_this_month") : t("admin_filter_last_month")}
                 </Button>
               ))}
               {hasDateFilter && (
@@ -368,7 +406,7 @@ export default function AdminPage() {
                   onClick={clearDateRange}
                   className="!px-3 !py-2 !text-xs sm:!text-sm !rounded-xl flex items-center gap-1"
                 >
-                  <i className="ri-close-line"></i>Clear
+                  <i className="ri-close-line"></i>{t("admin_filter_clear")}
                 </Button>
               )}
             </div>
@@ -428,13 +466,13 @@ export default function AdminPage() {
         ) : loading ? (
           <div className="text-center py-16">
             <i className="ri-loader-4-line animate-spin text-3xl text-gray-300 mb-3"></i>
-            <p className="text-gray-400 text-sm">Chargement des réservations...</p>
+            <p className="text-gray-400 text-sm">{t("blog_loading")}</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-            <i className="ri-inbox-line text-4xl text-gray-200 mb-3"></i>
+          <div className="text-center py-16 bg-white dark:bg-[#1E0D38] rounded-2xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
+            <i className="ri-inbox-line text-4xl text-gray-200 dark:text-[#3B2060] mb-3"></i>
             <p className="text-gray-400 text-sm">
-              {search.trim() ? `Aucun résultat pour « ${search} »` : `Aucune réservation${filter === "pending_verification" ? " en attente" : filter === "confirmed" ? " confirmée" : filter === "cancelled" ? " annulée" : ""}`}
+              {search.trim() ? `${t("admin_search_placeholder")} « ${search} »` : t("my_bookings_no_bookings")}
             </p>
           </div>
         ) : (
@@ -446,6 +484,8 @@ export default function AdminPage() {
                 booking={booking}
                 adminSecret={adminSecret}
                 onStatusChange={handleStatusChange}
+                onArchiveChange={handleArchiveChange}
+                onDelete={handleDelete}
               />
             ))}
           </div>

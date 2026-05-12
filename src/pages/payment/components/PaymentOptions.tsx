@@ -132,6 +132,8 @@ export default function PaymentOptions() {
     setSubmitError("");
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+
       // 1. Save booking to Supabase as PENDING (no calendar sync yet)
       const { error: bookingError } = await supabase
         .from("bookings")
@@ -147,6 +149,7 @@ export default function PaymentOptions() {
           payment_method: selectedMethod,
           payment_status: "pending",
           payment_reference: paymentReference.trim(),
+          user_id: user?.id || null,
         });
 
       if (bookingError) {

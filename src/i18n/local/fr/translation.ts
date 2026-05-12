@@ -435,6 +435,36 @@ const translation = {
   admin_logout_confirm_desc: "Êtes-vous sûr(e) de vouloir vous déconnecter? Vous devrez vous reconnecter pour accéder aux fonctionnalités protégées.",
   admin_logout_confirm_btn: "Oui, se déconnecter",
   admin_logout_cancel_btn: "Annuler",
+
+  // Student Bookings
+  my_bookings_title: "Mes cours",
+  my_bookings_subtitle: "Gérez vos prochains cours de français et consultez votre historique.",
+  my_bookings_no_bookings: "Aucune réservation trouvée",
+  my_bookings_no_bookings_desc: "Vous n'avez pas encore réservé de cours.",
+  my_bookings_book_first: "Réserver votre premier cours",
+  my_bookings_loading: "Chargement de vos cours...",
+  my_bookings_edit_time: "Modifier l'heure",
+  my_bookings_view_details: "Voir les détails",
+  my_bookings_change_pending: "Modification en attente d'approbation",
+  my_bookings_requested_change: "Vous avez demandé à changer pour : {{date}} à {{time}}",
+  my_bookings_request_title: "Demander une modification",
+  my_bookings_request_desc: "Sélectionnez une nouvelle date et heure. Votre demande sera envoyée à Chiu Gor pour approbation.",
+  my_bookings_new_date: "Nouvelle date",
+  my_bookings_new_time: "Nouvelle heure (HKT)",
+  my_bookings_submit_request: "Envoyer la demande",
+  my_bookings_submit_success: "Votre demande de modification a été envoyée et est en attente d'approbation.",
+
+  // Admin New Actions
+  admin_tab_reapproval: "Ré-approbation",
+  admin_booking_change_requested: "Modification demandée",
+  admin_booking_requested_changes: "Modifications demandées",
+  admin_booking_approve_change: "Approuver la modification",
+  admin_booking_reject_change: "Refuser la modification",
+  admin_booking_active: "Actif",
+  admin_booking_archived: "Archivé",
+  admin_booking_delete_title: "Supprimer la réservation ?",
+  admin_booking_delete_desc: "Cette action est permanente et irréversible. Toutes les données pour {{name}} seront perdues.",
+  admin_booking_delete_forever: "Supprimer définitivement",
 };
 
 export default translation;

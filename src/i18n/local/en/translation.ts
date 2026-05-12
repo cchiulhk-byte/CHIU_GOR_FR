@@ -433,6 +433,37 @@ const translation = {
   admin_logout_confirm_desc: "Are you sure you want to log out of your session? You will need to sign in again to access protected features.",
   admin_logout_confirm_btn: "Yes, Sign Out",
   admin_logout_cancel_btn: "Cancel",
+
+  // Student Bookings
+  my_bookings_title: "My Lessons",
+  my_bookings_subtitle: "Manage your upcoming French lessons and view your history.",
+  my_bookings_no_bookings: "No bookings found",
+  my_bookings_no_bookings_desc: "You haven't booked any lessons yet.",
+  my_bookings_book_first: "Book Your First Lesson",
+  my_bookings_loading: "Loading your lessons...",
+  my_bookings_edit_time: "Edit Time",
+  my_bookings_view_details: "View Details",
+  my_bookings_change_pending: "Change Pending Approval",
+  my_bookings_requested_change: "You requested to change to: {{date}} at {{time}}",
+  my_bookings_request_title: "Request Change",
+  my_bookings_request_desc: "Select a new date and time. Your request will be sent to Chiu Gor for approval.",
+  my_bookings_new_date: "New Date",
+  my_bookings_new_time: "New Time (HKT)",
+  my_bookings_submit_request: "Submit Request",
+  my_bookings_submit_success: "Your change request has been submitted and is pending approval.",
+
+  // Admin New Actions
+  admin_tab_reapproval: "Re-approval",
+  admin_booking_change_requested: "Change Requested",
+  admin_booking_requested_changes: "Requested Changes",
+  admin_booking_approve_change: "Approve Change",
+  admin_booking_reject_change: "Reject Change",
+  admin_booking_active: "Active",
+  admin_booking_archived: "Archived",
+  admin_booking_delete_title: "Delete Booking?",
+  admin_booking_delete_desc: "This action is permanent and cannot be undone. All data for {{name}} will be lost.",
+  admin_booking_delete_forever: "Delete Forever",
+
   admin_logout_message: "Logging Out...",
   admin_logout_redirect: "Please wait while we secure your session.",
 };
