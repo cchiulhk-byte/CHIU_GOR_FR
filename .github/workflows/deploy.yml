@@ -19,10 +19,7 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install Supabase CLI
-        run: npm install -g supabase
-
       - name: Deploy Function
-        run: supabase functions deploy booking-manage --project-ref bnkcovatuqasmmnddzki --no-verify-jwt
+        run: npx supabase functions deploy booking-manage --project-ref bnkcovatuqasmmnddzki --no-verify-jwt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
