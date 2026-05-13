@@ -476,7 +476,6 @@ export default function AdminPage() {
             <p className="text-[#7A7068] dark:text-[#B89FD8] font-bold text-base px-6">
               {search.trim() ? `${t("admin_search_placeholder")} « ${search} »` : t("my_bookings_no_bookings")}
             </p>
-            <p className="text-xs text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-2">{t("admin_filter_clear_hint", "Try clearing your filters or search terms")}</p>
           </div>
         ) : (
           <div className="space-y-4">
