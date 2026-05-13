@@ -184,18 +184,21 @@ export default function MyBookings() {
               <p className="text-[#7A7068] dark:text-[#B89FD8] font-bold animate-pulse">{t('my_bookings_loading')}</p>
             </div>
           ) : bookings.length === 0 ? (
-            <div className="bg-white dark:bg-[#1E0D38] rounded-3xl p-12 text-center border border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
-              <div className="w-20 h-20 bg-[#F0EBE3] dark:bg-[#130A22] rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-center py-24 bg-[#F7F4EF]/30 dark:bg-[#0E0818]/20 rounded-[2.5rem] border border-dashed border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
+              <div className="w-20 h-20 bg-white dark:bg-[#1E0D38] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
                 <i className="ri-calendar-event-line text-4xl text-[#D4C8BC] dark:text-[#3B2060]"></i>
               </div>
-              <h3 className="text-xl font-bold text-[#1A1410] dark:text-[#E8E0F5] mb-2">{t('my_bookings_no_bookings')}</h3>
-              <p className="text-[#7A7068] dark:text-[#B89FD8] mb-8">{t('my_bookings_no_bookings_desc')}</p>
-              <button
-                onClick={() => navigate('/booking')}
-                className="px-8 py-4 bg-coral text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-coral/20"
+              <h3 className="text-xl font-black text-[#1A1410] dark:text-[#E8E0F5] mb-2">{t('my_bookings_no_bookings')}</h3>
+              <p className="text-[#7A7068] dark:text-[#B89FD8] text-sm max-w-xs mx-auto mb-8 font-medium">
+                {t('my_bookings_no_bookings_desc')}
+              </p>
+              <Button
+                onClick={() => navigate('/#courses')}
+                variant="primary"
+                className="mx-auto !px-8 !py-3 !rounded-2xl shadow-xl shadow-coral/20"
               >
                 {t('my_bookings_book_first')}
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="grid gap-6">

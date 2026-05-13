@@ -435,7 +435,7 @@ export default function AdminPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
+        <div className="flex items-center gap-1.5 bg-[#F7F4EF]/50 dark:bg-[#0E0818]/40 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 rounded-2xl p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -469,11 +469,14 @@ export default function AdminPage() {
             <p className="text-gray-400 text-sm">{t("blog_loading")}</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-[#1E0D38] rounded-2xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-            <i className="ri-inbox-line text-4xl text-gray-200 dark:text-[#3B2060] mb-3"></i>
-            <p className="text-gray-400 text-sm">
+          <div className="text-center py-24 bg-[#F7F4EF]/30 dark:bg-[#0E0818]/20 rounded-[2.5rem] border border-dashed border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
+            <div className="w-20 h-20 bg-[#F7F4EF] dark:bg-[#1E0D38] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <i className="ri-calendar-todo-line text-4xl text-[#D4C8BC] dark:text-[#3B2060]"></i>
+            </div>
+            <p className="text-[#7A7068] dark:text-[#B89FD8] font-bold text-base px-6">
               {search.trim() ? `${t("admin_search_placeholder")} « ${search} »` : t("my_bookings_no_bookings")}
             </p>
+            <p className="text-xs text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-2">{t("admin_filter_clear_hint", "Try clearing your filters or search terms")}</p>
           </div>
         ) : (
           <div className="space-y-4">
