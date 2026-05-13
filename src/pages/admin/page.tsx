@@ -435,7 +435,7 @@ export default function AdminPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 bg-[#F7F4EF]/50 dark:bg-[#0E0818]/40 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 rounded-2xl p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
+        <div className="flex items-center gap-1.5 bg-[#F7F4EF]/50 dark:bg-[#0E0818]/40 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 rounded-2xl p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full hide-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.key}
