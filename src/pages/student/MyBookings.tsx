@@ -29,7 +29,7 @@ interface Booking {
 
 export default function MyBookings() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isDark, toggle } = useDarkMode();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
