@@ -269,7 +269,7 @@ export default function AdminPage() {
             <Button
               variant="ghost"
               onClick={() => window.location.href = '/'}
-              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
+              className="!w-9 !h-9 sm:!w-10 sm:!h-10 !p-0 !rounded-xl !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
             >
               <i className="ri-home-4-line text-base sm:text-lg"></i>
             </Button>
@@ -277,12 +277,12 @@ export default function AdminPage() {
             <Button
               variant="ghost"
               onClick={toggleDark}
-              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
+              className="!w-9 !h-9 sm:!w-10 sm:!h-10 !p-0 !rounded-xl !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
             >
               <i className={isDark ? 'ri-sun-line text-base sm:text-lg' : 'ri-moon-line text-base sm:text-lg'}></i>
             </Button>
 
-            <div className="flex bg-gray-100/50 dark:bg-[#2D1B4E]/50 p-0.5 sm:p-1 rounded-full backdrop-blur-sm">
+            <div className="flex bg-gray-100/50 dark:bg-[#2D1B4E]/50 p-1 rounded-xl backdrop-blur-sm">
               {[
                 { code: "fr", label: "FR" },
                 { code: "en", label: "EN" },
@@ -291,7 +291,7 @@ export default function AdminPage() {
                 <button
                   key={lang.code}
                   onClick={() => i18n.changeLanguage(lang.code)}
-                  className={`px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                  className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
                     i18n.language === lang.code
                       ? 'bg-white dark:bg-coral text-coral dark:text-white shadow-sm'
                       : 'text-[#7A7068] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5]'
@@ -305,7 +305,7 @@ export default function AdminPage() {
             <Button
               variant="ghost"
               onClick={handleLogout}
-              className="!w-8 !h-8 sm:!w-10 sm:!h-10 !p-0 !rounded-full !bg-red-600 hover:!bg-red-700 !text-white"
+              className="!w-9 !h-9 sm:!w-10 sm:!h-10 !p-0 !rounded-xl !bg-red-600 hover:!bg-red-700 !text-white"
             >
               <i className="ri-logout-box-line text-base sm:text-lg"></i>
             </Button>
@@ -327,7 +327,7 @@ export default function AdminPage() {
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${showArchived ? 'bg-[#1A1410] dark:bg-coral text-white' : 'text-[#7A7068] dark:text-[#B89FD8]'}`}
             >
               {t("admin_booking_archived")}
-              {counts.archived > 0 && <span className="px-1.5 py-0.5 rounded-full bg-gray-500/20 text-xs">{counts.archived}</span>}
+              {counts.archived > 0 && <span className="px-1.5 py-0.5 rounded-lg bg-gray-500/20 text-xs">{counts.archived}</span>}
             </button>
           </div>
         </div>
@@ -435,12 +435,12 @@ export default function AdminPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-full p-1 sm:p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
+        <div className="flex items-center gap-1.5 bg-white/50 dark:bg-[#1E0D38]/50 border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl p-1.5 mb-6 sm:mb-8 overflow-x-auto max-w-full no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-wider sm:tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 sm:gap-2 ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider sm:tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 sm:gap-2 ${
                 filter === tab.key
                   ? tab.key === "cancelled" 
                     ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
@@ -450,7 +450,7 @@ export default function AdminPage() {
             >
               {tab.label}
               {counts[tab.key as keyof typeof counts] > 0 && (
-                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                <span className={`text-xs px-2 py-0.5 rounded-lg ${
                   filter === tab.key ? "bg-white/20 text-white" : `${tab.bgColor} ${tab.color}`
                 }`}>
                   {counts[tab.key as keyof typeof counts]}

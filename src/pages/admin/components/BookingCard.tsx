@@ -129,7 +129,7 @@ export default function BookingCard({ booking, adminSecret, onStatusChange, onAr
             <h3 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-base sm:text-xl tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
               {booking.student_name}
             </h3>
-            <span className={`text-xs px-3 py-1 rounded-full border font-black uppercase tracking-widest ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
+            <span className={`text-xs px-3 py-1 rounded-lg border font-black uppercase tracking-widest ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
               {statusLabels[booking.status] || booking.status}
             </span>
           </div>

@@ -210,7 +210,7 @@ export default function MyBookings() {
                         <h3 className="text-lg sm:text-xl font-black text-[#1A1410] dark:text-[#E8E0F5]">
                           {getLessonTitle(booking.course_type)}
                         </h3>
-                        <span className={`text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest ${statusColors[booking.status] || 'bg-gray-100'}`}>
+                        <span className={`text-xs px-3 py-1 rounded-lg font-black uppercase tracking-widest ${statusColors[booking.status] || 'bg-gray-100'}`}>
                           {t(`status_${booking.status}`)}
                         </span>
                       </div>
@@ -245,7 +245,7 @@ export default function MyBookings() {
                           setNewDate(booking.preferred_date);
                           setNewTime(booking.preferred_time);
                         }}
-                        className="px-6 py-3 bg-[#F0EBE3] dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-[#D4C8BC]/20 transition-all border border-[#D4C8BC]/20 flex items-center gap-2"
+                        className="px-6 py-2.5 bg-[#F0EBE3] dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-[#D4C8BC]/20 transition-all border border-[#D4C8BC]/20 flex items-center gap-2"
                       >
                         <i className="ri-edit-line"></i> {t('my_bookings_edit_time')}
                       </button>
@@ -320,19 +320,21 @@ export default function MyBookings() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <button
+              <Button
                 onClick={handleEditSubmit}
-                disabled={editLoading || !newDate || !newTime}
-                className="w-full py-4 bg-coral text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                disabled={editLoading || !newDate || !newTime || !!dateError}
+                variant="primary"
+                className="w-full !py-4 !rounded-2xl shadow-xl shadow-coral/20"
               >
-                {editLoading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : t('my_bookings_submit_request')}
-              </button>
-              <button
+                {editLoading ? <i className="ri-loader-4-line animate-spin"></i> : t('my_bookings_submit_request')}
+              </Button>
+              <Button
                 onClick={() => setEditingBooking(null)}
-                className="w-full py-4 text-[#7A7068] dark:text-[#B89FD8] font-black text-xs uppercase tracking-widest hover:text-[#1A1410] dark:hover:text-[#E8E0F5] transition-all"
+                variant="ghost"
+                className="w-full !py-4 !rounded-2xl"
               >
                 {t('admin_blog_cancel')}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

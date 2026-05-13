@@ -236,7 +236,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         <Button
           onClick={handleSave}
           variant="primary"
-          className="!px-6 sm:!px-8 !py-2.5 sm:!py-3 shadow-lg shadow-coral/20 w-full sm:w-auto"
+          className="!px-6 !py-2.5 shadow-lg shadow-coral/20 w-full sm:w-auto"
         >
           {t("admin_avail_save")}
         </Button>
@@ -305,7 +305,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               <Button
                 onClick={handleResetWeekdaySlots}
                 variant="outline"
-                className="!px-5 !py-2.5 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40 w-full sm:w-auto flex-shrink-0"
+                className="!px-4 !py-2 !text-xs !rounded-xl !bg-white/40 dark:!bg-[#2D1B4E]/40 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_reset_default")}
               </Button>
@@ -325,7 +325,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               <Button
                 onClick={handleAddWeekdayTimeSlot}
                 variant="primary"
-                className="!px-6 !py-3 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
+                className="!px-6 !py-2.5 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_add_slot")}
               </Button>
@@ -454,7 +454,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               <Button
                 onClick={handleAddBlockedDate}
                 variant="primary"
-                className="!px-6 !py-3 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
+                className="!px-6 !py-2.5 shadow-lg shadow-coral/10 w-full sm:w-auto flex-shrink-0"
               >
                 {t("admin_avail_add_btn")}
               </Button>
