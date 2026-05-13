@@ -307,7 +307,37 @@ serve(async (req) => {
       });
     }
 
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const emailjsServiceId = Deno.env.get("EMAILJS_SERVICE_ID");
+    const emailjsTemplateId = Deno.env.get("EMAILJS_TEMPLATE_ID");
+    const emailjsPublicKey = Deno.env.get("EMAILJS_PUBLIC_KEY");
+    const emailjsPrivateKey = Deno.env.get("EMAILJS_PRIVATE_KEY");
+
+    const sendEmail = async (to: string, subject: string, html: string) => {
+      if (!emailjsServiceId || !emailjsTemplateId || !emailjsPublicKey) {
+        console.error("EmailJS configuration missing");
+        return;
+      }
+
+      try {
+        await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            service_id: emailjsServiceId,
+            template_id: emailjsTemplateId,
+            user_id: emailjsPublicKey,
+            accessToken: emailjsPrivateKey,
+            template_params: {
+              to_email: to,
+              subject: subject,
+              message: html,
+            },
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to send email via EmailJS:", err);
+      }
+    };
 
     // ── MARK AS PAID ──────────────────────────────────────────────────────────
     if (payload.action === "mark_paid") {
@@ -343,29 +373,19 @@ serve(async (req) => {
         });
       }
 
-      if (resendApiKey) {
-        const emailHtml = getCancelledEmailHtml(
-          booking.student_name,
-          booking.course_type,
-          booking.preferred_date,
-          booking.preferred_time,
-          booking.payment_method
-        );
+      const emailHtml = getCancelledEmailHtml(
+        booking.student_name,
+        booking.course_type,
+        booking.preferred_date,
+        booking.preferred_time,
+        booking.payment_method
+      );
 
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${resendApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: "Chiu Gor French <noreply@chiugorfr.com>",
-            to: [booking.student_email],
-            subject: "Your Booking Has Been Cancelled — Chiu Gor French",
-            html: emailHtml,
-          }),
-        });
-      }
+      await sendEmail(
+        booking.student_email,
+        "Your Booking Has Been Cancelled — Chiu Gor French",
+        emailHtml
+      );
 
       return new Response(JSON.stringify({ success: true, action: "cancelled", booking_id: payload.booking_id }), {
         status: 200,
@@ -419,29 +439,19 @@ serve(async (req) => {
         // Calendar sync failure doesn't block approval
       }
 
-      if (resendApiKey) {
-        const emailHtml = getConfirmedEmailHtml(
-          booking.student_name,
-          booking.course_type,
-          booking.preferred_date,
-          booking.preferred_time,
-          booking.payment_method
-        );
+      const emailHtml = getConfirmedEmailHtml(
+        booking.student_name,
+        booking.course_type,
+        booking.preferred_date,
+        booking.preferred_time,
+        booking.payment_method
+      );
 
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${resendApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: "Chiu Gor French <noreply@chiugorfr.com>",
-            to: [booking.student_email],
-            subject: "Your Lesson is Confirmed! — Chiu Gor French",
-            html: emailHtml,
-          }),
-        });
-      }
+      await sendEmail(
+        booking.student_email,
+        "Your Lesson is Confirmed! — Chiu Gor French",
+        emailHtml
+      );
 
       return new Response(JSON.stringify({ success: true, action: "approved", booking_id: payload.booking_id, calendar_event_id: calendarEventId }), {
         status: 200,
@@ -451,13 +461,6 @@ serve(async (req) => {
 
     // ── RESEND EMAIL ──────────────────────────────────────────────────────────
     if (payload.action === "resend_email") {
-      if (!resendApiKey) {
-        return new Response(JSON.stringify({ success: false, error: "Resend API key missing" }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
       let emailHtml = "";
       let subject = "";
 
@@ -492,27 +495,7 @@ serve(async (req) => {
         );
       }
 
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Chiu Gor French <noreply@chiugorfr.com>",
-          to: [booking.student_email],
-          subject: subject,
-          html: emailHtml,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        return new Response(JSON.stringify({ success: false, error: errorData.message || "Failed to resend email" }), {
-          status: res.status,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      await sendEmail(booking.student_email, subject, emailHtml);
 
       return new Response(JSON.stringify({ success: true, action: "resend_email", booking_id: payload.booking_id }), {
         status: 200,
@@ -585,32 +568,22 @@ serve(async (req) => {
       }
 
       // Notify Admin via Email
-      if (resendApiKey) {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${resendApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: "Chiu Gor French <noreply@chiugorfr.com>",
-            to: ["chichiulam@gmail.com"], // Hardcoded admin email as requested in previous context
-            subject: "Action Required: Booking Edit Request — Chiu Gor French",
-            html: `
-              <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                <h2>Booking Edit Request</h2>
-                <p>Student <strong>${booking.student_name}</strong> has requested to change their booking.</p>
-                <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
-                  <p><strong>Current:</strong> ${booking.preferred_date} at ${booking.preferred_time}</p>
-                  <p><strong>Requested:</strong> ${payload.edit_data.preferred_date} at ${payload.edit_data.preferred_time}</p>
-                </div>
-                <p>Please log in to the Admin Dashboard to approve or deny this request.</p>
-                <a href="https://chiugorfr.com/admin" style="display: inline-block; background: #0d9488; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
-              </div>
-            `,
-          }),
-        });
-      }
+      await sendEmail(
+        "chichiulam@gmail.com",
+        "Action Required: Booking Edit Request — Chiu Gor French",
+        `
+          <div style="font-family: sans-serif; padding: 20px; color: #333;">
+            <h2>Booking Edit Request</h2>
+            <p>Student <strong>${booking.student_name}</strong> has requested to change their booking.</p>
+            <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
+              <p><strong>Current:</strong> ${booking.preferred_date} at ${booking.preferred_time}</p>
+              <p><strong>Requested:</strong> ${payload.edit_data.preferred_date} at ${payload.edit_data.preferred_time}</p>
+            </div>
+            <p>Please log in to the Admin Dashboard to approve or deny this request.</p>
+            <a href="https://chiugorfr.com/admin" style="display: inline-block; background: #0d9488; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+          </div>
+        `
+      );
 
       return new Response(JSON.stringify({ success: true, action: "edit_submitted", booking_id: payload.booking_id }), {
         status: 200,
@@ -695,7 +668,7 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid action (v4)" }), {
+    return new Response(JSON.stringify({ success: false, error: "Invalid action" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

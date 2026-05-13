@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-const FORM_URL = 'https://readdy.ai/api/form/d7lt97nu2vahpmebevtg';
 
 export default function ContactSection() {
   const { t, i18n } = useTranslation();
@@ -20,22 +19,42 @@ export default function ContactSection() {
     if (status === 'loading') return;
 
     const form = e.currentTarget;
-    const message = (form.elements.namedItem('message') as HTMLTextAreaElement)?.value || '';
+    const formData = new FormData(form);
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const message = (formData.get('message') as string) || '';
+
     if (message.length > 500) return;
 
     setStatus('loading');
-    const data = new URLSearchParams();
-    const formData = new FormData(form);
-    formData.forEach((value, key) => {
-      data.append(key, value as string);
-    });
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.error('EmailJS configuration missing in environment variables');
+      setStatus('error');
+      return;
+    }
 
     try {
-      const res = await fetch(FORM_URL, {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: data.toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          template_params: {
+            name: name,
+            email: email,
+            message: message,
+            title: `New Message from ${name}`, // Matches {{title}} in the user's screenshot
+          },
+        }),
       });
+
       if (res.ok) {
         setStatus('success');
         formRef.current?.reset();
