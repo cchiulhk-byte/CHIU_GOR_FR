@@ -6,6 +6,15 @@ import Footer from '@/pages/home/components/Footer';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/design-system/tokens';
+import {
+  AvailabilityConfig,
+  defaultAvailabilityConfig,
+  getAvailableTimeSlotsForDate,
+  isDateBlocked,
+  isWeekdayEnabled,
+  loadAvailabilityConfig,
+} from '@/lib/availability';
+import { lessonTypes } from '@/mocks/booking';
 
 interface Booking {
   id: string;
@@ -29,6 +38,31 @@ export default function MyBookings() {
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
   const [editLoading, setEditLoading] = useState(false);
+  const [availabilityConfig, setAvailabilityConfig] = useState<AvailabilityConfig>(defaultAvailabilityConfig);
+  const [dateError, setDateError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Load local config first
+    const localConfig = loadAvailabilityConfig();
+    setAvailabilityConfig(localConfig);
+
+    // Load from server
+    const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+    if (supabaseUrl) {
+      fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "get_availability" }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.success && data.availability) {
+            setAvailabilityConfig(data.availability);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     async function getSession() {
@@ -57,8 +91,29 @@ export default function MyBookings() {
     setLoading(false);
   }
 
+  const today = new Date().toISOString().split('T')[0];
+  const maxDate = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+  const availableTimeSlots = newDate
+    ? getAvailableTimeSlotsForDate(newDate, availabilityConfig)
+    : [];
+
+  useEffect(() => {
+    if (newDate) {
+      if (!isWeekdayEnabled(newDate, availabilityConfig)) {
+        setDateError(t('booking_error_date') + ". Please choose an available weekday.");
+        setNewTime('');
+      } else if (isDateBlocked(newDate, availabilityConfig)) {
+        setDateError(t('booking_error_date') + ". This date is blocked.");
+        setNewTime('');
+      } else {
+        setDateError(null);
+      }
+    }
+  }, [newDate, availabilityConfig, t]);
+
   async function handleEditSubmit() {
-    if (!editingBooking || !newDate || !newTime) return;
+    if (!editingBooking || !newDate || !newTime || dateError) return;
     setEditLoading(true);
     try {
       const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
@@ -102,11 +157,19 @@ export default function MyBookings() {
     cancelled: 'bg-red-100 text-red-700',
   };
 
+  const getLessonTitle = (courseType: string) => {
+    const lesson = lessonTypes.find(l => l.id === courseType || l.title === courseType);
+    if (!lesson) return courseType;
+    if (i18n.language === 'zh-HK') return lesson.titleZh;
+    if (i18n.language === 'fr') return lesson.titleFr;
+    return lesson.title;
+  };
+
   return (
-    <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+    <div className="min-h-screen flex flex-col bg-[#FDFBF9] dark:bg-[#0E0818]">
       <Navbar isDark={isDark} onToggleDark={toggle} />
 
-      <div className="pt-28 pb-20 px-4">
+      <div className="flex-1 pt-28 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-black text-[#1A1410] dark:text-[#E8E0F5] mb-2" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t('my_bookings_title')}
@@ -145,14 +208,14 @@ export default function MyBookings() {
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg sm:text-xl font-black text-[#1A1410] dark:text-[#E8E0F5]">
-                          {booking.course_type}
+                          {getLessonTitle(booking.course_type)}
                         </h3>
                         <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${statusColors[booking.status] || 'bg-gray-100'}`}>
-                          {booking.status.replace('_', ' ')}
+                          {t(`status_${booking.status}`)}
                         </span>
                       </div>
                       <p className="text-[#7A7068] dark:text-[#B89FD8] text-sm font-medium">
-                        Booked on {new Date(booking.created_at).toLocaleDateString()}
+                        {t('my_bookings_booked_on', { date: new Date(booking.created_at).toLocaleDateString() })}
                       </p>
                     </div>
                     <div className="text-left sm:text-right">
@@ -209,25 +272,46 @@ export default function MyBookings() {
               {t('my_bookings_request_desc')}
             </p>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-6 mb-8">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-2">{t('my_bookings_new_date')}</label>
                 <input
                   type="date"
                   value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
+                  min={today}
+                  max={maxDate}
+                  onChange={(e) => {
+                    setNewDate(e.target.value);
+                    setNewTime('');
+                  }}
                   className="w-full px-5 py-4 bg-[#F0EBE3] dark:bg-[#130A22] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl text-[#1A1410] dark:text-[#E8E0F5] font-bold focus:outline-none focus:border-coral transition-all"
                 />
+                {dateError && <p className="text-coral text-[10px] mt-2 font-bold uppercase tracking-wider">{dateError}</p>}
               </div>
+
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-2">{t('my_bookings_new_time')}</label>
-                <input
-                  type="text"
-                  value={newTime}
-                  onChange={(e) => setNewTime(e.target.value)}
-                  placeholder="e.g. 14:00"
-                  className="w-full px-5 py-4 bg-[#F0EBE3] dark:bg-[#130A22] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl text-[#1A1410] dark:text-[#E8E0F5] font-bold focus:outline-none focus:border-coral transition-all"
-                />
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-3">{t('my_bookings_new_time')}</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {availableTimeSlots.length > 0 ? (
+                    availableTimeSlots.map((slot) => (
+                      <button
+                        key={slot.start}
+                        onClick={() => setNewTime(slot.start)}
+                        className={`py-3 px-2 rounded-xl border-2 text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
+                          newTime === slot.start
+                            ? "border-coral bg-coral text-white"
+                            : "border-[#D4C8BC]/40 dark:border-[#3B2060]/40 text-[#1A1410] dark:text-[#E8E0F5] hover:border-coral/50"
+                        }`}
+                      >
+                        {slot.start}
+                      </button>
+                    ))
+                  ) : (
+                    <p className="col-span-full text-[10px] font-bold text-coral uppercase tracking-widest bg-coral/5 p-4 rounded-2xl border border-coral/20">
+                      {newDate ? "No slots available for this date." : "Select a date first."}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

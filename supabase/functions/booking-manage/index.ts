@@ -319,7 +319,7 @@ serve(async (req) => {
       }
 
       try {
-        await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -334,6 +334,11 @@ serve(async (req) => {
             },
           }),
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`EmailJS API error (${response.status}):`, errorText);
+        }
       } catch (err) {
         console.error("Failed to send email via EmailJS:", err);
       }

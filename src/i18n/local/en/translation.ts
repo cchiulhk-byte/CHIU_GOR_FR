@@ -451,6 +451,15 @@ const translation = {
   my_bookings_new_time: "New Time (HKT)",
   my_bookings_submit_request: "Submit Request",
   my_bookings_submit_success: "Your change request has been submitted and is pending approval.",
+  my_bookings_booked_on: "Booked on {{date}}",
+  status_pending_verification: "Pending Verification",
+  status_pending_reapproval: "Pending Re-approval",
+  status_confirmed: "Confirmed",
+  status_cancelled: "Cancelled",
+  footer_canada: "Canada",
+  footer_hong_kong: "Hong Kong",
+  footer_made_with: "Made with",
+  footer_location: "in Québec & Hong Kong",
 
   // Admin New Actions
   admin_tab_reapproval: "Re-approval",
@@ -464,8 +473,12 @@ const translation = {
   admin_booking_delete_desc: "This action is permanent and cannot be undone. All data for {{name}} will be lost.",
   admin_booking_delete_forever: "Delete Forever",
 
-  admin_logout_message: "Logging Out...",
   admin_logout_redirect: "Please wait while we secure your session.",
+
+  // SEO
+  seo_title: "Chiu Gor French | Personalised French Tutor in Hong Kong",
+  seo_description: "Learn French with Chiu Gor, a passionate tutor in Hong Kong. Personalised lessons for beginners to advanced levels, DELF prep, and business French.",
+  seo_keywords: "learn French Hong Kong, French tutor, DELF preparation, business French, French conversation, Chiu Gor French",
 };
 
 export default translation;

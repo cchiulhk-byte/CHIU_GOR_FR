@@ -22,9 +22,9 @@ export default function SEO({
   const { t, i18n } = useTranslation();
 
   const siteName = 'Chiu Gor French';
-  const defaultTitle = `${siteName} | 法語教師 | Professeur de Français | French Teacher`;
-  const defaultDescription = 'Chiu Gor French - 專業法語教師，提供個人化法語課程，包括日常會話、DELF備考及商務法語。Professeur de français passionné offrant des cours personnalisés à Hong Kong.';
-  const defaultKeywords = '法語課程, French teacher, professeur français, DELF, Chiu Gor French, Hong Kong French, 法文班';
+  const defaultTitle = t('seo_title');
+  const defaultDescription = t('seo_description');
+  const defaultKeywords = t('seo_keywords');
 
   const seoTitle = title ? `${title} | ${siteName}` : defaultTitle;
   const seoDescription = description || defaultDescription;
@@ -104,11 +104,6 @@ export default function SEO({
       <meta name="twitter:description" content={seoDescription} />
       <meta name="twitter:image" content={ogImage} />
 
-      {/* Multilingual Support (hreflang) */}
-      <link rel="alternate" hrefLang="en" href={`${window.location.origin}/en`} />
-      <link rel="alternate" hrefLang="zh-HK" href={`${window.location.origin}/zh-HK`} />
-      <link rel="alternate" hrefLang="fr" href={`${window.location.origin}/fr`} />
-      <link rel="alternate" hrefLang="x-default" href={window.location.origin} />
 
       {/* Structured Data */}
       <script type="application/ld+json">

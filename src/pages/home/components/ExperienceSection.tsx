@@ -19,7 +19,7 @@ function ExperienceCard({ exp, index }: { exp: ExperienceItem; index: number }) 
           <div className="flex items-start gap-4">
             {exp.image ? (
               <div className={`w-20 h-20 flex items-center justify-center rounded-2xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
-                <img src={exp.image} alt="" className="w-full h-full object-cover" />
+                <img src={exp.image} alt={t(exp.titleKey)} className="w-full h-full object-cover" />
               </div>
             ) : (
               <div className={`w-12 h-12 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
@@ -73,7 +73,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-mustard/20 text-yellow-600',
     icon: 'ri-heart-line',
     flag: '🇭🇰',
-    image: '/exp-passion.png',
+    image: '/exp-passion.jpg',
   },
   {
     yearKey: 'exp2_year',
@@ -85,7 +85,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-[#FF0000]/10 text-[#FF0000]',
     icon: 'ri-graduation-cap-line',
     flag: '🇨🇦',
-    image: '/exp-graduation.png',
+    image: '/exp-graduation.jpg',
   },
   {
     yearKey: 'exp3_year',
@@ -97,7 +97,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-teal/10 text-teal',
     icon: 'ri-book-open-line',
     flag: '🇨🇦', 
-    image: '/exp-graduation2.png',
+    image: '/exp-graduation2.jpg',
   },
   {
     yearKey: 'exp4_year',
@@ -109,7 +109,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-coral/10 text-coral',
     icon: 'ri-edit-line',
     flag: '🇭🇰',
-    image: "/edit_trad.png"
+    image: "/edit_trad.jpg"
   },
   {
     yearKey: 'exp5_year',
@@ -121,7 +121,7 @@ const EXPERIENCES: ExperienceItem[] = [
     iconBg: 'bg-[#7C3AED]/10 text-[#7C3AED]',
     icon: 'ri-user-star-line',
     flag: '🇭🇰',
-    image:'/teacher.png'
+    image:'/teacher.jpg'
   },
 ];
 

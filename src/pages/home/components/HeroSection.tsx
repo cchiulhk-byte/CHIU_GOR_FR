@@ -84,8 +84,8 @@ export default function HeroSection() {
         style={{
           opacity: 0.08,
           filter: 'sepia(0.3) hue-rotate(10deg) saturate(1.4) brightness(1.1)',
-          animationDuration: watermarkGust ? undefined : '8s',
-        }}
+          animationDuration: watermarkGust ? '' : '8s',
+        } as React.CSSProperties}
       />
       <img
         src={LEAF_URL}
@@ -94,9 +94,9 @@ export default function HeroSection() {
         style={{
           opacity: 0.06,
           filter: 'sepia(0.3) hue-rotate(25deg) saturate(1.5) brightness(1.15)',
-          animationDuration: watermarkGust ? undefined : '10s',
+          animationDuration: watermarkGust ? '' : '10s',
           animationDelay: watermarkGust ? '0.15s' : '2s',
-        }}
+        } as React.CSSProperties}
       />
       <img
         src={LEAF_URL}
@@ -105,9 +105,9 @@ export default function HeroSection() {
         style={{
           opacity: 0.10,
           filter: 'sepia(0.3) hue-rotate(35deg) saturate(1.5) brightness(1.2)',
-          animationDuration: watermarkGust ? undefined : '12s',
+          animationDuration: watermarkGust ? '' : '12s',
           animationDelay: watermarkGust ? '0.08s' : '1s',
-        }}
+        } as React.CSSProperties}
       />
 
 

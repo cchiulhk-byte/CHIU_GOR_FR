@@ -447,6 +447,15 @@ const translation = {
   my_bookings_new_time: "新時間 (HKT)",
   my_bookings_submit_request: "提交申請",
   my_bookings_submit_success: "您的改期申請已提交，正等待審核。",
+  my_bookings_booked_on: "預約日期：{{date}}",
+  status_pending_verification: "待審核",
+  status_pending_reapproval: "待重新審核",
+  status_confirmed: "已確認",
+  status_cancelled: "已取消",
+  footer_canada: "加拿大",
+  footer_hong_kong: "香港",
+  footer_made_with: "製作",
+  footer_location: "於魁北克與香港",
 
   // Admin New Actions
   admin_tab_reapproval: "重新審核",
@@ -459,8 +468,12 @@ const translation = {
   admin_booking_delete_title: "刪除預約？",
   admin_booking_delete_desc: "此操作是永久性的，無法撤銷。{{name}} 的所有相關數據將會丟失。",
   admin_booking_delete_forever: "永久刪除",
-  admin_logout_message: "正在登出...",
   admin_logout_redirect: "請稍候，我們正在確保您的帳戶安全。",
+
+  // SEO
+  seo_title: "超哥法語 | 香港專業個人化法語導師",
+  seo_description: "跟隨超哥學習法語，香港熱情導師提供從初級到高級的個人化課程，包括DELF備考、商務法語及日常會話。",
+  seo_keywords: "學法文, 香港法文老師, DELF 課程, 商務法文, 法文班, 超哥法語",
 };
 
 export default translation;

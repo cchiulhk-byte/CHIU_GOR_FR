@@ -10,6 +10,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { tokens } from '@/design-system/tokens';
 import { Card } from '@/design-system/atoms/Card';
 import { Button } from '@/design-system/atoms/Button';
+import SEO from '@/components/feature/SEO';
 
 interface BlogPost {
   id: string;
@@ -160,6 +161,12 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+      <SEO 
+        title={post.title} 
+        description={post.content.substring(0, 160) + '...'} 
+        ogImage={post.image_url}
+        ogType="article"
+      />
       <Navbar isDark={isDark} onToggleDark={toggle} />
 
       <div className="pt-24 pb-20">

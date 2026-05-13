@@ -45,6 +45,14 @@ export const lessonTypes = [
     duration: "60 min",
   },
   {
+    id: "business",
+    title: "Business French",
+    titleZh: "商務法語班",
+    titleFr: "Français des affaires",
+    price: 500,
+    duration: "90 min",
+  },
+  {
     id: "culture",
     title: "French Culture",
     titleZh: "法語文化探索班",

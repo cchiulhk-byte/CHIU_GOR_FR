@@ -322,7 +322,7 @@ const translation = {
   admin_dashboard: "Tableau de bord",
   admin_logout: "Déconnexion",
   admin_logout_message: "Déconnexion en cours...",
-  admin_logout_redirect: "Vous serez redirigé sous peu.",
+  admin_logout_redirect: "Veuillez patienter sous peu.",
   admin_refresh: "Actualiser",
   admin_login_title: "Tableau de bord",
   admin_login_password: "Mot de passe administrateur",
@@ -453,6 +453,15 @@ const translation = {
   my_bookings_new_time: "Nouvelle heure (HKT)",
   my_bookings_submit_request: "Envoyer la demande",
   my_bookings_submit_success: "Votre demande de modification a été envoyée et est en attente d'approbation.",
+  my_bookings_booked_on: "Réservé le {{date}}",
+  status_pending_verification: "En attente de vérification",
+  status_pending_reapproval: "En attente de re-validation",
+  status_confirmed: "Confirmé",
+  status_cancelled: "Annulé",
+  footer_canada: "Canada",
+  footer_hong_kong: "Hong Kong",
+  footer_made_with: "Fait avec",
+  footer_location: "au Québec et à Hong Kong",
 
   // Admin New Actions
   admin_tab_reapproval: "Ré-approbation",
@@ -465,6 +474,11 @@ const translation = {
   admin_booking_delete_title: "Supprimer la réservation ?",
   admin_booking_delete_desc: "Cette action est permanente et irréversible. Toutes les données pour {{name}} seront perdues.",
   admin_booking_delete_forever: "Supprimer définitivement",
+
+  // SEO
+  seo_title: "Chiu Gor French | Professeur de français personnalisé à Hong Kong",
+  seo_description: "Apprenez le français avec Chiu Gor, professeur passionné à Hong Kong. Cours personnalisés du niveau débutant à avancé, préparation au DELF et français des affaires.",
+  seo_keywords: "apprendre le français Hong Kong, professeur de français, préparation DELF, français des affaires, conversation française, Chiu Gor French",
 };
 
 export default translation;

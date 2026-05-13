@@ -43,7 +43,7 @@ export const LogoutProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           <div className="relative w-full max-w-sm bg-[#1E0D38] rounded-[2.5rem] border border-white/10 p-10 shadow-[0_40px_100px_rgba(0,0,0,0.5)] text-center">
             <div className="w-24 h-24 mx-auto mb-6">
               <img 
-                src="/logout-icon.png" 
+                src="/logout-icon.jpg" 
                 alt="Logout Warning"
                 className="w-full h-full object-contain"
               />

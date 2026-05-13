@@ -91,14 +91,14 @@ export default function Footer() {
                   </div>
                   <div className="w-4 h-6 bg-[#FF0000]" />
                 </div>
-                <span className="text-[9px] text-[#4A4440] dark:text-[#B89FD8] tracking-wide font-bold" style={{ fontFamily }}>Canada</span>
+                <span className="text-[9px] text-[#4A4440] dark:text-[#B89FD8] tracking-wide font-bold" style={{ fontFamily }}>{t('footer_canada')}</span>
               </div>
               <span className="text-[#4A4440] dark:text-gray-500 text-sm">×</span>
               <div className="flex flex-col items-center gap-1" title="Hong Kong">
                 <div className="w-12 h-6 rounded overflow-hidden border border-[#1A1410]/20 dark:border-white/10 bg-[#DE2910] flex items-center justify-center">
                   <span className="text-white text-xs">🌸</span>
                 </div>
-                <span className="text-[9px] text-[#4A4440] dark:text-[#B89FD8] tracking-wide font-bold" style={{ fontFamily }}>Hong Kong</span>
+                <span className="text-[9px] text-[#4A4440] dark:text-[#B89FD8] tracking-wide font-bold" style={{ fontFamily }}>{t('footer_hong_kong')}</span>
               </div>
             </div>
 
@@ -153,9 +153,9 @@ export default function Footer() {
             className="flex items-center gap-1.5 bg-white/90 dark:bg-[#1E1530]/95 backdrop-blur-sm rounded-full px-3 py-1.5 border border-[#D4C8BC]/80 dark:border-[#32254E] text-[#4A4440] dark:text-[#B89FD8] text-xs font-semibold"
             style={{ fontFamily }}
           >
-            Made with
+            {t('footer_made_with')}
             <img src={LEAF_URL} alt="" className="w-3 h-3" style={{ filter: 'sepia(0.3) saturate(1.2)' }} />
-            in Québec &amp; Hong Kong
+            {t('footer_location')}
           </span>
         </div>
       </div>
