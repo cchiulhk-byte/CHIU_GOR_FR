@@ -261,7 +261,7 @@ export default function AdminPage() {
               <h1 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-sm sm:text-lg leading-tight tracking-tight truncate" style={{ fontFamily: tokens.typography.fontFamily }}>
                 {t("admin_dashboard")}
               </h1>
-              <p className="text-[9px] sm:text-xs text-[#7A7068] dark:text-[#B89FD8] font-black uppercase tracking-[0.2em] mt-0.5 hidden sm:block">Chiu Gor French</p>
+              <p className="text-xs text-[#7A7068] dark:text-[#B89FD8] font-black uppercase tracking-[0.2em] mt-0.5 hidden sm:block">Chiu Gor French</p>
             </div>
           </div>
 
@@ -291,7 +291,7 @@ export default function AdminPage() {
                 <button
                   key={lang.code}
                   onClick={() => i18n.changeLanguage(lang.code)}
-                  className={`px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-black transition-all cursor-pointer ${
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
                     i18n.language === lang.code
                       ? 'bg-white dark:bg-coral text-coral dark:text-white shadow-sm'
                       : 'text-[#7A7068] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5]'
@@ -327,7 +327,7 @@ export default function AdminPage() {
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${showArchived ? 'bg-[#1A1410] dark:bg-coral text-white' : 'text-[#7A7068] dark:text-[#B89FD8]'}`}
             >
               {t("admin_booking_archived")}
-              {counts.archived > 0 && <span className="px-1.5 py-0.5 rounded-full bg-gray-500/20 text-[10px]">{counts.archived}</span>}
+              {counts.archived > 0 && <span className="px-1.5 py-0.5 rounded-full bg-gray-500/20 text-xs">{counts.archived}</span>}
             </button>
           </div>
         </div>
@@ -360,7 +360,7 @@ export default function AdminPage() {
                 <i className={`${stat.icon} ${stat.text} text-xl sm:text-2xl`}></i>
               </div>
               <p className={`text-2xl sm:text-4xl font-black ${stat.text}`} style={{ fontFamily: tokens.typography.fontFamilyEn }}>{stat.count}</p>
-              <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-1 sm:mt-2">{stat.label}</p>
+              <p className="text-xs font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-1 sm:mt-2">{stat.label}</p>
             </Card>
           ))}
         </div>
@@ -391,14 +391,14 @@ export default function AdminPage() {
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {(["this_week", "this_month", "last_month"] as const).map((r) => (
-                <Button
+                <button
                   key={r}
-                  variant="ghost"
+                  type="button"
                   onClick={() => applyQuickRange(r)}
-                  className="!px-3 !py-2 !text-xs sm:!text-sm !rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20"
+                  className="px-3 py-2 text-sm rounded-xl border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 text-[#7A7068] dark:text-[#B89FD8] hover:bg-white dark:hover:bg-[#2D1B4E] transition-all"
                 >
                   {r === "this_week" ? t("admin_filter_this_week") : r === "this_month" ? t("admin_filter_this_month") : t("admin_filter_last_month")}
-                </Button>
+                </button>
               ))}
               {hasDateFilter && (
                 <Button
@@ -440,7 +440,7 @@ export default function AdminPage() {
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 sm:gap-2 ${
+              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-wider sm:tracking-widest transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 sm:gap-2 ${
                 filter === tab.key
                   ? tab.key === "cancelled" 
                     ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
@@ -450,7 +450,7 @@ export default function AdminPage() {
             >
               {tab.label}
               {counts[tab.key as keyof typeof counts] > 0 && (
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
                   filter === tab.key ? "bg-white/20 text-white" : `${tab.bgColor} ${tab.color}`
                 }`}>
                   {counts[tab.key as keyof typeof counts]}

@@ -38,13 +38,13 @@ export default function AdminLogin({ onLogin, error }: AdminLoginProps) {
           <h1 className="text-3xl font-black text-[#1A1410] dark:text-[#E8E0F5] tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
             {t("admin_login_title")}
           </h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-2">Accès Administrateur</p>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#7A7068] dark:text-[#B89FD8] mt-2">Accès Administrateur</p>
         </div>
 
         <Card className="p-8 !rounded-[2.5rem] border-[#D4C8BC]/40 dark:border-[#3B2060]/40">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-2 ml-1">
+              <label className="block text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-2 ml-1">
                 {t("admin_login_password")}
               </label>
               <input

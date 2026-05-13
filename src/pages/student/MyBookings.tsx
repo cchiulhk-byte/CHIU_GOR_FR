@@ -210,7 +210,7 @@ export default function MyBookings() {
                         <h3 className="text-lg sm:text-xl font-black text-[#1A1410] dark:text-[#E8E0F5]">
                           {getLessonTitle(booking.course_type)}
                         </h3>
-                        <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${statusColors[booking.status] || 'bg-gray-100'}`}>
+                        <span className={`text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest ${statusColors[booking.status] || 'bg-gray-100'}`}>
                           {t(`status_${booking.status}`)}
                         </span>
                       </div>
@@ -245,7 +245,7 @@ export default function MyBookings() {
                           setNewDate(booking.preferred_date);
                           setNewTime(booking.preferred_time);
                         }}
-                        className="px-6 py-3 bg-[#F0EBE3] dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[#D4C8BC]/20 transition-all border border-[#D4C8BC]/20 flex items-center gap-2"
+                        className="px-6 py-3 bg-[#F0EBE3] dark:bg-[#130A22] text-[#1A1410] dark:text-[#E8E0F5] rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-[#D4C8BC]/20 transition-all border border-[#D4C8BC]/20 flex items-center gap-2"
                       >
                         <i className="ri-edit-line"></i> {t('my_bookings_edit_time')}
                       </button>
@@ -272,9 +272,11 @@ export default function MyBookings() {
               {t('my_bookings_request_desc')}
             </p>
 
-            <div className="space-y-6 mb-8">
+            <div className="space-y-4 mb-8">
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-2">{t('my_bookings_new_date')}</label>
+                <label className="block text-xs font-black text-[#7A7068] dark:text-[#B89FD8] uppercase tracking-widest mb-2 ml-1">
+                  {t('my_bookings_new_date')}
+                </label>
                 <input
                   type="date"
                   value={newDate}
@@ -286,18 +288,20 @@ export default function MyBookings() {
                   }}
                   className="w-full px-5 py-4 bg-[#F0EBE3] dark:bg-[#130A22] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 rounded-2xl text-[#1A1410] dark:text-[#E8E0F5] font-bold focus:outline-none focus:border-coral transition-all"
                 />
-                {dateError && <p className="text-coral text-[10px] mt-2 font-bold uppercase tracking-wider">{dateError}</p>}
+                {dateError && <p className="text-coral text-xs mt-2 font-bold uppercase tracking-wider">{dateError}</p>}
               </div>
 
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-3">{t('my_bookings_new_time')}</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="block text-xs font-black text-[#7A7068] dark:text-[#B89FD8] uppercase tracking-widest mb-3 ml-1">
+                  {t('my_bookings_new_time')}
+                </label>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {availableTimeSlots.length > 0 ? (
                     availableTimeSlots.map((slot) => (
                       <button
                         key={slot.start}
                         onClick={() => setNewTime(slot.start)}
-                        className={`py-3 px-2 rounded-xl border-2 text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
+                        className={`py-3 px-2 rounded-xl border-2 text-xs font-black uppercase tracking-widest transition-all duration-200 ${
                           newTime === slot.start
                             ? "border-coral bg-coral text-white"
                             : "border-[#D4C8BC]/40 dark:border-[#3B2060]/40 text-[#1A1410] dark:text-[#E8E0F5] hover:border-coral/50"
@@ -307,7 +311,7 @@ export default function MyBookings() {
                       </button>
                     ))
                   ) : (
-                    <p className="col-span-full text-[10px] font-bold text-coral uppercase tracking-widest bg-coral/5 p-4 rounded-2xl border border-coral/20">
+                    <p className="col-span-full text-xs font-bold text-coral uppercase tracking-widest bg-coral/5 p-4 rounded-2xl border border-coral/20">
                       {newDate ? "No slots available for this date." : "Select a date first."}
                     </p>
                   )}

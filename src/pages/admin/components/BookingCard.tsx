@@ -129,7 +129,7 @@ export default function BookingCard({ booking, adminSecret, onStatusChange, onAr
             <h3 className="font-black text-[#1A1410] dark:text-[#E8E0F5] text-base sm:text-xl tracking-tight" style={{ fontFamily: tokens.typography.fontFamily }}>
               {booking.student_name}
             </h3>
-            <span className={`text-[10px] px-3 py-1 rounded-full border font-black uppercase tracking-widest ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
+            <span className={`text-xs px-3 py-1 rounded-full border font-black uppercase tracking-widest ${statusColors[booking.status] || "bg-gray-100 text-gray-600 border-gray-200"}`}>
               {statusLabels[booking.status] || booking.status}
             </span>
           </div>
@@ -171,19 +171,19 @@ export default function BookingCard({ booking, adminSecret, onStatusChange, onAr
       {/* Details grid */}
       <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4 mb-4 sm:mb-6">
         <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-          <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_course")}</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_course")}</p>
           <p className="text-sm sm:text-base font-bold text-[#1A1410] dark:text-[#E8E0F5] leading-tight">{booking.course_type}</p>
         </div>
         <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-          <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_date")}</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_date")}</p>
           <p className="text-sm sm:text-base font-bold text-[#1A1410] dark:text-[#E8E0F5]">{booking.preferred_date}</p>
         </div>
         <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-          <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_time")}</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_time")}</p>
           <p className="text-sm sm:text-base font-bold text-[#1A1410] dark:text-[#E8E0F5]">{booking.preferred_time} HKT</p>
         </div>
         <div className="bg-[#F7F4EF] dark:bg-[#0E0818] rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[#D4C8BC]/20 dark:border-[#3B2060]/20">
-          <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_payment")}</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-1">{t("admin_booking_payment")}</p>
           <div className="flex items-center gap-2">
             {booking.payment_method && (
               <i className={`${methodIcons[booking.payment_method] || "ri-money-dollar-circle-line"} text-coral text-lg`}></i>
@@ -263,7 +263,7 @@ export default function BookingCard({ booking, adminSecret, onStatusChange, onAr
       {booking.notes && (
         <div className="bg-gray-50 rounded-lg px-4 py-2.5 mb-4 flex items-start gap-2">
           <i className="ri-sticky-note-line text-gray-400 text-sm mt-0.5 flex-shrink-0"></i>
-          <p className="text-xs text-gray-500">{booking.notes}</p>
+          <p className="text-sm text-gray-500">{booking.notes}</p>
         </div>
       )}
 

@@ -266,7 +266,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
         <div className="space-y-6">
           {/* Weekday Selection */}
           <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50">
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_select_day")}</p>
+            <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_select_day")}</p>
             <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
               {weekdayLabels.map((label, index) => {
                 const hasCustomSlots = config.availableTimeSlotsByWeekday[index] !== undefined;
@@ -288,7 +288,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 );
               })}
             </div>
-            <p className="text-[10px] font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">
+            <p className="text-xs font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">
               * {t("admin_avail_hint_blue")}
             </p>
           </div>
@@ -367,7 +367,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                         className="flex-1 px-2 py-1 text-sm bg-transparent text-[#1A1410] dark:text-[#E8E0F5] border-b border-transparent focus:border-coral focus:outline-none font-bold"
                         placeholder="HH:MM-HH:MM"
                       />
-                      <span className={`text-[10px] font-black uppercase tracking-widest ${slot.available ? 'text-teal-600' : 'text-red-500'}`}>
+                      <span className={`text-xs font-black uppercase tracking-widest ${slot.available ? 'text-teal-600' : 'text-red-500'}`}>
                         {slot.available ? t("admin_avail_available") : t("admin_avail_blocked")}
                       </span>
                     </div>
@@ -389,7 +389,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             };
                           });
                         }}
-                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                           slot.available
                             ? "bg-red-500/10 text-red-500 hover:bg-red-500/20"
                             : "bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20"
@@ -412,7 +412,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                             };
                           });
                         }}
-                        className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-[#F7F4EF] dark:bg-[#1E0D38] text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-all"
+                        className="px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-widest bg-[#F7F4EF] dark:bg-[#1E0D38] text-[#7A7068] dark:text-[#B89FD8] hover:text-coral transition-all"
                       >
                         {t("admin_avail_remove_btn")}
                       </button>
@@ -429,7 +429,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
               )}
             </div>
 
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068]/60 dark:text-[#B89FD8]/60 ml-1">
+            <p className="text-xs font-black uppercase tracking-widest text-[#7A7068]/60 dark:text-[#B89FD8]/60 ml-1">
               {selectedWeekdaySlots.length > 0
                 ? t("admin_avail_slots_summary", {
                     available: selectedWeekdaySlots.filter((s) => s.available).length,
@@ -443,7 +443,7 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
 
         <div className="rounded-xl sm:rounded-[2rem] border border-[#D4C8BC]/40 dark:border-[#3B2060]/40 p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_blocked_dates")}</p>
+            <p className="text-xs font-black uppercase tracking-widest text-[#7A7068] dark:text-[#B89FD8] mb-4 ml-1">{t("admin_avail_blocked_dates")}</p>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <input
                 type="date"
@@ -475,12 +475,12 @@ export default function AvailabilityManager({ adminSecret, onUnauthorized }: Ava
                 ))}
               </div>
             ) : (
-              <p className="text-[10px] font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">{t("admin_avail_no_blocked")}</p>
+              <p className="text-xs font-bold text-[#7A7068]/60 dark:text-[#B89FD8]/60 mt-4 ml-1 italic">{t("admin_avail_no_blocked")}</p>
             )}
           </div>
 
           <div className="rounded-xl sm:rounded-[1.5rem] border border-[#D4C8BC]/20 dark:border-[#3B2060]/20 bg-[#F7F4EF]/50 dark:bg-[#130A22]/50 p-4 sm:p-6 text-sm text-[#7A7068] dark:text-[#B89FD8]">
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#1A1410] dark:text-[#E8E0F5] mb-3">{t("admin_avail_behavior_title")}</p>
+            <p className="text-xs font-black uppercase tracking-widest text-[#1A1410] dark:text-[#E8E0F5] mb-3">{t("admin_avail_behavior_title")}</p>
             <p className="leading-relaxed font-medium">{t("admin_avail_behavior_desc")}</p>
             <p className="mt-3 leading-relaxed font-medium opacity-80">{t("admin_avail_storage_desc")}</p>
           </div>
