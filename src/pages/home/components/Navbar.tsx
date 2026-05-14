@@ -200,7 +200,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={confirmLogout}
-              className="hidden lg:flex !px-4 !py-2.5 !text-[13px] !font-bold !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] sm:!text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
               title={user.email || ''}
             >
               <i className="ri-user-line mr-1.5"></i>
@@ -210,7 +210,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={() => window.location.href = '/login'}
-              className="hidden lg:flex !px-4 !py-2.5 !text-[13px] !font-bold !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] sm:!text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
             >
               {t('nav_login')}
             </Button>
