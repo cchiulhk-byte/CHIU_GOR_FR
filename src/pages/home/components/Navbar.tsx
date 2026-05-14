@@ -125,7 +125,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center">
         
         {/* ── Left: All Nav Links (Desktop) ── */}
-        <div className="hidden xl:flex items-center gap-5 flex-1 min-w-0">
+        <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
           {isHomePage && navLinks.map((link) => (
             link.path ? (
               <Link
@@ -191,7 +191,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           <Button
             variant="primary"
             onClick={() => window.location.href = '/booking'}
-            className="hidden sm:flex !px-5 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
+            className="hidden sm:flex !px-5 !py-2.5 !text-[13px] !font-black !tracking-wide !uppercase !rounded-xl !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
           >
             {t('booking_title')}
           </Button>
@@ -200,17 +200,17 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={confirmLogout}
-              className="hidden lg:flex !px-4 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              className="hidden lg:flex !px-4 !py-2.5 !text-[13px] !font-bold !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
               title={user.email || ''}
             >
               <i className="ri-user-line mr-1.5"></i>
-              <span className="max-w-[70px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
+              <span className="max-w-[80px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
             </Button>
           ) : (
             <Button
               variant="outline"
               onClick={() => window.location.href = '/login'}
-              className="hidden lg:flex !px-4 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              className="hidden lg:flex !px-4 !py-2.5 !text-[13px] !font-bold !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
             >
               {t('nav_login')}
             </Button>
