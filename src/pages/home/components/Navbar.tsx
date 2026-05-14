@@ -152,7 +152,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 </button>
               )}
               {i < 4 && i < navLinks.length - 1 && (
-                <span className="w-dvh h-4" style={{ backgroundColor: '#00bfe9' }} />
+                <span className="w-px h-4" style={{ backgroundColor: '#00bfe9' }} />
               )}
             </span>
           ))}
