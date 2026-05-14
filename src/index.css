@@ -126,13 +126,13 @@ body {
 
 /* Glassmorphism Standard */
 .glass-surface {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(45, 20, 80, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .dark .glass-surface {
-  background: rgba(26, 10, 46, 0.6);
+  background: rgba(20, 8, 40, 0.92);
 }
 
 /* Maple leaf fall — linear so negative-delay distributes leaves evenly */

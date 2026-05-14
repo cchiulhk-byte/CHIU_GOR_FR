@@ -132,7 +132,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 key={link.id}
                 to={link.path}
                 className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                  scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
+                  scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
               >
@@ -144,7 +144,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
                 className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                  scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
+                  scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
               >
@@ -173,11 +173,11 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 className="font-black text-sm sm:text-lg tracking-tight flex items-center gap-1"
                 style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
               >
-                <span className={scrolled || !isHomePage ? "text-[#CC0000]" : "text-[#CC0000] dark:text-white"}>Chiu Gor</span>
+                <span className={scrolled || !isHomePage ? "text-[#FF4444]" : "text-[#CC0000] dark:text-white"}>Chiu Gor</span>
                 <span className="text-teal">French</span>
               </span>
               <span
-                className="hidden sm:block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase text-[#7A7068] dark:text-gray-400"
+                className={`hidden sm:block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ${scrolled || !isHomePage ? 'text-white/50' : 'text-[#7A7068] dark:text-gray-400'}`}
                 style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
               >
                 Langue Française
