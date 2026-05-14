@@ -225,7 +225,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="primary"
               onClick={() => window.location.href = '/booking'}
-              className="hidden sm:flex !px-6 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full shadow-lg hover:shadow-coral/20 transition-all duration-300"
+              className="hidden sm:flex !px-4 sm:!px-6 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
             >
               {t('booking_title')}
             </Button>
@@ -234,7 +234,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <Button
                 variant="outline"
                 onClick={confirmLogout}
-                className="hidden md:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+                className="hidden lg:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
                 title={user.email || ''}
               >
                 <i className="ri-user-line mr-1.5"></i>
@@ -244,7 +244,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <Button
                 variant="outline"
                 onClick={() => window.location.href = '/login'}
-                className="hidden md:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+                className="hidden lg:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
               >
                 {t('nav_login')}
               </Button>
@@ -287,10 +287,10 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         </div>
       </div>
 
-      {/* ── Mobile Menu with slide animation ── */}
+      {/* ── Mobile/Tablet Menu with slide animation ── */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         } bg-[#F7F4EF]/98 dark:bg-[#1A0A2E]/98 backdrop-blur-xl border-t border-[#D4C8BC]/60 dark:border-[#5B2D8E]/30`}
       >
         <div className="px-4 py-3 flex flex-col gap-1">
@@ -361,11 +361,23 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             </button>
           )}
 
-          {/* Mobile Theme Toggle Row */}
+          {/* Mobile/Tablet Language + Theme Row */}
           <div className="mt-2 pt-2 border-t border-[#D4C8BC]/40 dark:border-[#5B2D8E]/20 flex items-center justify-between px-3 py-1">
-            <span className="text-xs font-bold text-[#7A7068] dark:text-[#B89FD8] uppercase tracking-wider" style={{ fontFamily: fontNav }}>
-              {isDark ? t('theme_dark', 'Dark Mode') : t('theme_light', 'Light Mode')}
-            </span>
+            <div className="flex bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLangChange(lang.code)}
+                  className={`px-2.5 py-1 rounded-full text-[10px] font-black transition-all ${
+                    i18n.language === lang.code 
+                      ? 'bg-coral text-white' 
+                      : 'text-gray-500 hover:text-coral'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
             <button
               onClick={handleDarkToggle}
               className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white dark:bg-[#2D1B4E] border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] shadow-sm active:scale-90 transition-transform"
