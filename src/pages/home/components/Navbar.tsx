@@ -126,13 +126,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
         
         {/* ── Left Links (Desktop) ── */}
-        <div className="hidden lg:flex items-center gap-8 flex-1">
+        <div className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1 min-w-0">
           {isHomePage && leftLinks.map((link) => (
             link.path ? (
               <Link
                 key={link.id}
                 to={link.path}
-                className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                className={`text-[11px] xl:text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -144,7 +144,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <button
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
-                className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                className={`text-[11px] xl:text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -157,7 +157,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         </div>
 
         {/* ── Center Logo ── */}
-        <div className="flex items-center justify-center lg:px-8">
+        <div className="flex items-center justify-center lg:px-4 xl:px-8 flex-shrink-0">
           <Link
             to="/"
             className="flex items-center gap-2.5 cursor-pointer group transition-transform duration-500 hover:scale-105"
@@ -169,7 +169,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               decoding="async"
               className="h-10 sm:h-12 w-auto object-contain"
             />
-            <div className="flex flex-col leading-tight">
+            <div className="flex flex-col leading-tight whitespace-nowrap">
               <span
                 className="font-black text-sm sm:text-lg tracking-tight flex items-center gap-1"
                 style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
@@ -188,15 +188,15 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         </div>
 
         {/* ── Right Links + Controls ── */}
-        <div className="flex items-center justify-end gap-3 sm:gap-6 flex-1">
+        <div className="flex items-center justify-end gap-2 sm:gap-3 flex-1 min-w-0">
           {/* Desktop Right Links */}
-          <div className="hidden xl:flex items-center gap-6 mr-4">
+          <div className="hidden xl:flex items-center gap-4 mr-2">
             {isHomePage && rightLinks.map((link) => (
               link.path ? (
                 <Link
                   key={link.id}
                   to={link.path}
-                  className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                  className={`text-[11px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                     scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
@@ -208,7 +208,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                  className={`text-[11px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                     scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
@@ -251,8 +251,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             )}
 
             {/* Compact Controls */}
-            <div className="hidden lg:flex items-center gap-1 ml-2">
-              <div className="flex bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+            <div className="hidden lg:flex items-center gap-1 ml-1 flex-shrink-0">
+              <div className="flex whitespace-nowrap bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang.code}
