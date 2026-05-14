@@ -398,6 +398,8 @@ serve(async (req) => {
       });
     }
 
+    // ... (rest of the code remains the same)
+
     // ── APPROVE ───────────────────────────────────────────────────────────────
     if (payload.action === "approve") {
       const { error: updateError } = await supabase

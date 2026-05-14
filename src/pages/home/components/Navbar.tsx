@@ -132,7 +132,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <Link
                 key={link.id}
                 to={link.path}
-                className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -144,7 +144,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <button
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
-                className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -190,13 +190,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         {/* ── Right Links + Controls ── */}
         <div className="flex items-center justify-end gap-3 sm:gap-6 flex-1">
           {/* Desktop Right Links */}
-          <div className="hidden xl:flex items-center gap-8 mr-4">
+          <div className="hidden xl:flex items-center gap-6 mr-4">
             {isHomePage && rightLinks.map((link) => (
               link.path ? (
                 <Link
                   key={link.id}
                   to={link.path}
-                  className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                  className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                     scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
@@ -208,7 +208,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                  className={`text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
                     scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
