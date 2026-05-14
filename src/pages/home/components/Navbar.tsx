@@ -102,14 +102,17 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     setMenuOpen(false);
   };
 
-  const navLinks = [
+  const allLinks = [
     { id: 'about', label: t('nav_about') },
     { id: 'experience', label: t('nav_experience') },
     { id: 'courses', label: t('nav_courses') },
-    ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
     { id: 'blog', label: t('nav_blog'), path: '/blog' },
     { id: 'contact', label: t('nav_contact') },
+    ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
   ];
+
+  const leftLinks = allLinks.slice(0, 3);
+  const rightLinks = allLinks.slice(3);
 
   return (
     <nav
@@ -120,202 +123,167 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
       }`}
     >
 
-      <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 h-16 flex items-center justify-between gap-1.5 sm:gap-2">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+        
+        {/* ── Left Links (Desktop) ── */}
+        <div className="hidden lg:flex items-center gap-8 flex-1">
+          {isHomePage && leftLinks.map((link) => (
+            link.path ? (
+              <Link
+                key={link.id}
+                to={link.path}
+                className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                  scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
+                }`}
+                style={{ fontFamily: tokens.typography.fontFamily }}
+              >
+                {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ) : (
+              <button
+                key={link.id}
+                onClick={() => scrollTo(link.id)}
+                className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                  scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
+                }`}
+                style={{ fontFamily: tokens.typography.fontFamily }}
+              >
+                {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+              </button>
+            )
+          ))}
+        </div>
 
-        {/* ── Logo + Brand Name ── */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 cursor-pointer group flex-shrink-0 min-w-0"
-        >
-          <img
-            src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
-            alt="Chiu Gor French Logo"
-            fetchPriority="high"
-            decoding="async"
-            className="h-8 sm:h-10 w-auto object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
-          />
-          <div className="flex flex-col leading-none min-w-0">
-            <span
-              className="font-extrabold text-[11px] sm:text-base whitespace-nowrap flex items-center gap-0.5 sm:gap-1"
-              style={{ fontFamily: "Candara, 'Nunito', sans-serif", letterSpacing: '-0.01em' }}
-            >
-              <span className="text-[#CC0000]">Chiu Gor</span>
-              <img src="https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png" alt="" className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-              <span className="text-teal">French</span>
-            </span>
-            <span
-              className="hidden sm:block text-[9px] sm:text-[10px] font-semibold tracking-[0.16em] uppercase text-[#7A7068] dark:text-gray-500 mt-0.5"
-              style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
-            >
-              Langue Française
-            </span>
-          </div>
-        </Link>
+        {/* ── Center Logo ── */}
+        <div className="flex items-center justify-center lg:px-8">
+          <Link
+            to="/"
+            className="flex items-center gap-2.5 cursor-pointer group transition-transform duration-500 hover:scale-105"
+          >
+            <img
+              src="https://static.readdy.ai/image/c3c070ed3a92273f043678549554b0d6/e3451f52961636b2aea237770c224254.png"
+              alt="Chiu Gor French Logo"
+              fetchPriority="high"
+              decoding="async"
+              className="h-10 sm:h-12 w-auto object-contain"
+            />
+            <div className="flex flex-col leading-tight">
+              <span
+                className="font-black text-sm sm:text-lg tracking-tight flex items-center gap-1"
+                style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+              >
+                <span className={scrolled || !isHomePage ? "text-[#CC0000]" : "text-[#CC0000] dark:text-white"}>Chiu Gor</span>
+                <span className="text-teal">French</span>
+              </span>
+              <span
+                className="hidden sm:block text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase text-[#7A7068] dark:text-gray-400"
+                style={{ fontFamily: "Candara, 'Nunito', sans-serif" }}
+              >
+                Langue Française
+              </span>
+            </div>
+          </Link>
+        </div>
 
-        {/* ── Desktop Nav Links ── */}
-        <div className="hidden md:flex items-center gap-5 flex-1 justify-center">
-          {isHomePage ? (
-            navLinks.map((link) => (
+        {/* ── Right Links + Controls ── */}
+        <div className="flex items-center justify-end gap-3 sm:gap-6 flex-1">
+          {/* Desktop Right Links */}
+          <div className="hidden xl:flex items-center gap-8 mr-4">
+            {isHomePage && rightLinks.map((link) => (
               link.path ? (
                 <Link
                   key={link.id}
                   to={link.path}
-                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-2 py-1 ${
-                    scrolled
-                      ? 'text-[#1A1410] dark:text-[#D4B8F0]'
-                      : 'text-gray-800 dark:text-[#E8E0F5]'
+                  className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                    scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               ) : (
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap relative group outline-none focus-visible:ring-2 focus-visible:ring-coral/50 rounded-lg px-2 py-1 ${
-                    scrolled
-                      ? 'text-[#1A1410] dark:text-[#D4B8F0]'
-                      : 'text-gray-800 dark:text-[#E8E0F5]'
+                  className={`text-[13px] font-bold tracking-widest uppercase transition-all duration-300 relative group ${
+                    scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-coral rounded-full transition-all duration-300 scale-x-0 group-hover:scale-x-100"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
                 </button>
               )
-            ))
-          ) : (
-            <Link
-              to="/"
-              className="text-sm font-medium tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap relative group text-[#1A1410] dark:text-[#D4B8F0]"
-              style={{ fontFamily: fontNav }}
-            >
-              {t('nav_about')}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-coral rounded-full transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-          )}
-        </div>
-
-        {/* ── Right Controls ── */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-
-          {/* Book Now Button */}
-          {/* Book Now Button */}
-          <Button
-            variant="primary"
-            onClick={() => window.location.href = '/booking'}
-            className="hidden sm:flex !px-5 !py-2 !text-xs !rounded-full shadow-md"
-          >
-            <i className="ri-calendar-check-line"></i>
-            {t('booking_title')}
-          </Button>
-
-          {/* Visitor Login */}
-          {user ? (
-            <Button
-              variant="outline"
-              onClick={confirmLogout}
-              className="hidden sm:flex !px-4 !py-2 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
-              title={user.email || ''}
-            >
-              <i className="ri-user-line"></i>
-              <span className="max-w-[80px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
-              <i className="ri-logout-box-r-line text-coral"></i>
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = '/login'}
-              className="hidden sm:flex !px-5 !py-2 !text-xs !rounded-full !bg-white/40 dark:!bg-[#2D1B4E]/40"
-            >
-              <i className="ri-login-box-line"></i>
-              {t('nav_login')}
-            </Button>
-          )}
-
-          {/* Language Switcher with pop animation */}
-          <div className="flex items-center gap-0.5 bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm rounded-full px-1 py-1 border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40">
-            {LANGUAGES.map((lang) => {
-              const isActive = activeLang === lang.code || i18n.language === lang.code;
-              return (
-                <button
-                  key={lang.code}
-                  onClick={() => handleLangChange(lang.code)}
-                  className={`relative px-2 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap overflow-hidden ${
-                    isActive
-                      ? 'bg-coral text-white shadow-sm'
-                      : 'text-[#4A4440] dark:text-[#B89FD8] hover:text-[#1A1410] dark:hover:text-[#E8E0F5] hover:bg-[#1A1410]/8 dark:hover:bg-[#3B2060]/60'
-                  }`}
-                  style={{
-                    fontFamily: fontNav,
-                  }}
-                >
-                  {/* Active pill pop animation */}
-                  {isActive && (
-                    <span
-                      key={langAnimKey[lang.code] ?? 0}
-                      className="absolute inset-0 rounded-full bg-coral animate-pill-pop"
-                      style={{ zIndex: -1 }}
-                    />
-                  )}
-                  <span
-                    key={`label-${langAnimKey[lang.code] ?? 0}`}
-                    className={isActive ? 'animate-pill-pop inline-block' : 'inline-block'}
-                  >
-                    {lang.label}
-                  </span>
-                </button>
-              );
-            })}
+            ))}
           </div>
 
-          {/* Dark Mode Toggle with icon swap animation + ripple */}
-          <button
-            onClick={handleDarkToggle}
-            className="hidden md:flex relative w-11 h-11 items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] hover:bg-[#1A1410]/10 dark:hover:bg-[#3B2060]/70 transition-all duration-200 cursor-pointer overflow-hidden group hover:scale-110 active:scale-95"
-            aria-label="Toggle dark mode"
-          >
-            {/* Ripple effects */}
-            {darkRipple.ripples.map((r) => (
-              <span
-                key={r.id}
-                className="absolute rounded-full bg-mustard/40 dark:bg-teal/30 animate-ripple pointer-events-none"
-                style={{
-                  width: 8,
-                  height: 8,
-                  left: r.x - 4,
-                  top: r.y - 4,
-                }}
-              />
-            ))}
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="primary"
+              onClick={() => window.location.href = '/booking'}
+              className="hidden sm:flex !px-6 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full shadow-lg hover:shadow-coral/20 transition-all duration-300"
+            >
+              {t('booking_title')}
+            </Button>
 
-            {/* Rotating background on hover */}
-            <span className="absolute inset-0 rounded-full bg-gradient-to-br from-mustard/0 to-coral/0 group-hover:from-mustard/20 group-hover:to-coral/10 transition-all duration-300"></span>
+            {user ? (
+              <Button
+                variant="outline"
+                onClick={confirmLogout}
+                className="hidden md:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+                title={user.email || ''}
+              >
+                <i className="ri-user-line mr-1.5"></i>
+                <span className="max-w-[70px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/login'}
+                className="hidden md:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              >
+                {t('nav_login')}
+              </Button>
+            )}
 
-            {/* Icon with swap animation */}
-            <span key={darkAnimKey} className="relative z-10">
-              {isDark ? (
-                <i className="ri-sun-line text-sm text-yellow-400 animate-spin-in" />
-              ) : (
-                <i className="ri-moon-line text-sm animate-moon-in" />
-              )}
-            </span>
-          </button>
+            {/* Compact Controls */}
+            <div className="hidden lg:flex items-center gap-1 ml-2">
+              <div className="flex bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleLangChange(lang.code)}
+                    className={`px-2 py-1 rounded-full text-[10px] font-black transition-all ${
+                      i18n.language === lang.code 
+                        ? 'bg-coral text-white' 
+                        : 'text-gray-500 hover:text-coral'
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={handleDarkToggle}
+                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                {isDark ? <i className="ri-sun-fill text-yellow-400"></i> : <i className="ri-moon-fill text-gray-400"></i>}
+              </button>
+            </div>
 
-          {/* Mobile Hamburger with animated bars */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden relative w-11 h-11 flex items-center justify-center rounded-full bg-[#1A1410]/5 dark:bg-[#2D1B4E]/50 backdrop-blur-sm border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden"
-          >
-            <span className={`transition-all duration-300 ${menuOpen ? 'rotate-90 opacity-0 scale-50 absolute' : 'rotate-0 opacity-100 scale-100'}`}>
-              <i className="ri-menu-line text-sm"></i>
-            </span>
-            <span className={`transition-all duration-300 ${menuOpen ? 'rotate-0 opacity-100 scale-100' : '-rotate-90 opacity-0 scale-50 absolute'}`}>
-              <i className="ri-close-line text-sm text-coral"></i>
-            </span>
-          </button>
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral"
+            >
+              <i className={menuOpen ? "ri-close-line text-xl" : "ri-menu-3-line text-xl"}></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -326,103 +294,71 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         } bg-[#F7F4EF]/98 dark:bg-[#1A0A2E]/98 backdrop-blur-xl border-t border-[#D4C8BC]/60 dark:border-[#5B2D8E]/30`}
       >
         <div className="px-4 py-3 flex flex-col gap-1">
-          {isHomePage ? (
-            navLinks.map((link, i) => (
-              link.path ? (
-                <Link
-                  key={link.id}
-                  to={link.path}
-                  onClick={() => setMenuOpen(false)}
-                  className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-                  style={{
-                    fontFamily: fontNav,
-                    transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
-                    transform: menuOpen ? 'translateX(0)' : 'translateX(-8px)',
-                    opacity: menuOpen ? 1 : 0,
-                    transition: `all 0.25s ease ${i * 0.05}s`,
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-                  {link.label}
-                  <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
-                </Link>
-              ) : (
-                <button
-                  key={link.id}
-                  onClick={() => scrollTo(link.id)}
-                  className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-                  style={{
-                    fontFamily: fontNav,
-                    transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
-                    transform: menuOpen ? 'translateX(0)' : 'translateX(-8px)',
-                    opacity: menuOpen ? 1 : 0,
-                    transition: `all 0.25s ease ${i * 0.05}s`,
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-                  {link.label}
-                  <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
-                </button>
-              )
-            ))
-          ) : (
-            <Link
-              to="/"
-              className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-              style={{ fontFamily: fontNav }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-              {t('nav_about')}
-              <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-gray-600 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
-            </Link>
-          )}
+          {allLinks.map((link, i) => (
+            link.path ? (
+              <Link
+                key={link.id}
+                to={link.path}
+                onClick={() => setMenuOpen(false)}
+                className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between group"
+                style={{
+                  fontFamily: fontNav,
+                  transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                }}
+              >
+                {link.label}
+                <i className="ri-arrow-right-line opacity-0 group-hover:opacity-100 transition-all"></i>
+              </Link>
+            ) : (
+              <button
+                key={link.id}
+                onClick={() => scrollTo(link.id)}
+                className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between group"
+                style={{
+                  fontFamily: fontNav,
+                  transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                }}
+              >
+                {link.label}
+                <i className="ri-arrow-right-line opacity-0 group-hover:opacity-100 transition-all"></i>
+              </button>
+            )
+          ))}
           <Link
             to="/booking"
-            className="text-left text-sm font-medium text-white py-2.5 px-3 rounded-xl bg-coral hover:bg-coral/90 transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 mt-1"
+            className="text-left text-sm font-bold text-white py-3.5 px-4 rounded-2xl bg-coral hover:bg-coral/90 transition-all duration-300 flex items-center justify-between mt-2 shadow-lg shadow-coral/20"
             style={{ fontFamily: fontNav }}
             onClick={() => setMenuOpen(false)}
           >
-            <i className="ri-calendar-check-line"></i>
-            {t('booking_title')}
-            <i className="ri-arrow-right-s-line ml-auto"></i>
+            <div className="flex items-center gap-2">
+              <i className="ri-calendar-check-line"></i>
+              {t('booking_title')}
+            </div>
+            <i className="ri-arrow-right-line"></i>
           </Link>
 
-          {user ? (
-            <>
-              <Link
-                to="/my-bookings"
-                onClick={() => setMenuOpen(false)}
-                className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-coral/8 dark:hover:bg-coral/10 hover:text-coral transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-                style={{ fontFamily: fontNav }}
-              >
-                <i className="ri-history-line text-coral"></i>
-                {t('my_bookings_title')}
-                <i className="ri-arrow-right-s-line ml-auto text-coral/40 group-hover:translate-x-1 transition-all"></i>
-              </Link>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  confirmLogout();
-                }}
-                className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
-                style={{ fontFamily: fontNav }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
-                {t('nav_logout')}
-                <i className="ri-logout-box-r-line ml-auto text-coral"></i>
-              </button>
-            </>
-          ) : (
+          {!user ? (
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="text-left text-sm font-medium text-[#1A1410] dark:text-[#D4B8F0] py-2.5 px-3 rounded-xl hover:bg-[#CC0000]/8 dark:hover:bg-[#3B2060]/50 hover:text-[#CC0000] dark:hover:text-[#E8C4FF] transition-all duration-200 cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+              className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between mt-1"
               style={{ fontFamily: fontNav }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-coral/40 flex-shrink-0 group-hover:bg-coral transition-colors duration-200"></span>
               {t('nav_login')}
-              <i className="ri-arrow-right-s-line ml-auto text-gray-300 dark:text-[#7C3AED]/60 group-hover:text-coral group-hover:translate-x-1 transition-all duration-200"></i>
+              <i className="ri-login-box-line"></i>
             </Link>
+          ) : (
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                confirmLogout();
+              }}
+              className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-[#CC0000]/10 hover:text-[#CC0000] transition-all duration-300 flex items-center justify-between mt-1"
+              style={{ fontFamily: fontNav }}
+            >
+              {t('nav_logout')}
+              <i className="ri-logout-box-r-line"></i>
+            </button>
           )}
 
           {/* Mobile Theme Toggle Row */}
