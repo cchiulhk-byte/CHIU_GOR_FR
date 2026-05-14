@@ -135,9 +135,11 @@ export default function PaymentOptions() {
       const { data: { user } } = await supabase.auth.getUser();
 
       // 1. Save booking to Supabase as PENDING (no calendar sync yet)
+      const bookingId = crypto.randomUUID();
       const { error: bookingError } = await supabase
         .from("bookings")
         .insert({
+          id: bookingId,
           student_name: bookingData.name,
           student_email: bookingData.email,
           student_phone: bookingData.phone,
@@ -156,7 +158,26 @@ export default function PaymentOptions() {
         throw new Error(bookingError.message || "Failed to save booking");
       }
 
-      // 2. Clear pending booking
+      // 2. Notify admin via email
+      try {
+        const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY;
+        await fetch(`${supabaseUrl}/functions/v1/booking-manage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({
+            action: "notify_admin",
+            booking_id: bookingId,
+          }),
+        });
+      } catch {
+        // Admin notification failure doesn't block the booking
+      }
+
+      // 3. Clear pending booking
       sessionStorage.removeItem("pendingBooking");
 
       setProcessing(false);

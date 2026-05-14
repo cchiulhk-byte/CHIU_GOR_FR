@@ -112,7 +112,8 @@ interface ManagePayload {
     | "delete"
     | "student_edit"
     | "approve_edit"
-    | "reject_edit";
+    | "reject_edit"
+    | "notify_admin";
   booking_id?: string;
   admin_secret?: string;
   date?: string;
@@ -236,6 +237,81 @@ serve(async (req) => {
       }
 
       return new Response(JSON.stringify({ success: true, availability: payload.config }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── NOTIFY ADMIN (no auth required — triggered by students) ────────────
+    if (payload.action === "notify_admin" && payload.booking_id) {
+      const { data: newBooking, error: nbErr } = await supabase
+        .from("bookings")
+        .select("*")
+        .eq("id", payload.booking_id)
+        .maybeSingle();
+
+      if (nbErr || !newBooking) {
+        return new Response(JSON.stringify({ success: false, error: "Booking not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const emailjsServiceId = Deno.env.get("EMAILJS_SERVICE_ID");
+      const emailjsTemplateId = Deno.env.get("EMAILJS_TEMPLATE_ID");
+      const emailjsPublicKey = Deno.env.get("EMAILJS_PUBLIC_KEY");
+      const emailjsPrivateKey = Deno.env.get("EMAILJS_PRIVATE_KEY");
+
+      if (emailjsServiceId && emailjsTemplateId && emailjsPublicKey) {
+        const adminEmail = "chiug.french@gmail.com";
+        const adminHtml = `
+          <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0;">
+            <div style="background: #0ABAB5; padding: 32px 40px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 22px; font-weight: 700;">New Booking Received!</h1>
+            </div>
+            <div style="padding: 36px 40px;">
+              <p style="color: #374151; font-size: 15px; margin: 0 0 24px; line-height: 1.6;">A new booking has been submitted and is waiting for your approval.</p>
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                  <tr><td style="color: #9ca3af; padding: 6px 0; width: 40%;">Student</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.student_name}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Email</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.student_email}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Phone</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.student_phone || "—"}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Course</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.course_type}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Date</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.preferred_date}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Time</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.preferred_time} HKT</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Payment</td><td style="color: #111827; font-weight: 600; padding: 6px 0; text-transform: capitalize;">${newBooking.payment_method || "—"}</td></tr>
+                  <tr><td style="color: #9ca3af; padding: 6px 0;">Reference</td><td style="color: #111827; font-weight: 600; padding: 6px 0;">${newBooking.payment_reference || "—"}</td></tr>
+                </table>
+              </div>
+              <div style="text-align: center; margin: 32px 0 24px;">
+                <a href="https://chiugorfr.com/admin" style="display: inline-block; background: #0ABAB5; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 15px;">Go to Admin Panel</a>
+              </div>
+              <p style="color: #6b7280; font-size: 13px; margin: 0;">— Chiu Gor French Booking System</p>
+            </div>
+          </div>`;
+
+        try {
+          await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              service_id: emailjsServiceId,
+              template_id: emailjsTemplateId,
+              user_id: emailjsPublicKey,
+              accessToken: emailjsPrivateKey,
+              template_params: {
+                to_email: adminEmail,
+                subject: `New Booking: ${newBooking.student_name} — ${newBooking.course_type}`,
+                message: adminHtml,
+              },
+            }),
+          });
+        } catch (err) {
+          console.error("Failed to send admin notification:", err);
+        }
+      }
+
+      return new Response(JSON.stringify({ success: true, action: "notify_admin" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
