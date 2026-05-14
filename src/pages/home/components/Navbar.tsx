@@ -126,37 +126,40 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         
         {/* ── Left: All Nav Links (Desktop) ── */}
         <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
-          {isHomePage && navLinks.map((link) => (
-            link.path ? (
-              <Link
-                key={link.id}
-                to={link.path}
-                className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                  scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
-                }`}
-                style={{ fontFamily: tokens.typography.fontFamily }}
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            ) : (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
-                className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                  scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
-                }`}
-                style={{ fontFamily: tokens.typography.fontFamily }}
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
-              </button>
-            )
+          {isHomePage && navLinks.map((link, i) => (
+            <span key={link.id} className="flex items-center gap-5">
+              {link.path ? (
+                <Link
+                  to={link.path}
+                  className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                    scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
+                  }`}
+                  style={{ fontFamily: tokens.typography.fontFamily }}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => scrollTo(link.id)}
+                  className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                    scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
+                  }`}
+                  style={{ fontFamily: tokens.typography.fontFamily }}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+                </button>
+              )}
+              {i < 4 && i < navLinks.length - 1 && (
+                <span className="w-px h-4" style={{ backgroundColor: '#fcbf49' }} />
+              )}
+            </span>
           ))}
         </div>
 
         {/* ── Center Logo ── */}
-        <div className="flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:px-8">
+        <div className="flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:px-9">
           <Link
             to="/"
             className="flex items-center gap-2.5 cursor-pointer group transition-transform duration-500 hover:scale-105"
