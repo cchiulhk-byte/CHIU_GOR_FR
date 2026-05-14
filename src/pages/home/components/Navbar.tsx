@@ -111,8 +111,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
   ];
 
-  const leftLinks = allLinks.slice(0, 3);
-  const rightLinks = allLinks.slice(3);
+  const navLinks = allLinks;
 
   return (
     <nav
@@ -123,16 +122,16 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
       }`}
     >
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center">
         
-        {/* ── Left Links (Desktop) ── */}
-        <div className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1 min-w-0">
-          {isHomePage && leftLinks.map((link) => (
+        {/* ── Left: All Nav Links (Desktop) ── */}
+        <div className="hidden xl:flex items-center gap-5 flex-1 min-w-0">
+          {isHomePage && navLinks.map((link) => (
             link.path ? (
               <Link
                 key={link.id}
                 to={link.path}
-                className={`text-[11px] xl:text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -144,7 +143,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <button
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
-                className={`text-[11px] xl:text-[13px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
                   scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
                 }`}
                 style={{ fontFamily: tokens.typography.fontFamily }}
@@ -157,7 +156,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         </div>
 
         {/* ── Center Logo ── */}
-        <div className="flex items-center justify-center lg:px-4 xl:px-8 flex-shrink-0">
+        <div className="flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:px-8">
           <Link
             to="/"
             className="flex items-center gap-2.5 cursor-pointer group transition-transform duration-500 hover:scale-105"
@@ -187,109 +186,75 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           </Link>
         </div>
 
-        {/* ── Right Links + Controls ── */}
-        <div className="flex items-center justify-end gap-2 sm:gap-3 flex-1 min-w-0">
-          {/* Desktop Right Links */}
-          <div className="hidden xl:flex items-center gap-4 mr-2">
-            {isHomePage && rightLinks.map((link) => (
-              link.path ? (
-                <Link
-                  key={link.id}
-                  to={link.path}
-                  className={`text-[11px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                    scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
-                  }`}
-                  style={{ fontFamily: tokens.typography.fontFamily }}
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-              ) : (
-                <button
-                  key={link.id}
-                  onClick={() => scrollTo(link.id)}
-                  className={`text-[11px] font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                    scrolled || !isHomePage ? 'text-[#1A1410] dark:text-[#E8E0F5]' : 'text-gray-800 dark:text-white'
-                  }`}
-                  style={{ fontFamily: tokens.typography.fontFamily }}
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
-                </button>
-              )
-            ))}
-          </div>
+        {/* ── Right: Controls ── */}
+        <div className="flex items-center justify-end gap-2 flex-1 min-w-0">
+          <Button
+            variant="primary"
+            onClick={() => window.location.href = '/booking'}
+            className="hidden sm:flex !px-5 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
+          >
+            {t('booking_title')}
+          </Button>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          {user ? (
             <Button
-              variant="primary"
-              onClick={() => window.location.href = '/booking'}
-              className="hidden sm:flex !px-4 sm:!px-6 !py-2.5 !text-[11px] !font-black !tracking-widest !uppercase !rounded-full !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
+              variant="outline"
+              onClick={confirmLogout}
+              className="hidden lg:flex !px-4 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              title={user.email || ''}
             >
-              {t('booking_title')}
+              <i className="ri-user-line mr-1.5"></i>
+              <span className="max-w-[70px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
             </Button>
-
-            {user ? (
-              <Button
-                variant="outline"
-                onClick={confirmLogout}
-                className="hidden lg:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
-                title={user.email || ''}
-              >
-                <i className="ri-user-line mr-1.5"></i>
-                <span className="max-w-[70px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = '/login'}
-                className="hidden lg:flex !px-5 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
-              >
-                {t('nav_login')}
-              </Button>
-            )}
-
-            {/* Compact Controls */}
-            <div className="hidden lg:flex items-center gap-1 ml-1 flex-shrink-0">
-              <div className="flex whitespace-nowrap bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => handleLangChange(lang.code)}
-                    className={`px-2 py-1 rounded-full text-[10px] font-black transition-all ${
-                      i18n.language === lang.code 
-                        ? 'bg-coral text-white' 
-                        : 'text-gray-500 hover:text-coral'
-                    }`}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
-              </div>
-              
-              <button
-                onClick={handleDarkToggle}
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-              >
-                {isDark ? <i className="ri-sun-fill text-yellow-400"></i> : <i className="ri-moon-fill text-gray-400"></i>}
-              </button>
-            </div>
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral"
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = '/login'}
+              className="hidden lg:flex !px-4 !py-2.5 !text-[11px] !font-bold !rounded-full !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
             >
-              <i className={menuOpen ? "ri-close-line text-xl" : "ri-menu-3-line text-xl"}></i>
+              {t('nav_login')}
+            </Button>
+          )}
+
+          {/* Language + Dark Mode */}
+          <div className="hidden xl:flex items-center gap-1 flex-shrink-0">
+            <div className="flex whitespace-nowrap bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLangChange(lang.code)}
+                  className={`px-2.5 py-1 rounded-full text-[10px] font-black transition-all ${
+                    i18n.language === lang.code 
+                      ? 'bg-coral text-white' 
+                      : 'text-gray-500 hover:text-coral'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+            
+            <button
+              onClick={handleDarkToggle}
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            >
+              {isDark ? <i className="ri-sun-fill text-yellow-400"></i> : <i className="ri-moon-fill text-gray-400"></i>}
             </button>
           </div>
+
+          {/* Mobile/Tablet Menu Toggle */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="xl:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral"
+          >
+            <i className={menuOpen ? "ri-close-line text-xl" : "ri-menu-3-line text-xl"}></i>
+          </button>
         </div>
       </div>
 
       {/* ── Mobile/Tablet Menu with slide animation ── */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`xl:hidden overflow-hidden transition-all duration-300 ease-in-out ${
           menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         } bg-[#F7F4EF]/98 dark:bg-[#1A0A2E]/98 backdrop-blur-xl border-t border-[#D4C8BC]/60 dark:border-[#5B2D8E]/30`}
       >
