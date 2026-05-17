@@ -264,8 +264,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
       {/* ── Mobile/Tablet Menu with slide animation ── */}
       <div
-        className={`xl:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+        className={`xl:hidden transition-all duration-300 ease-in-out ${
+          menuOpen ? 'max-h-[85vh] opacity-100 overflow-y-auto' : 'max-h-0 opacity-0 overflow-hidden'
         } bg-[#F7F4EF]/98 dark:bg-[#1A0A2E]/98 backdrop-blur-xl border-t border-[#D4C8BC]/60 dark:border-[#5B2D8E]/30`}
       >
         <div className="px-4 py-3 flex flex-col gap-1">
