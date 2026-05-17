@@ -1,8 +1,8 @@
 const translation = {
   // Nav
-  nav_about: "About Me",
-  nav_experience: "My Experience",
-  nav_courses: "My Courses",
+  nav_about: "About",
+  nav_experience: "Experience",
+  nav_courses: "Courses",
   nav_blog: "Blog",
   nav_contact: "Contact",
   nav_login: "Log in",
