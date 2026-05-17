@@ -282,9 +282,9 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
-            className="xl:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral"
+            className="xl:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral transition-transform duration-300 active:scale-90"
           >
-            <i className={menuOpen ? "ri-close-line text-xl" : "ri-menu-3-line text-xl"}></i>
+            <i className={`text-xl transition-all duration-300 ${menuOpen ? "ri-close-line rotate-90" : "ri-menu-3-line rotate-0"}`}></i>
           </button>
         </div>
       </div>
