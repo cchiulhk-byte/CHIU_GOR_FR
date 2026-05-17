@@ -269,6 +269,14 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             </button>
           </div>
 
+          {/* Mobile/Tablet User Name */}
+          {user && (
+            <span className={`xl:hidden text-[13px] font-bold truncate max-w-[100px] ${scrolled || !isHomePage ? 'text-white' : 'text-[#1A1410] dark:text-white'}`}>
+              <i className="ri-user-line mr-1"></i>
+              {user.email ? String(user.email).split('@')[0] : 'Account'}
+            </span>
+          )}
+
           {/* Mobile/Tablet Menu Toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
