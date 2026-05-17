@@ -224,10 +224,10 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={confirmLogout}
-              className={`hidden lg:flex !px-5 !py-2.5 !text-[15px] !font-black !rounded-xl !whitespace-nowrap !bg-transparent !border-0 !shadow-none ${scrolled || !isHomePage ? '!text-white' : '!text-[#1A1410] dark:!text-white'}`}
+              className={`hidden lg:flex !px-5 !py-2.5 !text-[17px] !font-black !rounded-xl !whitespace-nowrap !bg-transparent !border-0 !shadow-none ${scrolled || !isHomePage ? '!text-white' : '!text-[#1A1410] dark:!text-white'}`}
               title={user.email || ''}
             >
-              <i className="ri-user-line mr-1.5"></i>
+              <i className="ri-user-line mr-1.5 text-lg"></i>
               <span className="max-w-[120px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
             </Button>
           ) : (
