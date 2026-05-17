@@ -118,7 +118,6 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     { id: 'courses', label: t('nav_courses') },
     { id: 'blog', label: t('nav_blog'), path: '/blog' },
     { id: 'contact', label: t('nav_contact') },
-    ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
   ];
 
   return (
@@ -134,39 +133,50 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center">
         
         {/* ── Left: All Nav Links (Desktop) ── */}
-        <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
-          {isHomePage && desktopLinks.map((link, i) => (
-            <span key={link.id} className={`flex items-center gap-5 ${link.id === 'my-bookings' ? 'basis-full justify-end !gap-0' : ''}`}>
-              {link.path ? (
-                <Link
-                  to={link.path}
-                  className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                    link.id === 'my-bookings'
-                      ? 'bg-[#ffee88] text-[#4d194d] px-4 py-1.5 rounded-xl hover:opacity-90'
-                      : scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
-                  }`}
-                  style={{ fontFamily: tokens.typography.fontFamily }}
-                >
-                  {link.label}
-                  {link.id !== 'my-bookings' && <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>}
-                </Link>
-              ) : (
-                <button
-                  onClick={() => scrollTo(link.id)}
-                  className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                    scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
-                  }`}
-                  style={{ fontFamily: tokens.typography.fontFamily }}
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
-                </button>
-              )}
-              {link.id !== 'my-bookings' && i < desktopLinks.length - 1 && desktopLinks[i + 1]?.id !== 'my-bookings' && i < 4 && (
-                <span className="w-px h-4" style={{ backgroundColor: '#ffd900' }} />
-              )}
-            </span>
-          ))}
+        <div className="hidden xl:flex flex-col flex-1 min-w-0">
+          <div className="flex items-center flex-wrap gap-x-5 gap-y-1">
+            {isHomePage && desktopLinks.map((link, i) => (
+              <span key={link.id} className="flex items-center gap-5">
+                {link.path ? (
+                  <Link
+                    to={link.path}
+                    className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                      scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
+                    }`}
+                    style={{ fontFamily: tokens.typography.fontFamily }}
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => scrollTo(link.id)}
+                    className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
+                      scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
+                    }`}
+                    style={{ fontFamily: tokens.typography.fontFamily }}
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+                  </button>
+                )}
+                {i < desktopLinks.length - 1 && i < 4 && (
+                  <span className="w-px h-4" style={{ backgroundColor: '#ffd900' }} />
+                )}
+              </span>
+            ))}
+          </div>
+          {isHomePage && user && (
+            <div className="flex justify-end mt-1">
+              <Link
+                to="/my-bookings"
+                className="text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 bg-[#ffee88] text-[#4d194d] px-4 py-1.5 rounded-xl hover:opacity-90"
+                style={{ fontFamily: tokens.typography.fontFamily }}
+              >
+                {t('my_bookings_title')}
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* ── Center Logo ── */}
