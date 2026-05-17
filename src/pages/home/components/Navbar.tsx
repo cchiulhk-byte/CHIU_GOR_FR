@@ -112,7 +112,14 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
     ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
   ];
 
-  const navLinks = allLinks;
+  const desktopLinks = [
+    { id: 'about', label: t('nav_about') },
+    { id: 'experience', label: t('nav_experience') },
+    { id: 'courses', label: t('nav_courses') },
+    ...(user ? [{ id: 'my-bookings', label: t('my_bookings_title'), path: '/my-bookings' }] : []),
+    { id: 'blog', label: t('nav_blog'), path: '/blog' },
+    { id: 'contact', label: t('nav_contact') },
+  ];
 
   return (
     <nav
@@ -128,8 +135,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         
         {/* ── Left: All Nav Links (Desktop) ── */}
         <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
-          {isHomePage && navLinks.map((link, i) => (
-            <span key={link.id} className={`flex items-center gap-5 ${link.id === 'my-bookings' ? 'basis-full' : ''}`}>
+          {isHomePage && desktopLinks.map((link, i) => (
+            <span key={link.id} className="flex items-center gap-5">
               {link.path ? (
                 <Link
                   to={link.path}
@@ -155,7 +162,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
                 </button>
               )}
-              {i < 4 && i < navLinks.length - 1 && (
+              {link.id !== 'my-bookings' && i < desktopLinks.length - 1 && desktopLinks[i + 1]?.id !== 'my-bookings' && (
                 <span className="w-px h-4" style={{ backgroundColor: '#ffd900' }} />
               )}
             </span>
