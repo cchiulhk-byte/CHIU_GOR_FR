@@ -129,17 +129,19 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         {/* ── Left: All Nav Links (Desktop) ── */}
         <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
           {isHomePage && navLinks.map((link, i) => (
-            <span key={link.id} className="flex items-center gap-5">
+            <span key={link.id} className={`flex items-center gap-5 ${link.id === 'my-bookings' ? 'basis-full' : ''}`}>
               {link.path ? (
                 <Link
                   to={link.path}
                   className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
-                    scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
+                    link.id === 'my-bookings'
+                      ? 'bg-[#ffee88] text-[#b3c2f2] px-4 py-1.5 rounded-xl hover:opacity-90'
+                      : scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>
+                  {link.id !== 'my-bookings' && <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-coral transition-all duration-300 group-hover:w-full"></span>}
                 </Link>
               ) : (
                 <button
@@ -275,7 +277,11 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 key={link.id}
                 to={link.path}
                 onClick={() => setMenuOpen(false)}
-                className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between group"
+                className={`text-left text-sm font-bold py-3.5 px-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${
+                  link.id === 'my-bookings'
+                    ? 'bg-[#ffee88] text-[#b3c2f2] hover:opacity-90'
+                    : 'text-[#1A1410] dark:text-[#D4B8F0] hover:bg-coral/10 hover:text-coral'
+                }`}
                 style={{
                   fontFamily: fontNav,
                   transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
