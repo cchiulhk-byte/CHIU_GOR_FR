@@ -6,6 +6,7 @@ import Footer from "@/pages/home/components/Footer";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import ShareBookingButton from "@/components/feature/ShareBookingButton";
 import { lessonTypes } from "@/mocks/booking";
+import SEO from "@/components/feature/SEO";
 
 export default function BookingPage() {
   const { t, i18n } = useTranslation();
@@ -21,6 +22,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-cream-50 dark:bg-[#0D1117] transition-colors duration-300">
+      <SEO title={t('booking_title')} description={t('booking_subtitle')} />
       <Navbar isDark={isDark} onToggleDark={toggle} />
 
       <main className="pt-24 pb-16 px-4 md:px-6">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import AdminLogin from "./components/AdminLogin";
 import BookingCard from "./components/BookingCard";
 import BlogManager from "./components/BlogManager";
@@ -32,10 +33,11 @@ interface Booking {
   };
 }
 
-type FilterTab = "pending_verification" | "confirmed" | "cancelled" | "all" | "blog";
+type FilterTab = "pending_verification" | "pending_reapproval" | "confirmed" | "cancelled" | "all" | "blog";
 
 export default function AdminPage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [adminSecret, setAdminSecret] = useState<string>(() => sessionStorage.getItem("adminSecret") || "");
   const [authError, setAuthError] = useState("");
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -268,7 +270,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             <Button
               variant="ghost"
-              onClick={() => window.location.href = '/'}
+              onClick={() => navigate('/')}
               className="!w-9 !h-9 sm:!w-10 sm:!h-10 !p-0 !rounded-xl !bg-white/40 dark:!bg-[#2D1B4E]/40 !text-[#7A7068] dark:!text-[#B89FD8]"
             >
               <i className="ri-home-4-line text-base sm:text-lg"></i>

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 const LEAF_URL = 'https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png';
 
 // Autumn colour filters — sepia base removes green, then hue-rotate for variety
@@ -37,15 +39,28 @@ const PROGRESS_STEPS = LEAF_CONFIG.map((_, i) => i / LEAF_CONFIG.length);
 const ANIM_NAMES = ['leaf-fall', 'leaf-fall-slow', 'leaf-fall-drift'];
 
 export default function FallingLeaves() {
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  if (reducedMotion) return null;
+
+  const leaves = isMobile ? LEAF_CONFIG.slice(0, 7) : LEAF_CONFIG;
+  const steps = isMobile ? PROGRESS_STEPS.slice(0, 7) : PROGRESS_STEPS;
+
   return (
     <div
       className="fixed inset-0 pointer-events-none select-none overflow-hidden"
       style={{ zIndex: 5 }}
       aria-hidden="true"
     >
-      {LEAF_CONFIG.map(([left, duration, size, filterIdx, opacity], i) => {
+      {leaves.map(([left, duration, size, filterIdx, opacity], i) => {
         // Negative delay places the leaf at `progress` fraction through its cycle
-        const negDelay = -(PROGRESS_STEPS[i] * duration);
+        const negDelay = -(steps[i] * duration);
         const animName = ANIM_NAMES[i % ANIM_NAMES.length];
 
         return (
@@ -56,6 +71,7 @@ export default function FallingLeaves() {
               left: `${left}%`,
               opacity,
               animation: `${animName} ${duration}s linear ${negDelay}s infinite`,
+              willChange: 'transform, opacity',
             }}
           >
             <img

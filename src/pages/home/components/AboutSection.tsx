@@ -140,7 +140,7 @@ export default function AboutSection() {
 
             {/* Canada experience highlight */}
             <div className="flex items-start gap-3 bg-gradient-to-r from-[#FF0000]/8 to-[#FF0000]/3 dark:from-[#FF0000]/10 dark:to-transparent border border-[#FF0000]/15 rounded-2xl p-4 mb-5">
-              <img src="https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png" alt="" className="w-6 h-6 flex-shrink-0 animate-wiggle mt-0.5" />
+              <img src="https://public.readdy.ai/ai/img_res/788dfe8e-2bd1-478f-ade8-175d13c52bb9.png" alt="" loading="lazy" className="w-6 h-6 flex-shrink-0 animate-wiggle mt-0.5" />
               <p className="text-gray-600 dark:text-[#A8B8D0] text-base font-medium leading-relaxed" style={{ fontFamily }}>
                 {t('about_p1')}
               </p>

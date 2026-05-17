@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { smoothScrollTo } from '@/hooks/useSmoothScroll';
 import { supabase } from '@/lib/supabase';
 import { useLogout } from '@/components/feature/LogoutProvider';
@@ -35,6 +35,7 @@ function useRipple() {
 export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -115,6 +116,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
   return (
     <nav
+      aria-label="Main navigation"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled || !isHomePage 
           ? 'glass-surface translate-y-0' 
@@ -193,7 +195,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         <div className="flex items-center justify-end gap-2 flex-1 min-w-0">
           <Button
             variant="primary"
-            onClick={() => window.location.href = '/booking'}
+            onClick={() => navigate('/booking')}
             className="hidden sm:flex !px-5 !py-2.5 !text-[13px] !font-black !tracking-wide !uppercase !rounded-xl !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
           >
             {t('booking_title')}
@@ -212,7 +214,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           ) : (
             <Button
               variant="outline"
-              onClick={() => window.location.href = '/login'}
+              onClick={() => navigate('/login')}
               className="hidden lg:flex !px-5 !py-2.5 !text-[13px] sm:!text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
             >
               {t('nav_login')}
@@ -220,12 +222,14 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           )}
 
           {/* Language + Dark Mode */}
-          <div className="hidden xl:flex items-center gap-1 flex-shrink-0">
-            <div className="flex whitespace-nowrap bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+          <div className="hidden xl:flex items-center gap-1 flex-shrink-0" role="group" aria-label="Language and theme">
+            <div className="flex whitespace-nowrap bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5" role="radiogroup" aria-label="Language">
               {LANGUAGES.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLangChange(lang.code)}
+                  aria-label={`Switch to ${lang.label}`}
+                  aria-pressed={i18n.language === lang.code}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-black transition-all ${
                     i18n.language === lang.code 
                       ? 'bg-coral text-white' 
@@ -239,6 +243,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             
             <button
               onClick={handleDarkToggle}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
               {isDark ? <i className="ri-sun-fill text-yellow-400"></i> : <i className="ri-moon-fill text-gray-400"></i>}
@@ -248,6 +253,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           {/* Mobile/Tablet Menu Toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
             className="xl:hidden w-10 h-10 flex items-center justify-center rounded-full bg-coral/10 text-coral"
           >
             <i className={menuOpen ? "ri-close-line text-xl" : "ri-menu-3-line text-xl"}></i>
@@ -331,11 +338,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
           {/* Mobile/Tablet Language + Theme Row */}
           <div className="mt-2 pt-2 border-t border-[#D4C8BC]/40 dark:border-[#5B2D8E]/20 flex items-center justify-between px-3 py-1">
-            <div className="flex bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5">
+            <div className="flex bg-[#1A1410]/5 dark:bg-white/5 p-1 rounded-full border border-black/5 dark:border-white/5" role="radiogroup" aria-label="Language">
               {LANGUAGES.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLangChange(lang.code)}
+                  aria-label={`Switch to ${lang.label}`}
+                  aria-pressed={i18n.language === lang.code}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-black transition-all ${
                     i18n.language === lang.code 
                       ? 'bg-coral text-white' 
@@ -348,6 +357,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             </div>
             <button
               onClick={handleDarkToggle}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white dark:bg-[#2D1B4E] border border-[#D4C8BC]/60 dark:border-[#5B2D8E]/40 text-[#4A4440] dark:text-[#D4B8F0] shadow-sm active:scale-90 transition-transform"
             >
               <span key={darkAnimKey}>

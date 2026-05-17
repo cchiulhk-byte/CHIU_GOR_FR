@@ -6,6 +6,7 @@ import Footer from '@/pages/home/components/Footer';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useTranslation } from 'react-i18next';
 import { useLogout } from '@/components/feature/LogoutProvider';
+import SEO from '@/components/feature/SEO';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -140,6 +141,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+      <SEO title={t('nav_login')} description="Sign in to your Chiu Gor French account" />
       <Navbar isDark={isDark} onToggleDark={toggle} />
       
       {/* Logout confirm is now global via LogoutProvider */}

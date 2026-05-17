@@ -19,7 +19,7 @@ function ExperienceCard({ exp, index }: { exp: ExperienceItem; index: number }) 
           <div className="flex items-start gap-4">
             {exp.image ? (
               <div className={`w-20 h-20 flex items-center justify-center rounded-2xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
-                <img src={exp.image} alt={t(exp.titleKey)} className="w-full h-full object-cover" />
+                <img src={exp.image} alt={t(exp.titleKey)} loading="lazy" className="w-full h-full object-cover" />
               </div>
             ) : (
               <div className={`w-12 h-12 flex items-center justify-center rounded-xl flex-shrink-0 ${exp.iconBg} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>

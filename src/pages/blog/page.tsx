@@ -7,6 +7,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 
 import { tokens } from '@/design-system/tokens';
 import { Card } from '@/design-system/atoms/Card';
+import SEO from '@/components/feature/SEO';
 
 interface BlogPost {
   id: string;
@@ -76,6 +77,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF9] dark:bg-[#0E0818]">
+      <SEO title={t('nav_blog')} description="Read the latest articles from Chiu Gor French" />
       <Navbar isDark={isDark} onToggleDark={toggle} />
 
       <div className="pt-24 pb-20">

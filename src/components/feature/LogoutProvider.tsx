@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 
 interface LogoutContextType {
@@ -17,6 +18,7 @@ export const useLogout = () => {
 
 export const LogoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -30,7 +32,7 @@ export const LogoutProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Clear admin secret if exists
     sessionStorage.removeItem('adminSecret');
     setIsLoggingOut(false);
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
