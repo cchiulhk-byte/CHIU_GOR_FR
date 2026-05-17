@@ -136,7 +136,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
         {/* ── Left: All Nav Links (Desktop) ── */}
         <div className="hidden xl:flex items-center flex-wrap gap-x-5 gap-y-1 flex-1 min-w-0">
           {isHomePage && desktopLinks.map((link, i) => (
-            <span key={link.id} className={`flex items-center gap-5 ${link.id === 'my-bookings' ? 'basis-full justify-end' : ''}`}>
+            <span key={link.id} className={`flex items-center gap-5 ${link.id === 'my-bookings' ? 'basis-full justify-end !gap-0' : ''}`}>
               {link.path ? (
                 <Link
                   to={link.path}
