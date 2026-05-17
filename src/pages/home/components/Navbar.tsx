@@ -167,7 +167,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             ))}
           </div>
           {isHomePage && user && (
-            <div className="flex justify-end mt-1">
+            <div className="flex justify-start mt-1">
               <Link
                 to="/my-bookings"
                 className="text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 bg-[#ffee88] text-[#4d194d] px-4 py-1.5 rounded-xl hover:opacity-90"
