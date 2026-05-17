@@ -431,7 +431,7 @@ const translation = {
   admin_logout_cancel_btn: "取消",
 
   // Student Bookings
-  my_bookings_title: "已預約的課堂",
+  my_bookings_title: "已預約課堂",
   my_bookings_subtitle: "管理您即將進行的法語課並查看預約歷史。",
   my_bookings_no_bookings: "找不到預約記錄",
   my_bookings_no_bookings_desc: "您尚未預約任何課堂。",
