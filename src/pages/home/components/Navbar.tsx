@@ -316,7 +316,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="text-left text-sm font-bold text-[#fdeed9] bg-[#ff5400] py-3.5 px-4 rounded-2xl hover:opacity-90 transition-all duration-300 flex items-center justify-between mt-1"
+              className="text-left text-sm font-bold text-[#fdeed9] bg-[#390099] py-3.5 px-4 rounded-2xl hover:opacity-90 transition-all duration-300 flex items-center justify-between mt-1"
               style={{ fontFamily: fontNav }}
             >
               {t('nav_login')}
