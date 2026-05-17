@@ -291,8 +291,8 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
       {/* ── Mobile/Tablet Menu with slide animation ── */}
       <div
-        className={`xl:hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-[85vh] opacity-100 overflow-y-auto' : 'max-h-0 opacity-0 overflow-hidden'
+        className={`xl:hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          menuOpen ? 'max-h-[85vh] opacity-100 overflow-y-auto translate-y-0' : 'max-h-0 opacity-0 overflow-hidden -translate-y-2'
         } bg-[#F7F4EF]/98 dark:bg-[#1A0A2E]/98 backdrop-blur-xl border-t border-[#D4C8BC]/60 dark:border-[#5B2D8E]/30`}
       >
         <div className="px-4 py-3 flex flex-col gap-1">
@@ -306,10 +306,10 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                   link.id === 'my-bookings'
                     ? 'bg-[#ffee88] text-[#4d194d] hover:opacity-90'
                     : 'text-[#1A1410] dark:text-[#D4B8F0] hover:bg-coral/10 hover:text-coral'
-                }`}
+                } ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
                 style={{
                   fontFamily: fontNav,
-                  transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                  transitionDelay: menuOpen ? `${i * 0.06}s` : '0s',
                 }}
               >
                 {link.label}
@@ -319,10 +319,10 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <button
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
-                className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between group"
+                className={`text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between group ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
                 style={{
                   fontFamily: fontNav,
-                  transitionDelay: menuOpen ? `${i * 0.05}s` : '0s',
+                  transitionDelay: menuOpen ? `${i * 0.06}s` : '0s',
                 }}
               >
                 {link.label}
