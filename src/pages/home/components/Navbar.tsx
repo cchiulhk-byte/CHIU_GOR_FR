@@ -196,7 +196,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           <Button
             variant="primary"
             onClick={() => navigate('/booking')}
-            className="hidden sm:flex !px-5 !py-2.5 !text-[13px] !font-black !tracking-wide !uppercase !rounded-xl !whitespace-nowrap shadow-lg hover:shadow-coral/20 transition-all duration-300"
+            className="hidden sm:flex !px-5 !py-2.5 !text-[13px] !font-black !tracking-wide !uppercase !rounded-xl !whitespace-nowrap !border-0 shadow-lg hover:shadow-coral/20 transition-all duration-300"
           >
             {t('booking_title')}
           </Button>
@@ -205,7 +205,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={confirmLogout}
-              className={`hidden lg:flex !px-5 !py-2.5 !text-[13px] sm:!text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-transparent !border-0 !shadow-none ${scrolled || !isHomePage ? '!text-white' : '!text-[#1A1410] dark:!text-white'}`}
+              className={`hidden lg:flex !px-5 !py-2.5 !text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-transparent !border-0 !shadow-none ${scrolled || !isHomePage ? '!text-white' : '!text-[#1A1410] dark:!text-white'}`}
               title={user.email || ''}
             >
               <i className="ri-user-line mr-1.5"></i>
@@ -215,7 +215,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={() => navigate('/login')}
-              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] sm:!text-[13px] !font-black !rounded-xl !whitespace-nowrap !bg-white/10 backdrop-blur-md border-[#D4C8BC]/30"
+              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] !font-black !rounded-xl !whitespace-nowrap !border-0 !shadow-none !bg-[#30bcb3] !text-[#fdeed9] hover:!opacity-90 transition-all duration-300"
             >
               {t('nav_login')}
             </Button>
@@ -316,7 +316,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="text-left text-sm font-bold text-[#1A1410] dark:text-[#D4B8F0] py-3.5 px-4 rounded-2xl hover:bg-coral/10 hover:text-coral transition-all duration-300 flex items-center justify-between mt-1"
+              className="text-left text-sm font-bold text-[#fdeed9] bg-[#30bcb3] py-3.5 px-4 rounded-2xl hover:opacity-90 transition-all duration-300 flex items-center justify-between mt-1"
               style={{ fontFamily: fontNav }}
             >
               {t('nav_login')}
