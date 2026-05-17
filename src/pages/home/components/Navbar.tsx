@@ -215,7 +215,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Button
               variant="outline"
               onClick={() => navigate('/login')}
-              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] !font-black !rounded-xl !whitespace-nowrap !border-0 !shadow-none !bg-[#30bcb3] !text-[#fdeed9] hover:!opacity-90 transition-all duration-300"
+              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] !font-black !rounded-xl !whitespace-nowrap !border-0 !shadow-none !bg-[#ff5400] !text-[#fdeed9] hover:!opacity-90 transition-all duration-300"
             >
               {t('nav_login')}
             </Button>
@@ -316,7 +316,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="text-left text-sm font-bold text-[#fdeed9] bg-[#30bcb3] py-3.5 px-4 rounded-2xl hover:opacity-90 transition-all duration-300 flex items-center justify-between mt-1"
+              className="text-left text-sm font-bold text-[#fdeed9] bg-[#ff5400] py-3.5 px-4 rounded-2xl hover:opacity-90 transition-all duration-300 flex items-center justify-between mt-1"
               style={{ fontFamily: fontNav }}
             >
               {t('nav_login')}
