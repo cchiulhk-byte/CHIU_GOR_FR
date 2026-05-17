@@ -135,7 +135,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                   to={link.path}
                   className={`text-[13px] font-bold tracking-wide uppercase whitespace-nowrap transition-all duration-300 relative group ${
                     link.id === 'my-bookings'
-                      ? 'bg-[#ffee88] text-[#b3c2f2] px-4 py-1.5 rounded-xl hover:opacity-90'
+                      ? 'bg-[#ffee88] text-[#fcd6f9] px-4 py-1.5 rounded-xl hover:opacity-90'
                       : scrolled || !isHomePage ? 'text-white/90 hover:text-white' : 'text-gray-800 dark:text-white'
                   }`}
                   style={{ fontFamily: tokens.typography.fontFamily }}
@@ -279,7 +279,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 onClick={() => setMenuOpen(false)}
                 className={`text-left text-sm font-bold py-3.5 px-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${
                   link.id === 'my-bookings'
-                    ? 'bg-[#ffee88] text-[#b3c2f2] hover:opacity-90'
+                    ? 'bg-[#ffee88] text-[#fcd6f9] hover:opacity-90'
                     : 'text-[#1A1410] dark:text-[#D4B8F0] hover:bg-coral/10 hover:text-coral'
                 }`}
                 style={{
