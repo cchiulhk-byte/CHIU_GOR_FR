@@ -279,7 +279,7 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
                 onClick={() => setMenuOpen(false)}
                 className={`text-left text-sm font-bold py-3.5 px-4 rounded-2xl transition-all duration-300 flex items-center justify-between group ${
                   link.id === 'my-bookings'
-                    ? 'bg-[#ffee88] text-[#3b0086] hover:opacity-90'
+                    ? 'bg-[#ffee88] text-[#451f55] hover:opacity-90'
                     : 'text-[#1A1410] dark:text-[#D4B8F0] hover:bg-coral/10 hover:text-coral'
                 }`}
                 style={{
