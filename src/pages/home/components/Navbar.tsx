@@ -221,15 +221,15 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
           </button>
 
           {user ? (
-            <Button
-              variant="outline"
+            <button
               onClick={confirmLogout}
-              className={`hidden lg:flex !px-5 !py-2.5 !text-[17px] !font-black !rounded-xl !whitespace-nowrap !bg-transparent !border-0 !shadow-none ${scrolled || !isHomePage ? '!text-white' : '!text-[#1A1410] dark:!text-white'}`}
               title={user.email || ''}
+              className={`hidden lg:flex items-center gap-1.5 px-3 py-1.5 xl:px-4 xl:py-2 text-[11px] xl:text-[13px] font-black rounded-xl whitespace-nowrap bg-transparent border-0 shadow-none transition-all duration-300 hover:opacity-80 ${scrolled || !isHomePage ? 'text-white' : 'text-[#1A1410] dark:text-white'}`}
+              style={{ fontFamily: tokens.typography.fontFamily }}
             >
-              <i className="ri-user-line mr-1.5 text-lg"></i>
-              <span className="max-w-[120px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
-            </Button>
+              <i className="ri-user-line text-sm xl:text-base"></i>
+              <span className="max-w-[80px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
+            </button>
           ) : (
             <button
               onClick={() => navigate('/login')}
