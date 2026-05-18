@@ -212,13 +212,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
 
         {/* ── Right: Controls ── */}
         <div className="flex items-center justify-end gap-2 flex-1 min-w-0">
-          <Button
-            variant="primary"
+          <button
             onClick={() => navigate('/booking')}
-            className="hidden sm:flex !px-3 !py-1.5 xl:!px-5 xl:!py-2.5 !text-[11px] xl:!text-[13px] !font-black !tracking-wide !uppercase !rounded-xl !whitespace-nowrap !border-0 shadow-lg hover:shadow-coral/20 transition-all duration-300"
+            className="hidden sm:flex items-center justify-center px-3 py-1.5 xl:px-5 xl:py-2.5 text-[11px] xl:text-[13px] font-black tracking-wide uppercase rounded-xl whitespace-nowrap border-0 shadow-lg hover:shadow-red-500/20 bg-gradient-to-r from-[#CC0000] to-[#FF3333] text-white hover:scale-[1.02] active:scale-95 transition-all duration-300"
+            style={{ fontFamily: tokens.typography.fontFamily }}
           >
             {t('booking_title')}
-          </Button>
+          </button>
 
           {user ? (
             <Button
