@@ -152,7 +152,7 @@ const translation = {
   why4_desc: "Chaque cours est adapté à votre niveau et à vos objectifs. Pas d'approche unique ici.",
 
   // Booking
-  booking_title: "Réserver un cours",
+  booking_title: "Réserver une leçon",
   booking_subtitle: "Choisissez votre cours, date et heure préférés. Je confirmerai votre réservation sous 24 heures.",
   booking_back_home: "Retour à l'accueil",
   booking_step_lesson: "Cours",
