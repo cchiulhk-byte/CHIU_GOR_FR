@@ -231,13 +231,13 @@ export default function Navbar({ isDark, onToggleDark }: NavbarProps) {
               <span className="max-w-[120px] truncate">{(user.email ? String(user.email).split('@')[0] : 'Account')}</span>
             </Button>
           ) : (
-            <Button
-              variant="outline"
+            <button
               onClick={() => navigate('/login')}
-              className="hidden lg:flex !px-5 !py-2.5 !text-[13px] !font-black !rounded-xl !whitespace-nowrap !border-0 !shadow-none !bg-[#ff5400] !text-[#fdeed9] hover:!opacity-90 transition-all duration-300"
+              className="hidden lg:flex items-center justify-center px-3 py-1.5 xl:px-5 xl:py-2.5 text-[11px] xl:text-[13px] font-black tracking-wide uppercase rounded-xl whitespace-nowrap border-0 shadow-lg bg-[#ff5400] text-[#fdeed9] hover:opacity-90 hover:scale-[1.02] active:scale-95 transition-all duration-300"
+              style={{ fontFamily: tokens.typography.fontFamily }}
             >
               {t('nav_login')}
-            </Button>
+            </button>
           )}
 
           {/* Language + Dark Mode */}
